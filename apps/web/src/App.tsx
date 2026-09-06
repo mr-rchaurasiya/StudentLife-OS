@@ -23,6 +23,7 @@ import { LeaderboardView } from './components/LeaderboardView';
 import { OcrScannerView } from './components/OcrScannerView';
 import { SocialStudyRoomsView } from './components/SocialStudyRoomsView';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
+import { PwaInstallPromptWidget } from './components/PwaInstallPromptWidget';
 import {
   StudentProfile,
   UpdateStudentProfileDto,
@@ -1725,6 +1726,18 @@ function DashboardContent() {
 
       {/* Floating Persistent Real-Time Focus Audio Player Widget */}
       <FocusAudioPlayerWidget />
+
+      {/* Progressive Web App Install & Offline Indicator */}
+      <PwaInstallPromptWidget
+        onAddXp={(xp, reason) => {
+          setProfile((p) => ({
+            ...p,
+            xpPoints: p.xpPoints + xp,
+            xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+          }));
+          console.log(`XP Earned: +${xp} (${reason})`);
+        }}
+      />
 
       {/* Footer */}
       <footer style={{
