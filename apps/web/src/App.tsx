@@ -24,6 +24,7 @@ import { OcrScannerView } from './components/OcrScannerView';
 import { SocialStudyRoomsView } from './components/SocialStudyRoomsView';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import { PwaInstallPromptWidget } from './components/PwaInstallPromptWidget';
+import { DailyStudyDigestModal } from './components/DailyStudyDigestModal';
 import {
   StudentProfile,
   UpdateStudentProfileDto,
@@ -60,6 +61,7 @@ import {
   Users2,
   Trophy,
   Scan,
+  Sun,
 } from 'lucide-react';
 
 interface PhaseItem {
@@ -306,6 +308,7 @@ function DashboardContent() {
   const [initialAiStudyContent, setInitialAiStudyContent] = useState<string>('');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isDigestModalOpen, setIsDigestModalOpen] = useState(false);
   const [profile, setProfile] = useState<StudentProfile>(DEFAULT_DEMO_PROFILE);
   const [summary, setSummary] = useState<DashboardSummaryData>(DEFAULT_DASHBOARD_SUMMARY);
   const [tasks, setTasks] = useState<StudyTask[]>(DEFAULT_TASKS);
@@ -1266,6 +1269,27 @@ function DashboardContent() {
               </strong>
             </div>
 
+            {/* Daily Digest Trigger */}
+            <button
+              onClick={() => setIsDigestModalOpen(true)}
+              className="glass-pill glow-hover"
+              style={{
+                padding: '6px 14px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                color: '#fef08a',
+                border: '1px solid rgba(234, 179, 8, 0.3)',
+                background: 'rgba(234, 179, 8, 0.1)',
+                cursor: 'pointer'
+              }}
+              title="View Today's Morning Study Digest"
+            >
+              <Sun size={14} color="#facc15" /> Daily Digest ☀️
+            </button>
+
             {/* User Account / Sign In */}
             {isAuthenticated && user ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -1722,6 +1746,19 @@ function DashboardContent() {
         onClose={() => setIsProfileModalOpen(false)}
         profile={profile}
         onSave={handleSaveProfile}
+      />
+      <DailyStudyDigestModal
+        isOpen={isDigestModalOpen}
+        onClose={() => setIsDigestModalOpen(false)}
+        onAddXp={(xp, reason) => {
+          setProfile((p) => ({
+            ...p,
+            xpPoints: p.xpPoints + xp,
+            xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+          }));
+          console.log(`XP Earned: +${xp} (${reason})`);
+        }}
+        onNavigateView={(v) => setActiveView(v as any)}
       />
 
       {/* Floating Persistent Real-Time Focus Audio Player Widget */}

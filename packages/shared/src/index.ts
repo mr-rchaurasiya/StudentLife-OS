@@ -1626,3 +1626,42 @@ export interface SendRoomMessageDto {
 export interface UpdateMemberGoalDto {
   goal: string;
 }
+
+// ==========================================
+// 17. Push Notifications & Morning Digest (Phase 28)
+// ==========================================
+export interface DailyStudyDigestResult {
+  date: string;
+  greeting: string;
+  motivationalQuote: {
+    quote: string;
+    author: string;
+  };
+  totalTasksToday: number;
+  highPriorityTasks: Array<{ id: string; title: string; subjectName: string; dueTime: string }>;
+  flashcardsDueCount: number;
+  upcomingExamClocks: Array<{ title: string; daysRemaining: number }>;
+  currentStreakDays: number;
+  targetFocusMinutes: number;
+}
+
+export interface PushNotificationPayload {
+  title: string;
+  body: string;
+  icon?: string;
+  badge?: string;
+  data?: {
+    url?: string;
+    view?: string;
+  };
+}
+
+export interface PushSubscriptionDto {
+  endpoint: string;
+  keys?: {
+    p256dh: string;
+    auth: string;
+  };
+  userId?: string;
+}
+
