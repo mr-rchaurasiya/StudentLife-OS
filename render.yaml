@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: studentlife-os-api
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build --workspace=packages/shared && npm run build --workspace=apps/api
+    startCommand: npm run start --workspace=apps/api
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: FRONTEND_URL
+        value: https://studentlife-os.vercel.app
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
