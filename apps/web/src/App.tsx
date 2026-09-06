@@ -19,6 +19,7 @@ import { ScholarshipFinderView } from './components/ScholarshipFinderView';
 import { DeadlineAlertsView } from './components/DeadlineAlertsView';
 import { AiMentorView } from './components/AiMentorView';
 import { CommunityHubView } from './components/CommunityHubView';
+import { LeaderboardView } from './components/LeaderboardView';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import {
   StudentProfile,
@@ -53,6 +54,7 @@ import {
   Award,
   Bell,
   Users,
+  Trophy,
 } from 'lucide-react';
 
 interface PhaseItem {
@@ -295,7 +297,7 @@ const DEFAULT_SYLLABUS_OVERVIEW: SyllabusOverviewStats = {
 
 function DashboardContent() {
   const { user, tokens, isAuthenticated, logout } = useAuth();
-  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'ROADMAP'>('DASHBOARD');
+  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'ROADMAP'>('DASHBOARD');
   const [initialAiStudyContent, setInitialAiStudyContent] = useState<string>('');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
@@ -1169,6 +1171,24 @@ function DashboardContent() {
                 <Users size={13} color={activeView === 'COMMUNITY' ? '#fff' : '#818cf8'} /> Community Hub
               </button>
               <button
+                onClick={() => setActiveView('LEADERBOARD')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'LEADERBOARD' ? 'linear-gradient(135deg, #f59e0b, #ef4444)' : 'transparent',
+                  color: activeView === 'LEADERBOARD' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Trophy size={13} color={activeView === 'LEADERBOARD' ? '#fff' : '#fbbf24'} /> Leaderboards
+              </button>
+              <button
                 onClick={() => setActiveView('ROADMAP')}
                 style={{
                   padding: '6px 14px',
@@ -1410,6 +1430,19 @@ function DashboardContent() {
 
         {activeView === 'COMMUNITY' && (
           <CommunityHubView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'LEADERBOARD' && (
+          <LeaderboardView
             onAddXp={(xp, reason) => {
               setProfile((p) => ({
                 ...p,

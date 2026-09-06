@@ -1466,4 +1466,53 @@ export interface GlobalAudioPlayerState {
   autoSyncWithPomodoro: boolean;
 }
 
+// ==========================================
+// 14. Gamification 2.0 & All-India Student Leaderboards (Phase 24)
+// ==========================================
+export type LeaderboardFilterScope = 'ALL_INDIA' | 'MY_COLLEGE' | 'TARGET_EXAM';
+export type WeeklyLeagueTier = 'BRONZE' | 'SILVER' | 'GOLD' | 'DIAMOND' | 'MASTER';
+
+export interface LeaderboardEntry {
+  rank: number;
+  userId: string;
+  fullName: string;
+  avatarUrl: string;
+  collegeOrSchool: string;
+  targetExam: string;
+  level: number;
+  weeklyXp: number;
+  totalXp: number;
+  streakDays: number;
+  accuracyPercentage: number;
+  studyHoursThisWeek: number;
+  leagueTier: WeeklyLeagueTier;
+  topBadgeTitle: string;
+  isCurrentUser: boolean;
+}
+
+export interface StudentAchievementBadge {
+  id: string;
+  title: string;
+  category: 'STREAK' | 'FOCUS' | 'EXAMS' | 'COMMUNITY' | 'MASTERY';
+  description: string;
+  iconEmoji: string;
+  rarity: 'COMMON' | 'RARE' | 'EPIC' | 'LEGENDARY';
+  isUnlocked: boolean;
+  unlockedAt?: string;
+  progressPercent: number;
+  xpBonus: number;
+}
+
+export interface GamificationDashboardData {
+  currentUserRank: number;
+  totalParticipants: number;
+  leagueTier: WeeklyLeagueTier;
+  daysRemainingInDivision: number;
+  topThreePodium: LeaderboardEntry[];
+  rankings: LeaderboardEntry[];
+  achievements: StudentAchievementBadge[];
+  weeklyXpTrajectory: number[];
+}
+
+
 
