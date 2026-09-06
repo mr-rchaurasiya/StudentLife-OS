@@ -30,6 +30,7 @@ import { studyRoomsRouter } from './routes/study-rooms.routes';
 import { notificationsPipelineRouter } from './routes/notifications-pipeline.routes';
 import { voiceTutorRouter } from './routes/voice-tutor.routes';
 import { conceptGraphRouter } from './routes/concept-graph.routes';
+import { quizBattleRouter } from './routes/quiz-battle.routes';
 import { errorHandler } from './middlewares/errorHandler';
 
 const app: Express = express();
@@ -74,6 +75,7 @@ app.use('/api/study-rooms', studyRoomsRouter);
 app.use('/api/notifications', notificationsPipelineRouter);
 app.use('/api/voice-tutor', voiceTutorRouter);
 app.use('/api/concept-graph', conceptGraphRouter);
+app.use('/api/quiz-battle', quizBattleRouter);
 
 // Global Error Handler
 app.use(errorHandler);

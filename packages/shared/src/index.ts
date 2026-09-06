@@ -1739,3 +1739,66 @@ export interface SubjectKnowledgeGraph {
   edges: ConceptGraphEdge[];
   overallMasteryPercent: number;
 }
+
+// ==========================================
+// 20. 1v1 Peer Quiz Arena & Battles (Phase 33)
+// ==========================================
+export type BattleMatchStatus = 'WAITING_FOR_MATCH' | 'IN_BATTLE' | 'ROUND_SUMMARY' | 'MATCH_FINISHED';
+
+export interface BattleQuestion {
+  id: string;
+  questionText: string;
+  options: string[];
+  correctIndex: number;
+  timeLimitSeconds: number;
+  points: number;
+  latexSnippet?: string;
+  explanation: string;
+}
+
+export interface BattlePlayer {
+  id: string;
+  name: string;
+  avatar: string;
+  college: string;
+  score: number;
+  streakCombo: number;
+  currentAnswerIndex?: number;
+  isAnswered: boolean;
+  timeTakenSeconds?: number;
+}
+
+export interface QuizBattleMatch {
+  id: string;
+  subject: string;
+  topic: string;
+  roundNumber: number;
+  totalRounds: number;
+  status: BattleMatchStatus;
+  currentQuestionIndex: number;
+  questions: BattleQuestion[];
+  player1: BattlePlayer;
+  player2: BattlePlayer;
+  winnerId?: string;
+  xpWager: number;
+  xpReward: number;
+}
+
+export interface SubmitBattleAnswerDto {
+  matchId: string;
+  playerId: string;
+  questionIndex: number;
+  answerIndex: number;
+  timeTakenSeconds: number;
+}
+
+export interface FindBattleMatchDto {
+  subject: string;
+  user?: {
+    id?: string;
+    name?: string;
+    avatar?: string;
+    college?: string;
+  };
+  xpWager?: number;
+}

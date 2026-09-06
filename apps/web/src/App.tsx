@@ -24,6 +24,7 @@ import { OcrScannerView } from './components/OcrScannerView';
 import { SocialStudyRoomsView } from './components/SocialStudyRoomsView';
 import { AiVoiceTutorView } from './components/AiVoiceTutorView';
 import { ConceptGraphView } from './components/ConceptGraphView';
+import { QuizBattleArenaView } from './components/QuizBattleArenaView';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import { PwaInstallPromptWidget } from './components/PwaInstallPromptWidget';
 import { DailyStudyDigestModal } from './components/DailyStudyDigestModal';
@@ -66,6 +67,7 @@ import {
   Sun,
   Mic,
   Network,
+  Swords,
 } from 'lucide-react';
 
 interface PhaseItem {
@@ -308,7 +310,7 @@ const DEFAULT_SYLLABUS_OVERVIEW: SyllabusOverviewStats = {
 
 function DashboardContent() {
   const { user, tokens, isAuthenticated, logout } = useAuth();
-  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'ROADMAP'>('DASHBOARD');
+  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'ROADMAP'>('DASHBOARD');
   const [initialAiStudyContent, setInitialAiStudyContent] = useState<string>('');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
@@ -1273,6 +1275,24 @@ function DashboardContent() {
                 <Network size={13} color={activeView === 'CONCEPT_GRAPH' ? '#fff' : '#38bdf8'} /> Mind Map Graph 🕸️
               </button>
               <button
+                onClick={() => setActiveView('QUIZ_BATTLE')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'QUIZ_BATTLE' ? 'linear-gradient(135deg, #f43f5e, #e11d48)' : 'transparent',
+                  color: activeView === 'QUIZ_BATTLE' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Swords size={13} color={activeView === 'QUIZ_BATTLE' ? '#fff' : '#fda4af'} /> 1v1 Arena ⚔️
+              </button>
+              <button
                 onClick={() => setActiveView('ROADMAP')}
                 style={{
                   padding: '6px 14px',
@@ -1602,6 +1622,20 @@ function DashboardContent() {
 
         {activeView === 'CONCEPT_GRAPH' && (
           <ConceptGraphView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+            onNavigateView={(v) => setActiveView(v as any)}
+          />
+        )}
+
+        {activeView === 'QUIZ_BATTLE' && (
+          <QuizBattleArenaView
             onAddXp={(xp, reason) => {
               setProfile((p) => ({
                 ...p,
