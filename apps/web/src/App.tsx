@@ -22,6 +22,7 @@ import { CommunityHubView } from './components/CommunityHubView';
 import { LeaderboardView } from './components/LeaderboardView';
 import { OcrScannerView } from './components/OcrScannerView';
 import { SocialStudyRoomsView } from './components/SocialStudyRoomsView';
+import { AiVoiceTutorView } from './components/AiVoiceTutorView';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import { PwaInstallPromptWidget } from './components/PwaInstallPromptWidget';
 import { DailyStudyDigestModal } from './components/DailyStudyDigestModal';
@@ -62,6 +63,7 @@ import {
   Trophy,
   Scan,
   Sun,
+  Mic,
 } from 'lucide-react';
 
 interface PhaseItem {
@@ -304,7 +306,7 @@ const DEFAULT_SYLLABUS_OVERVIEW: SyllabusOverviewStats = {
 
 function DashboardContent() {
   const { user, tokens, isAuthenticated, logout } = useAuth();
-  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'ROADMAP'>('DASHBOARD');
+  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'ROADMAP'>('DASHBOARD');
   const [initialAiStudyContent, setInitialAiStudyContent] = useState<string>('');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
@@ -1233,6 +1235,24 @@ function DashboardContent() {
                 <Users2 size={13} color={activeView === 'STUDY_ROOMS' ? '#fff' : '#a78bfa'} /> Study Rooms 🎧
               </button>
               <button
+                onClick={() => setActiveView('VOICE_TUTOR')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'VOICE_TUTOR' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : 'transparent',
+                  color: activeView === 'VOICE_TUTOR' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Mic size={13} color={activeView === 'VOICE_TUTOR' ? '#fff' : '#e879f9'} /> Voice Tutor 🎙️
+              </button>
+              <button
                 onClick={() => setActiveView('ROADMAP')}
                 style={{
                   padding: '6px 14px',
@@ -1543,6 +1563,20 @@ function DashboardContent() {
               }));
               console.log(`XP Earned: +${xp} (${reason})`);
             }}
+          />
+        )}
+
+        {activeView === 'VOICE_TUTOR' && (
+          <AiVoiceTutorView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+            onNavigateView={(v) => setActiveView(v as any)}
           />
         )}
 

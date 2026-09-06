@@ -1665,3 +1665,41 @@ export interface PushSubscriptionDto {
   userId?: string;
 }
 
+// ==========================================
+// 18. AI Voice Tutor & Oral Drills (Phase 31)
+// ==========================================
+export type VoicePersonaType = 'Socratic Tutor' | 'Rapid Exam Driller' | 'Calm Explainer';
+export type VoiceLanguageMode = 'bilingual' | 'hi-IN' | 'en-US';
+
+export interface VoiceTutorMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  text: string;
+  timestamp: string;
+  category: 'QUESTION' | 'EXPLANATION' | 'ORAL_QUIZ_PROMPT' | 'FEEDBACK';
+  audioDurationSeconds?: number;
+  latexSnippet?: string;
+  followUpSuggestion?: string;
+}
+
+export interface OralQuizDrill {
+  id: string;
+  subject: string;
+  topic: string;
+  question: string;
+  expectedKeyPoints: string[];
+  hint: string;
+  fullExplanation: string;
+}
+
+export interface VoiceTutorQueryDto {
+  transcript: string;
+  persona?: VoicePersonaType;
+  languageMode?: VoiceLanguageMode;
+  currentSubject?: string;
+}
+
+export interface EvaluateOralAnswerDto {
+  drillId: string;
+  spokenAnswer: string;
+}
