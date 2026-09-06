@@ -1890,3 +1890,201 @@ export interface GenerateMockPaperDto {
   };
   includeSolutions?: boolean;
 }
+
+// ==========================================
+// 36. Focus Garden & Virtual Study Pet (Phase 36)
+// ==========================================
+export type TreeSpecies = 'CHERRY_BLOSSOM' | 'GOLDEN_OAK' | 'MYSTIC_WILLOW' | 'CYBER_PINE' | 'EMERALD_BAMBOO';
+export type TreeStatus = 'GROWING' | 'HARVESTED' | 'WITHERED';
+export type PetType = 'WISE_OWL' | 'CHILL_CAPYBARA' | 'MYSTIC_DRAGON' | 'FOCUS_FOX';
+
+export interface FocusTree {
+  id: string;
+  species: TreeSpecies;
+  plantedAt: string;
+  durationMinutes: number;
+  status: TreeStatus;
+  focusSubject?: string;
+  earnedCoins: number;
+  earnedXp: number;
+  gridPosition: { row: number; col: number };
+}
+
+export interface StudyPet {
+  id: string;
+  name: string;
+  type: PetType;
+  level: number;
+  currentXp: number;
+  xpToNextLevel: number;
+  happinessPercent: number;
+  activeFocusBoostPercent: number; // e.g. +10% XP
+  unlockedCostumes: string[];
+  currentMood: 'JOYFUL' | 'FOCUSING' | 'SLEEPY' | 'HUNGRY';
+}
+
+export interface FocusGardenState {
+  totalTreesPlanted: number;
+  totalForestHarvested: number;
+  totalFocusHours: number;
+  gardenCoins: number;
+  trees: FocusTree[];
+  pet: StudyPet;
+  currentActiveSession?: {
+    treeId: string;
+    species: TreeSpecies;
+    durationMinutes: number;
+    elapsedSeconds: number;
+    subject: string;
+  };
+}
+
+export interface PlantTreeDto {
+  species: TreeSpecies;
+  durationMinutes: number;
+  subject?: string;
+}
+
+export interface CompleteTreeDto {
+  treeId: string;
+  wasSuccessful: boolean;
+}
+
+// ==========================================
+// 37. AI Audio Podcast & Lecture Dialogue Studio (Phase 37)
+// ==========================================
+export interface PodcastHost {
+  id: string;
+  name: string;
+  avatar: string;
+  role: string;
+  voiceGender: 'male' | 'female';
+  personality: string;
+}
+
+export interface PodcastDialogueTurn {
+  id: string;
+  speaker: 'host1' | 'host2';
+  text: string;
+  durationEstimateSeconds: number;
+  keyConcepts: string[];
+}
+
+export interface AiPodcast {
+  id: string;
+  title: string;
+  topic: string;
+  sourceType: 'NOTES' | 'SYLLABUS' | 'TEXTBOOK_CHAPTER';
+  totalDurationSeconds: number;
+  host1: PodcastHost;
+  host2: PodcastHost;
+  dialogueTurns: PodcastDialogueTurn[];
+  summaryKeyTakeaways: string[];
+  createdAt: string;
+}
+
+export interface GeneratePodcastDto {
+  topic: string;
+  sourceText?: string;
+  style?: 'DEEP_DIVE' | 'RAPID_REVISION' | 'EXAM_CRACKER';
+  durationPresetMinutes?: number;
+}
+
+// ==========================================
+// 38. In-Browser AI Code Sandbox & DSA Visualizer (Phase 38)
+// ==========================================
+export type CodeLanguage = 'javascript' | 'typescript' | 'python' | 'cpp';
+
+export interface CodeExecutionResult {
+  stdout: string;
+  stderr: string;
+  executionTimeMs: number;
+  memoryKb: number;
+  isError: boolean;
+  timeComplexityEstimate?: string;
+  spaceComplexityEstimate?: string;
+}
+
+export interface AlgorithmStep {
+  stepNumber: number;
+  description: string;
+  highlightedIndices: number[];
+  variablesState: Record<string, any>;
+  dataStructureSnapshot: any;
+}
+
+export interface AlgorithmVisualizationData {
+  algorithmName: string;
+  initialData: number[] | any;
+  steps: AlgorithmStep[];
+  timeComplexity: string;
+  spaceComplexity: string;
+}
+
+export interface ExecuteCodeDto {
+  code: string;
+  language: CodeLanguage;
+  stdin?: string;
+}
+
+export interface VisualizeAlgorithmDto {
+  algorithm: 'TWO_POINTERS' | 'BINARY_SEARCH' | 'SLIDING_WINDOW' | 'TREE_INORDER' | 'DIJKSTRA_GRAPH';
+  customInput?: number[];
+}
+
+// ==========================================
+// 39. All-India Rank Predictor & AI Mistake Vault (Phase 39)
+// ==========================================
+export interface RankPredictionResult {
+  examType: string;
+  predictedPercentile: number;
+  predictedAIRRange: { minRank: number; maxRank: number };
+  estimatedScore: number;
+  totalMarks: number;
+  strongAreas: string[];
+  criticalWeaknesses: string[];
+  eligibleInstitutions: Array<{
+    college: string;
+    branch: string;
+    cutoffPercentile: number;
+    admissionProbability: 'HIGH' | 'MODERATE' | 'AMBITIOUS';
+  }>;
+}
+
+export interface PredictRankDto {
+  examType: string;
+  subjectScores: Array<{
+    subject: string;
+    accuracyPercent: number;
+    avgSpeedSecondsPerQuestion: number;
+    attemptCount: number;
+  }>;
+}
+
+export interface MistakeEntry {
+  id: string;
+  questionId: string;
+  examOrSubject: string;
+  topic: string;
+  questionText: string;
+  options?: string[];
+  userWrongAnswer: string;
+  correctAnswer: string;
+  explanation: string;
+  mistakeReason?: 'CONCEPTUAL_GAP' | 'CALCULATION_ERROR' | 'TIME_PRESSURE' | 'MISREAD_QUESTION';
+  failedCount: number;
+  nextReviewDate: string;
+  isResolved: boolean;
+  createdAt: string;
+}
+
+export interface RetestMistakeDto {
+  mistakeId: string;
+  userAnswer: string;
+}
+
+// ==========================================
+// 40. Vernacular Multi-Language Engine (Phase 40)
+// ==========================================
+export type SupportedLanguage = 'en' | 'hi' | 'hinglish' | 'bn' | 'ta' | 'te';
+

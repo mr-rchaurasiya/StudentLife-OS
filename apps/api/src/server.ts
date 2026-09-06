@@ -33,6 +33,10 @@ import { conceptGraphRouter } from './routes/concept-graph.routes';
 import { quizBattleRouter } from './routes/quiz-battle.routes';
 import documentAnnotatorRouter from './routes/document-annotator.routes';
 import customPaperRouter from './routes/custom-paper.routes';
+import focusGardenRouter from './routes/focus-garden.routes';
+import aiPodcastRouter from './routes/ai-podcast.routes';
+import codeSandboxRouter from './routes/code-sandbox.routes';
+import rankPredictorRouter from './routes/rank-predictor.routes';
 import { errorHandler } from './middlewares/errorHandler';
 
 const app: Express = express();
@@ -80,6 +84,10 @@ app.use('/api/concept-graph', conceptGraphRouter);
 app.use('/api/quiz-battle', quizBattleRouter);
 app.use('/api/document-annotator', documentAnnotatorRouter);
 app.use('/api/custom-paper', customPaperRouter);
+app.use('/api/focus-garden', focusGardenRouter);
+app.use('/api/ai-podcast', aiPodcastRouter);
+app.use('/api/code-sandbox', codeSandboxRouter);
+app.use('/api/rank-predictor', rankPredictorRouter);
 
 // Global Error Handler
 app.use(errorHandler);

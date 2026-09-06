@@ -27,6 +27,11 @@ import { ConceptGraphView } from './components/ConceptGraphView';
 import { QuizBattleArenaView } from './components/QuizBattleArenaView';
 import { SmartDocumentAnnotatorView } from './components/SmartDocumentAnnotatorView';
 import { CustomPaperGeneratorView } from './components/CustomPaperGeneratorView';
+import { FocusGardenView } from './components/FocusGardenView';
+import { AiPodcastStudioView } from './components/AiPodcastStudioView';
+import { CodeSandboxView } from './components/CodeSandboxView';
+import { RankPredictorMistakeVaultView } from './components/RankPredictorMistakeVaultView';
+import { LanguageSelectorModal } from './components/LanguageSelectorModal';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import { PwaInstallPromptWidget } from './components/PwaInstallPromptWidget';
 import { DailyStudyDigestModal } from './components/DailyStudyDigestModal';
@@ -41,6 +46,7 @@ import {
   CreateSubjectDto,
   CreateTopicDto,
   SyllabusOverviewStats,
+  SupportedLanguage,
 } from '@studentlife/shared';
 import {
   GraduationCap,
@@ -71,6 +77,9 @@ import {
   Network,
   Swords,
   Highlighter,
+  Trees,
+  Code2,
+  Globe,
 } from 'lucide-react';
 
 interface PhaseItem {
@@ -313,7 +322,9 @@ const DEFAULT_SYLLABUS_OVERVIEW: SyllabusOverviewStats = {
 
 function DashboardContent() {
   const { user, tokens, isAuthenticated, logout } = useAuth();
-  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'ROADMAP'>('DASHBOARD');
+  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'ROADMAP'>('DASHBOARD');
+  const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>('en');
+  const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
   const [initialAiStudyContent, setInitialAiStudyContent] = useState<string>('');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
@@ -1332,6 +1343,78 @@ function DashboardContent() {
                 <FileCheck2 size={13} color={activeView === 'CUSTOM_PAPER' ? '#fff' : '#fcd34d'} /> Mock Paper Synthesizer 📜
               </button>
               <button
+                onClick={() => setActiveView('FOCUS_GARDEN')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'FOCUS_GARDEN' ? 'linear-gradient(135deg, #10b981, #06b6d4)' : 'transparent',
+                  color: activeView === 'FOCUS_GARDEN' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Trees size={13} color={activeView === 'FOCUS_GARDEN' ? '#fff' : '#34d399'} /> Focus Garden 🌲
+              </button>
+              <button
+                onClick={() => setActiveView('AI_PODCAST')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'AI_PODCAST' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : 'transparent',
+                  color: activeView === 'AI_PODCAST' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Mic size={13} color={activeView === 'AI_PODCAST' ? '#fff' : '#f472b6'} /> AI Podcast 🎙️
+              </button>
+              <button
+                onClick={() => setActiveView('CODE_SANDBOX')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'CODE_SANDBOX' ? 'linear-gradient(135deg, #06b6d4, #6366f1)' : 'transparent',
+                  color: activeView === 'CODE_SANDBOX' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Code2 size={13} color={activeView === 'CODE_SANDBOX' ? '#fff' : '#38bdf8'} /> Code Sandbox 💻
+              </button>
+              <button
+                onClick={() => setActiveView('RANK_PREDICTOR')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'RANK_PREDICTOR' ? 'linear-gradient(135deg, #f59e0b, #e11d48)' : 'transparent',
+                  color: activeView === 'RANK_PREDICTOR' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <TrendingUp size={13} color={activeView === 'RANK_PREDICTOR' ? '#fff' : '#fbbf24'} /> AIR Predictor 🎯
+              </button>
+              <button
                 onClick={() => setActiveView('ROADMAP')}
                 style={{
                   padding: '6px 14px',
@@ -1367,6 +1450,27 @@ function DashboardContent() {
                 {apiHealth?.status || 'STANDBY'}
               </strong>
             </div>
+
+            {/* Vernacular Language Switcher */}
+            <button
+              onClick={() => setIsLanguageModalOpen(true)}
+              className="glass-pill glow-hover"
+              style={{
+                padding: '6px 14px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                color: '#67e8f9',
+                border: '1px solid rgba(6, 182, 212, 0.3)',
+                background: 'rgba(6, 182, 212, 0.1)',
+                cursor: 'pointer'
+              }}
+              title="Change Regional Language"
+            >
+              <Globe size={13} color="#22d3ee" /> {currentLanguage.toUpperCase()} 🌐
+            </button>
 
             {/* Daily Digest Trigger */}
             <button
@@ -1695,6 +1799,31 @@ function DashboardContent() {
           <CustomPaperGeneratorView />
         )}
 
+        {activeView === 'FOCUS_GARDEN' && (
+          <FocusGardenView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'AI_PODCAST' && (
+          <AiPodcastStudioView />
+        )}
+
+        {activeView === 'CODE_SANDBOX' && (
+          <CodeSandboxView />
+        )}
+
+        {activeView === 'RANK_PREDICTOR' && (
+          <RankPredictorMistakeVaultView />
+        )}
+
         {activeView === 'ROADMAP' && (
           <div>
             {/* Top Progress & Banner */}
@@ -1923,6 +2052,14 @@ function DashboardContent() {
           }));
           console.log(`XP Earned: +${xp} (${reason})`);
         }}
+      />
+
+      {/* Vernacular Language Selector Modal */}
+      <LanguageSelectorModal
+        isOpen={isLanguageModalOpen}
+        onClose={() => setIsLanguageModalOpen(false)}
+        currentLanguage={currentLanguage}
+        onSelectLanguage={(lang) => setCurrentLanguage(lang)}
       />
 
       {/* Footer */}
