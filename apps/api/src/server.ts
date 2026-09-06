@@ -26,6 +26,7 @@ import communityRoutes from './routes/community.routes';
 import audioRoutes from './routes/audio.routes';
 import gamificationRoutes from './routes/gamification.routes';
 import ocrRoutes from './routes/ocr.routes';
+import { studyRoomsRouter } from './routes/study-rooms.routes';
 import { errorHandler } from './middlewares/errorHandler';
 
 const app: Express = express();
@@ -66,6 +67,7 @@ app.use('/api/community', communityRoutes);
 app.use('/api/audio', audioRoutes);
 app.use('/api/gamification', gamificationRoutes);
 app.use('/api/ocr', ocrRoutes);
+app.use('/api/study-rooms', studyRoomsRouter);
 
 // Global Error Handler
 app.use(errorHandler);

@@ -1555,6 +1555,74 @@ export interface OcrScanRequestDto {
   subjectName?: string;
 }
 
+// ==========================================
+// 16. Social Study Rooms & Live Sync (Phase 26)
+// ==========================================
+export type PomodoroTimerPhase = 'WORK' | 'SHORT_BREAK' | 'LONG_BREAK';
+export type RoomVibeType = 'Deep Silence' | 'Lo-Fi Chill' | 'Library Ambience' | 'Exam Rush' | 'Ambient Rain';
+export type StudentRoomStatus = 'FOCUSING' | 'ON_BREAK' | 'STREAK_SHARING' | 'IDLE';
 
+export interface RoomMember {
+  id: string;
+  name: string;
+  avatar: string;
+  college: string;
+  examTarget: string;
+  currentGoal: string;
+  status: StudentRoomStatus;
+  streakDays: number;
+  pomodoroMinutesToday: number;
+  joinedAt: string;
+}
 
+export interface StudyRoomChatMessage {
+  id: string;
+  roomId: string;
+  senderId: string;
+  senderName: string;
+  senderAvatar: string;
+  text: string;
+  timestamp: string;
+  type: 'CHAT' | 'GOAL_ACHIEVED' | 'POMODORO_SYNC' | 'ENCOURAGE';
+  reactionCount?: number;
+}
 
+export interface StudyRoom {
+  id: string;
+  name: string;
+  description: string;
+  subject: string;
+  topic: string;
+  hostName: string;
+  hostAvatar: string;
+  activeStudentsCount: number;
+  maxParticipants: number;
+  isPrivate: boolean;
+  passcode?: string;
+  vibe: RoomVibeType;
+  pomodoroPhase: PomodoroTimerPhase;
+  pomodoroSecondsLeft: number;
+  isTimerRunning: boolean;
+  members: RoomMember[];
+  recentMessages: StudyRoomChatMessage[];
+  roomGoal: string;
+  createdAt: string;
+}
+
+export interface CreateSocialStudyRoomDto {
+  name: string;
+  subject: string;
+  topic: string;
+  vibe: RoomVibeType;
+  maxParticipants?: number;
+  roomGoal?: string;
+}
+
+export interface SendRoomMessageDto {
+  text: string;
+  type?: 'CHAT' | 'GOAL_ACHIEVED' | 'POMODORO_SYNC' | 'ENCOURAGE';
+}
+
+export interface UpdateMemberGoalDto {
+  goal: string;
+}

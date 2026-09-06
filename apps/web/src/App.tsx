@@ -21,6 +21,7 @@ import { AiMentorView } from './components/AiMentorView';
 import { CommunityHubView } from './components/CommunityHubView';
 import { LeaderboardView } from './components/LeaderboardView';
 import { OcrScannerView } from './components/OcrScannerView';
+import { SocialStudyRoomsView } from './components/SocialStudyRoomsView';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import {
   StudentProfile,
@@ -55,6 +56,7 @@ import {
   Award,
   Bell,
   Users,
+  Users2,
   Trophy,
   Scan,
 } from 'lucide-react';
@@ -299,7 +301,7 @@ const DEFAULT_SYLLABUS_OVERVIEW: SyllabusOverviewStats = {
 
 function DashboardContent() {
   const { user, tokens, isAuthenticated, logout } = useAuth();
-  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'ROADMAP'>('DASHBOARD');
+  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'ROADMAP'>('DASHBOARD');
   const [initialAiStudyContent, setInitialAiStudyContent] = useState<string>('');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
@@ -1209,6 +1211,24 @@ function DashboardContent() {
                 <Scan size={13} color={activeView === 'OCR_SCANNER' ? '#fff' : '#22d3ee'} /> OCR Scanner
               </button>
               <button
+                onClick={() => setActiveView('STUDY_ROOMS')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'STUDY_ROOMS' ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'transparent',
+                  color: activeView === 'STUDY_ROOMS' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Users2 size={13} color={activeView === 'STUDY_ROOMS' ? '#fff' : '#a78bfa'} /> Study Rooms 🎧
+              </button>
+              <button
                 onClick={() => setActiveView('ROADMAP')}
                 style={{
                   padding: '6px 14px',
@@ -1485,6 +1505,19 @@ function DashboardContent() {
               console.log(`XP Earned: +${xp} (${reason})`);
             }}
             onNavigateView={(v) => setActiveView(v as any)}
+          />
+        )}
+
+        {activeView === 'STUDY_ROOMS' && (
+          <SocialStudyRoomsView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
           />
         )}
 
