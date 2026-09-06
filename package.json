@@ -1,0 +1,27 @@
+{
+  "name": "studentlife-os",
+  "version": "1.0.0",
+  "private": true,
+  "description": "StudentLife OS - The Ultimate All-in-One Operating System for Students",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=apps/web",
+    "dev:api": "npm run dev --workspace=apps/api",
+    "dev:all": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present"
+  },
+  "keywords": [
+    "studentlife-os",
+    "study-planner",
+    "ai-mentor",
+    "exams",
+    "career"
+  ],
+  "author": "StudentLife OS Team",
+  "license": "MIT"
+}

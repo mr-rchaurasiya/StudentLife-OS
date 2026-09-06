@@ -1,0 +1,284 @@
+// StudentLife OS - Master Database Schema
+// Provider configured for PostgreSQL (or SQLite for simple local testing)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  MENTOR
+  EDUCATOR
+  ADMIN
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum Status {
+  TODO
+  IN_PROGRESS
+  COMPLETED
+  POSTPONED
+}
+
+// ==========================================
+// 1. Authentication & Student Profile (Phase 02 & 03)
+// ==========================================
+model User {
+  id              String           @id @default(uuid())
+  email           String           @unique
+  passwordHash    String
+  fullName        String
+  avatarUrl       String?
+  role            Role             @default(STUDENT)
+  isEmailVerified Boolean          @default(false)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  profile         StudentProfile?
+  notes           Note[]
+  tasks           StudyTask[]
+  subjects        Subject[]
+  testAttempts    TestAttempt[]
+  recommendations AIRecommendation[]
+  discussions     CommunityPost[]
+  postComments    PostComment[]
+
+  @@map("users")
+}
+
+model StudentProfile {
+  id                    String   @id @default(uuid())
+  userId                String   @unique
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  collegeOrSchool       String?
+  degreeOrGrade         String?
+  fieldOfStudy          String?
+  academicYear          Int?
+  targetExams           String[]
+  primaryInterests      String[]
+  skillTags             String[]
+  careerAspirations     String[]
+  dailyStudyGoalMinutes Int      @default(120)
+  streakCount           Int      @default(0)
+  xpPoints              Int      @default(0)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@map("student_profiles")
+}
+
+// ==========================================
+// 2. Study Planner & Syllabus (Phase 05 & 06)
+// ==========================================
+model Subject {
+  id          String      @id @default(uuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  code        String?
+  colorCode   String      @default("#6366f1")
+  topics      Topic[]
+  notes       Note[]
+  tasks       StudyTask[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@map("subjects")
+}
+
+model Topic {
+  id                   String      @id @default(uuid())
+  subjectId            String
+  subject              Subject     @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  title                String
+  difficulty           String      @default("MEDIUM")
+  weightagePercentage  Float?
+  isCompleted          Boolean     @default(false)
+  lastRevisedAt        DateTime?
+  nextRevisionDueAt    DateTime?
+  revisionIntervalDays Int         @default(1)
+  flashcards           Flashcard[]
+  questions            Question[]
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+
+  @@map("topics")
+}
+
+model StudyTask {
+  id                    String    @id @default(uuid())
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subjectId             String?
+  subject               Subject?  @relation(fields: [subjectId], references: [id], onDelete: SetNull)
+  title                 String
+  description           String?
+  dueDate               DateTime
+  priority              Priority  @default(MEDIUM)
+  status                Status    @default(TODO)
+  estimatedMinutes      Int       @default(30)
+  actualMinutes         Int       @default(0)
+  pomodoroSessionsCount Int       @default(0)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("study_tasks")
+}
+
+// ==========================================
+// 3. Notes, Resources & Revision (Phase 07 - 09)
+// ==========================================
+model Note {
+  id            String      @id @default(uuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subjectId     String?
+  subject       Subject?    @relation(fields: [subjectId], references: [id], onDelete: SetNull)
+  title         String
+  content       String      @db.Text
+  isAiGenerated Boolean     @default(false)
+  tags          String[]
+  flashcards    Flashcard[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@map("notes")
+}
+
+model Flashcard {
+  id             String    @id @default(uuid())
+  topicId        String?
+  topic          Topic?    @relation(fields: [topicId], references: [id], onDelete: SetNull)
+  noteId         String?
+  note           Note?     @relation(fields: [noteId], references: [id], onDelete: SetNull)
+  front          String    @db.Text
+  back           String    @db.Text
+  repetitionStep Int       @default(0)
+  easeFactor     Float     @default(2.5)
+  nextReviewDate DateTime  @default(now())
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@map("flashcards")
+}
+
+// ==========================================
+// 4. Questions, Mocks & Analytics (Phase 10 - 13)
+// ==========================================
+model Question {
+  id            String   @id @default(uuid())
+  topicId       String?
+  topic         Topic?   @relation(fields: [topicId], references: [id], onDelete: SetNull)
+  type          String   @default("SINGLE_MCQ")
+  text          String   @db.Text
+  options       String[]
+  correctAnswer String
+  explanation   String?  @db.Text
+  pyqYear       Int?
+  difficulty    String   @default("MEDIUM")
+  createdAt     DateTime @default(now())
+
+  @@map("questions")
+}
+
+model MockTest {
+  id              String        @id @default(uuid())
+  title           String
+  description     String?
+  examType        String
+  durationMinutes Int           @default(60)
+  totalMarks      Int           @default(100)
+  passingMarks    Int           @default(40)
+  attempts        TestAttempt[]
+  createdAt       DateTime      @default(now())
+
+  @@map("mock_tests")
+}
+
+model TestAttempt {
+  id                 String    @id @default(uuid())
+  userId             String
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mockTestId         String
+  mockTest           MockTest  @relation(fields: [mockTestId], references: [id], onDelete: Cascade)
+  score              Float
+  accuracyPercentage Float
+  timeSpentSeconds   Int
+  rank               Int?
+  weakTopicsDetected String[]
+  completedAt        DateTime  @default(now())
+
+  @@map("test_attempts")
+}
+
+// ==========================================
+// 5. Career, Scholarships & Alerts (Phase 14 - 18)
+// ==========================================
+model OpportunityAlert {
+  id                  String   @id @default(uuid())
+  title               String
+  category            String
+  provider            String
+  deadline            DateTime
+  eligibilityCriteria String   @db.Text
+  applyUrl            String
+  remindDaysBefore    Int      @default(7)
+  createdAt           DateTime @default(now())
+
+  @@map("opportunity_alerts")
+}
+
+// ==========================================
+// 6. AI Recommendations & Community (Phase 19 - 20)
+// ==========================================
+model AIRecommendation {
+  id             String   @id @default(uuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category       String
+  title          String
+  insight        String   @db.Text
+  actionableStep String   @db.Text
+  urgency        String   @default("MEDIUM")
+  createdAt      DateTime @default(now())
+
+  @@map("ai_recommendations")
+}
+
+model CommunityPost {
+  id        String        @id @default(uuid())
+  authorId  String
+  author    User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  title     String
+  content   String        @db.Text
+  topicTag  String
+  upvotes   Int           @default(0)
+  comments  PostComment[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@map("community_posts")
+}
+
+model PostComment {
+  id        String        @id @default(uuid())
+  postId    String
+  post      CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User          @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  content   String        @db.Text
+  createdAt DateTime      @default(now())
+
+  @@map("post_comments")
+}

@@ -1,0 +1,18 @@
+{
+  "name": "@studentlife/database",
+  "version": "1.0.0",
+  "description": "Prisma ORM schema and database client for StudentLife OS",
+  "main": "dist/index.js",
+  "scripts": {
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.10.2"
+  },
+  "devDependencies": {
+    "prisma": "^5.10.2",
+    "typescript": "^5.3.3"
+  }
+}
