@@ -1514,5 +1514,47 @@ export interface GamificationDashboardData {
   weeklyXpTrajectory: number[];
 }
 
+// ==========================================
+// 15. Camera OCR & Smart Document Scanner (Phase 25)
+// ==========================================
+export type OcrDocumentType = 'HANDWRITTEN_NOTE' | 'TEXTBOOK_PAGE' | 'DIAGRAM_CHART' | 'EXAM_PAPER';
+
+export interface ExtractedFormulaItem {
+  id: string;
+  name: string;
+  latex: string;
+  explanation: string;
+}
+
+export interface GeneratedQuizQuestion {
+  id: string;
+  questionText: string;
+  options: string[];
+  correctAnswerIndex: number;
+  explanation: string;
+}
+
+export interface OcrScanResult {
+  id: string;
+  documentType: OcrDocumentType;
+  title: string;
+  subjectName: string;
+  confidenceScorePercent: number;
+  extractedMarkdown: string;
+  keyFormulas: ExtractedFormulaItem[];
+  bulletSummary: string[];
+  generatedQuiz: GeneratedQuizQuestion[];
+  suggestedFlashcardsCount: number;
+  scannedAt: string;
+}
+
+export interface OcrScanRequestDto {
+  imageUri?: string;
+  documentType?: OcrDocumentType;
+  presetKey?: 'CALCULUS_NOTE' | 'DP_BLUEPRINT' | 'UPSC_HISTORY';
+  subjectName?: string;
+}
+
+
 
 

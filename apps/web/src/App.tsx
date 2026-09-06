@@ -20,6 +20,7 @@ import { DeadlineAlertsView } from './components/DeadlineAlertsView';
 import { AiMentorView } from './components/AiMentorView';
 import { CommunityHubView } from './components/CommunityHubView';
 import { LeaderboardView } from './components/LeaderboardView';
+import { OcrScannerView } from './components/OcrScannerView';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import {
   StudentProfile,
@@ -55,6 +56,7 @@ import {
   Bell,
   Users,
   Trophy,
+  Scan,
 } from 'lucide-react';
 
 interface PhaseItem {
@@ -297,7 +299,7 @@ const DEFAULT_SYLLABUS_OVERVIEW: SyllabusOverviewStats = {
 
 function DashboardContent() {
   const { user, tokens, isAuthenticated, logout } = useAuth();
-  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'ROADMAP'>('DASHBOARD');
+  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'ROADMAP'>('DASHBOARD');
   const [initialAiStudyContent, setInitialAiStudyContent] = useState<string>('');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
@@ -1189,6 +1191,24 @@ function DashboardContent() {
                 <Trophy size={13} color={activeView === 'LEADERBOARD' ? '#fff' : '#fbbf24'} /> Leaderboards
               </button>
               <button
+                onClick={() => setActiveView('OCR_SCANNER')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'OCR_SCANNER' ? 'linear-gradient(135deg, #06b6d4, #3b82f6)' : 'transparent',
+                  color: activeView === 'OCR_SCANNER' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Scan size={13} color={activeView === 'OCR_SCANNER' ? '#fff' : '#22d3ee'} /> OCR Scanner
+              </button>
+              <button
                 onClick={() => setActiveView('ROADMAP')}
                 style={{
                   padding: '6px 14px',
@@ -1451,6 +1471,20 @@ function DashboardContent() {
               }));
               console.log(`XP Earned: +${xp} (${reason})`);
             }}
+          />
+        )}
+
+        {activeView === 'OCR_SCANNER' && (
+          <OcrScannerView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+            onNavigateView={(v) => setActiveView(v as any)}
           />
         )}
 
