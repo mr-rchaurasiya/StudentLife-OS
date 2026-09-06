@@ -36,8 +36,8 @@ export class AiMentorController {
     res.json(response);
   }
 
-  public static chatWithMentor(req: Request, res: Response): void {
-    const chatResponse = AiMentorService.processMentorChat(req.body);
+  public static async chatWithMentor(req: Request, res: Response): Promise<void> {
+    const chatResponse = await AiMentorService.processMentorChat(req.body);
     const response: ApiResponse<typeof chatResponse> = {
       success: true,
       data: chatResponse,

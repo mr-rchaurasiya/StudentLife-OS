@@ -8,4 +8,6 @@ export const ENV = {
   JWT_SECRET: process.env.JWT_SECRET || 'studentlife_default_secret_key',
   DATABASE_URL: process.env.DATABASE_URL || '',
   REDIS_URL: process.env.REDIS_URL || 'redis://localhost:6379',
+  GEMINI_API_KEY: process.env.GEMINI_API_KEY || '',
+  OPENAI_API_KEY: process.env.OPENAI_API_KEY || '',
 };

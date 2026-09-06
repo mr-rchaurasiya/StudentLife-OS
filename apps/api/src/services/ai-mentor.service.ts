@@ -7,6 +7,7 @@ import {
   MentorChatExchangeDto,
   MentorChatResponse
 } from '@studentlife/shared';
+import { LlmService } from './llm.service';
 
 export class AiMentorService {
   private static activePersona: MentorPersonaType = 'STRATEGIC_COACH';
@@ -119,35 +120,32 @@ export class AiMentorService {
     return act;
   }
 
-  public static processMentorChat(dto: MentorChatExchangeDto): MentorChatResponse {
-    const query = dto.message.toLowerCase();
+  public static async processMentorChat(dto: MentorChatExchangeDto): Promise<MentorChatResponse> {
+    const query = dto.message.trim();
     const persona = dto.persona || this.activePersona;
     this.activePersona = persona;
 
-    let reply = '';
     const suggestedActions: MentorActionItem[] = [];
     let quote = 'Continuous effort—not strength or intelligence—is the key to unlocking our potential. — Winston Churchill';
 
-    if (query.includes('focus') || query.includes('today') || query.includes('what should i do')) {
-      if (persona === 'DRILL_INSTRUCTOR') {
-        reply = 'Listen up: Your biggest point bleed is Dynamic Programming on GATE papers (-4.6 marks). Stop procrastinating on easy topics and drill 3 hard DP recurrences right now. Then submit your Google SWE resume.';
-      } else if (persona === 'EMPATHETIC_SUPPORT') {
-        reply = 'You have made great progress this week! To keep things balanced and stress-free, I recommend spending 45 minutes on your DP notes, then doing a quick 5-minute flashcard review before taking a relaxing evening break.';
-      } else {
-        reply = 'Here is your optimal 3-step strategy for today: 1) Solve 3 PYQ DP problems in Question Bank to fix your 55% accuracy gap. 2) Clear your 3 overdue Spaced Repetition flashcards. 3) Submit your Google SWE internship application before the 6-day priority window closes.';
-      }
-      suggestedActions.push(this.dailyActionPlan[0], this.dailyActionPlan[1]);
-    } else if (query.includes('burnout') || query.includes('tired') || query.includes('stress')) {
-      reply = 'Your cognitive vitality telemetry is at 88/100 (Optimal Zone), but 5 continuous days of 4+ hours study requires active recovery. Take a 30-minute offline walk, hydrate, and do not touch LeetCode after 10 PM tonight.';
-      quote = 'Rest when you are weary. Refresh and renew yourself, your body, your mind, your spirit. — Ralph Marston';
-    } else if (query.includes('gate') || query.includes('mock') || query.includes('exam')) {
-      reply = 'Your overall Exam Readiness is at 78% (Estimated 97.4th Percentile). To cross the 99th percentile threshold, focus entirely on the Fast & Inaccurate quadrant: Graph Theory BFS/DFS and OS Deadlock Avoidance.';
+    const systemPrompt = `You are an expert AI Personal Mentor & Academic Coach in StudentLife OS with persona: "${persona}".
+Provide motivating, direct, highly structured guidance with clear markdown, bullet points, and LaTeX mathematics where applicable.
+Help the student with study schedules, mathematics/engineering derivations, UPSC/competitive exam strategies, coding/DSA, and stress management in Hindi or English as requested.`;
+
+    const reply = await LlmService.generateResponse(query, {
+      systemPrompt,
+      persona
+    });
+
+    const lower = query.toLowerCase();
+    if (lower.includes('dp') || lower.includes('algorithm') || lower.includes('math') || lower.includes('exam')) {
       suggestedActions.push(this.dailyActionPlan[0]);
-    } else if (query.includes('career') || query.includes('job') || query.includes('internship') || query.includes('resume')) {
-      reply = 'Your Distributed Systems profile matches Stripe at 96% and Google at 94%. Make sure to submit to Google within the next 6 days. For Quant roles (86% match), consider adding a C++ low-latency memory pool implementation to your GitHub.';
+    }
+    if (lower.includes('revise') || lower.includes('flashcard') || lower.includes('notes')) {
+      suggestedActions.push(this.dailyActionPlan[1]);
+    }
+    if (lower.includes('career') || lower.includes('job') || lower.includes('google') || lower.includes('resume')) {
       suggestedActions.push(this.dailyActionPlan[2]);
-    } else {
-      reply = `I have analyzed your live metrics across Study, Mock Tests, Career Pathways, and Deadlines. Your momentum index is 91/100. How can I help you optimize your schedule or strategy today?`;
     }
 
     return {

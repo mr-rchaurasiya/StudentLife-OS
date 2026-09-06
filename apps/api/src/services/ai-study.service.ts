@@ -8,6 +8,7 @@ import {
   AskAiDoubtDto,
   ExplainConceptDto,
 } from '@studentlife/shared';
+import { LlmService } from './llm.service';
 
 const userFlashcardsDb = new Map<string, FlashcardItem[]>();
 
@@ -179,52 +180,26 @@ export class AiStudyService {
     const level = dto.level || 'STANDARD';
     const sub = dto.subjectName || 'General Engineering & Science';
 
-    let content = '';
-    let codeSnippet: string | undefined = undefined;
-    let followUps: string[] = [];
+    const levelInstructions = {
+      ELI5: 'Explain in simple everyday intuitive analogies, friendly metaphors, and basic words as if talking to a curious 10-year-old or beginner.',
+      STANDARD: 'Provide structured university-level conceptual clarity, bullet points, rule of thumb, and clear code/equation examples.',
+      EXAM_ADVANCED: 'Provide rigorous mathematical derivations, formal proof invariants, LaTeX notation, edge-case traps, and competitive exam (GATE/JEE/UPSC) speed shortcuts.'
+    };
 
-    if (level === 'ELI5') {
-      content = `Imagine you have a giant toy box and you only have a small backpack to take on a trip! 🎒 You can't fit every toy, so you check each toy's weight and how fun it is. You make smart choices step-by-step so your backpack has the most fun possible without tearing! That is the core idea of **${q}**.`;
-      followUps = [
-        'Can you show me a simple 3-line example?',
-        'Why not just pick the biggest toy first (Greedy approach)?',
-      ];
-    } else if (level === 'EXAM_ADVANCED') {
-      content = `### 📐 Formal Analysis & Competitive Exam Perspective (${sub})
-Regarding **"${q}"**:
-1. **Mathematical Invariant**: Let $S(k, w)$ denote the optimal objective value over the subproblem prefix $k$ with remaining capacity $w$.
-2. **Transition Recurrence**:
-   $$S(k, w) = \\max\\left(S(k-1, w),\\; V_k + S(k-1, w - W_k)\\right)$$
-3. **Common GATE/Interview Trap**: Beware of fractional values vs discrete integer constraints. If values can be split, use Greedy $O(N \\log N)$; if discrete 0/1, use Dynamic Programming $O(N \\cdot W)$ which is pseudo-polynomial in input bit length.`;
-      codeSnippet = `// Optimized Linear Space Implementation
-vector<int> dp(W + 1, 0);
-for (int i = 0; i < n; ++i) {
-    for (int w = W; w >= weight[i]; --w) {
-        dp[w] = max(dp[w], value[i] + dp[w - weight[i]]);
-    }
-}`;
-      followUps = [
-        'How does this differ from the Unbounded Knapsack problem?',
-        'Prove why iterating backwards in the inner loop avoids duplicate item reuse.',
-      ];
-    } else {
-      content = `Great question! Here is a structured explanation for **"${q}"**:
+    const systemPrompt = `You are the StudentLife OS AI Doubt Solver & Master Tutor.
+Subject Context: ${sub}
+Depth Level: ${level} (${levelInstructions[level] || ''})
+Provide structured, step-by-step markdown explanations with LaTeX formatting ($...$ and $$...$$) and code blocks where applicable.`;
 
-- **Core Concept**: In ${sub}, this represents a classic state-space exploration problem where subproblems overlap.
-- **Why it matters**: Instead of brute-force checking all $2^N$ combinations (exponential time), we memorize optimal solutions to sub-states to achieve polynomial runtime.
-- **Rule of Thumb**: When you see optimal substructure + overlapping subproblems, formulate a state transition table.`;
-      codeSnippet = `def solve(items, capacity):
-    # dp[w] stores max value achievable with capacity w
-    dp = [0] * (capacity + 1)
-    for weight, value in items:
-        for w in range(capacity, weight - 1, -1):
-            dp[w] = max(dp[w], dp[w - weight] + value)
-    return dp[capacity]`;
-      followUps = [
-        'What is the time and space complexity breakdown?',
-        'How can I identify this in a LeetCode medium/hard problem?',
-      ];
-    }
+    const content = await LlmService.generateResponse(q, {
+      systemPrompt,
+      persona: level
+    });
+
+    const followUps = [
+      `Can you give a numerical practice example for "${q.slice(0, 30)}..."?`,
+      `What are the most common exam traps in this topic?`,
+    ];
 
     return {
       id: `chat-${Date.now()}`,
@@ -233,7 +208,6 @@ for (int i = 0; i < n; ++i) {
       timestamp: new Date().toISOString(),
       level,
       suggestedFollowUps: followUps,
-      codeSnippet,
     };
   }
 

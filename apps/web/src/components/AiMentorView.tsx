@@ -42,7 +42,7 @@ export const AiMentorView: React.FC<AiMentorViewProps> = ({ onNavigateView, onAd
 
   const fetchReport = async (persona: MentorPersonaType) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/ai-mentor/holistic-report?persona=${persona}`);
+      const res = await fetch(`/api/ai-mentor/holistic-report?persona=${persona}`);
       if (res.ok) {
         const json = await res.json();
         if (json.data) setReport(json.data);
@@ -56,7 +56,7 @@ export const AiMentorView: React.FC<AiMentorViewProps> = ({ onNavigateView, onAd
     if (action.isCompleted) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/ai-mentor/actions/${action.id}/complete`, {
+      const res = await fetch(`/api/ai-mentor/actions/${action.id}/complete`, {
         method: 'POST'
       });
       if (res.ok) {
@@ -106,7 +106,7 @@ export const AiMentorView: React.FC<AiMentorViewProps> = ({ onNavigateView, onAd
         persona: activePersona
       };
 
-      const res = await fetch('http://localhost:5000/api/ai-mentor/chat', {
+      const res = await fetch('/api/ai-mentor/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
