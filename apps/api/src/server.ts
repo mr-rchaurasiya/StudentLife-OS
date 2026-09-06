@@ -23,6 +23,7 @@ import scholarshipRoutes from './routes/scholarship.routes';
 import deadlineRoutes from './routes/deadline.routes';
 import aiMentorRoutes from './routes/ai-mentor.routes';
 import communityRoutes from './routes/community.routes';
+import audioRoutes from './routes/audio.routes';
 import { errorHandler } from './middlewares/errorHandler';
 
 const app: Express = express();
@@ -60,6 +61,7 @@ app.use('/api/scholarships', scholarshipRoutes);
 app.use('/api/deadlines', deadlineRoutes);
 app.use('/api/ai-mentor', aiMentorRoutes);
 app.use('/api/community', communityRoutes);
+app.use('/api/audio', audioRoutes);
 
 // Global Error Handler
 app.use(errorHandler);

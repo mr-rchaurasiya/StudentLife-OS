@@ -1424,3 +1424,46 @@ export interface CommunityStatsSummary {
   totalDiscussionThreads: number;
 }
 
+// ==========================================
+// 13. Real-Time Audio Engine & Binaural Focus Player (Phase 23)
+// ==========================================
+export type LoFiStreamGenre = 'CHILL_LOFI' | 'DEEP_SYNTHWAVE' | 'PIANO_STUDY' | 'ANIME_BEATS' | 'BINAURAL_GAMMA';
+
+export interface LoFiAudioTrack {
+  id: string;
+  title: string;
+  artist: string;
+  genre: LoFiStreamGenre;
+  streamUrl: string;
+  artworkUrl: string;
+  durationSeconds: number;
+  bpm: number;
+}
+
+export interface AmbientLayerSetting {
+  id: 'rain' | 'cafe' | 'fire' | 'keyboard' | 'forest';
+  name: string;
+  icon: string;
+  volume: number; // 0 to 100
+  isMuted: boolean;
+  audioUrl: string;
+}
+
+export interface BinauralPresetConfig {
+  frequencyHz: number; // e.g. 40Hz (Gamma), 14Hz (Beta), 10Hz (Alpha), 6Hz (Theta)
+  name: string;
+  targetMentalState: 'DEEP_FOCUS' | 'MEMORY_RETENTION' | 'CREATIVE_FLOW' | 'MEDITATION_RELAX';
+  description: string;
+}
+
+export interface GlobalAudioPlayerState {
+  isPlaying: boolean;
+  activeTrackIndex: number;
+  masterVolume: number; // 0 to 100
+  isBinauralActive: boolean;
+  binauralFrequency: number;
+  ambientLayers: AmbientLayerSetting[];
+  autoSyncWithPomodoro: boolean;
+}
+
+

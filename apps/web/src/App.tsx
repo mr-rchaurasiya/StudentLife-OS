@@ -19,6 +19,7 @@ import { ScholarshipFinderView } from './components/ScholarshipFinderView';
 import { DeadlineAlertsView } from './components/DeadlineAlertsView';
 import { AiMentorView } from './components/AiMentorView';
 import { CommunityHubView } from './components/CommunityHubView';
+import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import {
   StudentProfile,
   UpdateStudentProfileDto,
@@ -1621,6 +1622,9 @@ function DashboardContent() {
         profile={profile}
         onSave={handleSaveProfile}
       />
+
+      {/* Floating Persistent Real-Time Focus Audio Player Widget */}
+      <FocusAudioPlayerWidget />
 
       {/* Footer */}
       <footer style={{
