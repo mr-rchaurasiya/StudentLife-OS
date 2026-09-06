@@ -25,6 +25,8 @@ import { SocialStudyRoomsView } from './components/SocialStudyRoomsView';
 import { AiVoiceTutorView } from './components/AiVoiceTutorView';
 import { ConceptGraphView } from './components/ConceptGraphView';
 import { QuizBattleArenaView } from './components/QuizBattleArenaView';
+import { SmartDocumentAnnotatorView } from './components/SmartDocumentAnnotatorView';
+import { CustomPaperGeneratorView } from './components/CustomPaperGeneratorView';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import { PwaInstallPromptWidget } from './components/PwaInstallPromptWidget';
 import { DailyStudyDigestModal } from './components/DailyStudyDigestModal';
@@ -68,6 +70,7 @@ import {
   Mic,
   Network,
   Swords,
+  Highlighter,
 } from 'lucide-react';
 
 interface PhaseItem {
@@ -310,7 +313,7 @@ const DEFAULT_SYLLABUS_OVERVIEW: SyllabusOverviewStats = {
 
 function DashboardContent() {
   const { user, tokens, isAuthenticated, logout } = useAuth();
-  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'ROADMAP'>('DASHBOARD');
+  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'ROADMAP'>('DASHBOARD');
   const [initialAiStudyContent, setInitialAiStudyContent] = useState<string>('');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
@@ -1293,6 +1296,42 @@ function DashboardContent() {
                 <Swords size={13} color={activeView === 'QUIZ_BATTLE' ? '#fff' : '#fda4af'} /> 1v1 Arena ⚔️
               </button>
               <button
+                onClick={() => setActiveView('DOCUMENT_ANNOTATOR')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'DOCUMENT_ANNOTATOR' ? 'linear-gradient(135deg, #06b6d4, #3b82f6)' : 'transparent',
+                  color: activeView === 'DOCUMENT_ANNOTATOR' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Highlighter size={13} color={activeView === 'DOCUMENT_ANNOTATOR' ? '#fff' : '#67e8f9'} /> PDF Annotator 📑
+              </button>
+              <button
+                onClick={() => setActiveView('CUSTOM_PAPER')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'CUSTOM_PAPER' ? 'linear-gradient(135deg, #f59e0b, #e11d48)' : 'transparent',
+                  color: activeView === 'CUSTOM_PAPER' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <FileCheck2 size={13} color={activeView === 'CUSTOM_PAPER' ? '#fff' : '#fcd34d'} /> Mock Paper Synthesizer 📜
+              </button>
+              <button
                 onClick={() => setActiveView('ROADMAP')}
                 style={{
                   padding: '6px 14px',
@@ -1646,6 +1685,14 @@ function DashboardContent() {
             }}
             onNavigateView={(v) => setActiveView(v as any)}
           />
+        )}
+
+        {activeView === 'DOCUMENT_ANNOTATOR' && (
+          <SmartDocumentAnnotatorView />
+        )}
+
+        {activeView === 'CUSTOM_PAPER' && (
+          <CustomPaperGeneratorView />
         )}
 
         {activeView === 'ROADMAP' && (

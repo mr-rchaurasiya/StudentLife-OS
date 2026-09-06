@@ -1802,3 +1802,91 @@ export interface FindBattleMatchDto {
   };
   xpWager?: number;
 }
+
+// ==========================================
+// 34. Smart PDF & Document Annotator (Phase 34)
+// ==========================================
+export type DocumentAnnotationType = 'HIGHLIGHT' | 'NOTE' | 'AI_INSIGHT' | 'FORMULA' | 'FLASHCARD';
+export type DocumentAnnotationColor = 'yellow' | 'emerald' | 'cyan' | 'rose' | 'violet';
+
+export interface DocumentAnnotation {
+  id: string;
+  documentId: string;
+  selectedText: string;
+  color: DocumentAnnotationColor;
+  type: DocumentAnnotationType;
+  noteContent?: string;
+  aiResponse?: string;
+  paragraphIndex: number;
+  createdAt: string;
+}
+
+export type DocumentAiAction = 'EXPLAIN' | 'SUMMARIZE' | 'FLASHCARD' | 'QUIZ' | 'TRANSLATE_HINDI' | 'SIMPLIFY_MATH';
+
+export interface DocumentAiActionRequestDto {
+  documentId: string;
+  selectedText: string;
+  action: DocumentAiAction;
+  contextParagraph?: string;
+}
+
+export interface SmartDocument {
+  id: string;
+  title: string;
+  subject: string;
+  category: string;
+  author: string;
+  readTimeMinutes: number;
+  paragraphs: string[];
+  annotations: DocumentAnnotation[];
+}
+
+// ==========================================
+// 35. AI Custom Mock Paper & Test Series Generator (Phase 35)
+// ==========================================
+export type ExamDifficulty = 'EASY' | 'MEDIUM' | 'HARD' | 'COMPETITIVE_OLYMPIAD';
+
+export interface MockPaperQuestion {
+  id: string;
+  questionNumber: number;
+  type: 'MCQ' | 'NUMERICAL' | 'DESCRIPTIVE' | 'ASSERTION_REASON';
+  marks: number;
+  negativeMarks: number;
+  questionText: string;
+  options?: string[];
+  correctAnswer: string;
+  detailedSolution: string;
+  difficulty: ExamDifficulty;
+  topic: string;
+}
+
+export interface ExamPaperSection {
+  title: string;
+  weightageMarks: number;
+  questions: MockPaperQuestion[];
+}
+
+export interface CustomMockPaper {
+  id: string;
+  title: string;
+  examType: string;
+  subject: string;
+  durationMinutes: number;
+  totalMarks: number;
+  totalQuestions: number;
+  sections: ExamPaperSection[];
+  createdAt: string;
+}
+
+export interface GenerateMockPaperDto {
+  examType: string;
+  subject: string;
+  topics: string[];
+  totalQuestions: number;
+  difficultyDistribution?: {
+    easyPct: number;
+    mediumPct: number;
+    hardPct: number;
+  };
+  includeSolutions?: boolean;
+}

@@ -31,6 +31,8 @@ import { notificationsPipelineRouter } from './routes/notifications-pipeline.rou
 import { voiceTutorRouter } from './routes/voice-tutor.routes';
 import { conceptGraphRouter } from './routes/concept-graph.routes';
 import { quizBattleRouter } from './routes/quiz-battle.routes';
+import documentAnnotatorRouter from './routes/document-annotator.routes';
+import customPaperRouter from './routes/custom-paper.routes';
 import { errorHandler } from './middlewares/errorHandler';
 
 const app: Express = express();
@@ -76,6 +78,8 @@ app.use('/api/notifications', notificationsPipelineRouter);
 app.use('/api/voice-tutor', voiceTutorRouter);
 app.use('/api/concept-graph', conceptGraphRouter);
 app.use('/api/quiz-battle', quizBattleRouter);
+app.use('/api/document-annotator', documentAnnotatorRouter);
+app.use('/api/custom-paper', customPaperRouter);
 
 // Global Error Handler
 app.use(errorHandler);
