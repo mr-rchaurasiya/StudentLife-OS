@@ -1703,3 +1703,39 @@ export interface EvaluateOralAnswerDto {
   drillId: string;
   spokenAnswer: string;
 }
+
+// ==========================================
+// 19. Concept Knowledge Graph & Mind Maps (Phase 32)
+// ==========================================
+export type MasteryLevel = 'MASTERED' | 'REVISING' | 'UNEXPLORED';
+export type GraphEdgeType = 'PREREQUISITE' | 'CORRELATED' | 'APPLICATION';
+
+export interface ConceptNode {
+  id: string;
+  label: string;
+  subject: string;
+  category: string;
+  mastery: MasteryLevel;
+  weightagePercent: number;
+  x: number;
+  y: number;
+  formulaSummary?: string;
+  pyqCount: number;
+  keyTakeaways: string[];
+}
+
+export interface ConceptGraphEdge {
+  id: string;
+  from: string;
+  to: string;
+  type: GraphEdgeType;
+  label?: string;
+}
+
+export interface SubjectKnowledgeGraph {
+  subjectId: string;
+  subjectName: string;
+  nodes: ConceptNode[];
+  edges: ConceptGraphEdge[];
+  overallMasteryPercent: number;
+}

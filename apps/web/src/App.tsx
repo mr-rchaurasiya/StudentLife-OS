@@ -23,6 +23,7 @@ import { LeaderboardView } from './components/LeaderboardView';
 import { OcrScannerView } from './components/OcrScannerView';
 import { SocialStudyRoomsView } from './components/SocialStudyRoomsView';
 import { AiVoiceTutorView } from './components/AiVoiceTutorView';
+import { ConceptGraphView } from './components/ConceptGraphView';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import { PwaInstallPromptWidget } from './components/PwaInstallPromptWidget';
 import { DailyStudyDigestModal } from './components/DailyStudyDigestModal';
@@ -64,6 +65,7 @@ import {
   Scan,
   Sun,
   Mic,
+  Network,
 } from 'lucide-react';
 
 interface PhaseItem {
@@ -306,7 +308,7 @@ const DEFAULT_SYLLABUS_OVERVIEW: SyllabusOverviewStats = {
 
 function DashboardContent() {
   const { user, tokens, isAuthenticated, logout } = useAuth();
-  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'ROADMAP'>('DASHBOARD');
+  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'ROADMAP'>('DASHBOARD');
   const [initialAiStudyContent, setInitialAiStudyContent] = useState<string>('');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
@@ -1253,6 +1255,24 @@ function DashboardContent() {
                 <Mic size={13} color={activeView === 'VOICE_TUTOR' ? '#fff' : '#e879f9'} /> Voice Tutor 🎙️
               </button>
               <button
+                onClick={() => setActiveView('CONCEPT_GRAPH')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'CONCEPT_GRAPH' ? 'linear-gradient(135deg, #06b6d4, #6366f1)' : 'transparent',
+                  color: activeView === 'CONCEPT_GRAPH' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Network size={13} color={activeView === 'CONCEPT_GRAPH' ? '#fff' : '#38bdf8'} /> Mind Map Graph 🕸️
+              </button>
+              <button
                 onClick={() => setActiveView('ROADMAP')}
                 style={{
                   padding: '6px 14px',
@@ -1568,6 +1588,20 @@ function DashboardContent() {
 
         {activeView === 'VOICE_TUTOR' && (
           <AiVoiceTutorView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+            onNavigateView={(v) => setActiveView(v as any)}
+          />
+        )}
+
+        {activeView === 'CONCEPT_GRAPH' && (
+          <ConceptGraphView
             onAddXp={(xp, reason) => {
               setProfile((p) => ({
                 ...p,
