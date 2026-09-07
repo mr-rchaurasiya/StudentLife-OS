@@ -91,6 +91,8 @@ import { RoboticsKinematicsView } from './components/RoboticsKinematicsView';
 import { EpigeneticClockView } from './components/EpigeneticClockView';
 import { HftOrderBookView } from './components/HftOrderBookView';
 import { CenturyGrandmasterView } from './components/CenturyGrandmasterView';
+import { CommandPaletteModal } from './components/CommandPaletteModal';
+import { LiveTelemetryTicker } from './components/LiveTelemetryTicker';
 import { LanguageSelectorModal } from './components/LanguageSelectorModal';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import { PwaInstallPromptWidget } from './components/PwaInstallPromptWidget';
@@ -179,6 +181,7 @@ import {
   Orbit,
   Heart,
   RotateCw,
+  Search,
 } from 'lucide-react';
 
 interface PhaseItem {
@@ -508,6 +511,7 @@ function DashboardContent() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isDigestModalOpen, setIsDigestModalOpen] = useState(false);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   const [profile, setProfile] = useState<StudentProfile>(DEFAULT_DEMO_PROFILE);
   const [summary, setSummary] = useState<DashboardSummaryData>(DEFAULT_DASHBOARD_SUMMARY);
   const [tasks, setTasks] = useState<StudyTask[]>(DEFAULT_TASKS);
@@ -517,6 +521,18 @@ function DashboardContent() {
   const [isClaimingStreak, setIsClaimingStreak] = useState(false);
   const [activeTab, setActiveTab] = useState<'ALL' | 'FOUNDATION' | 'STUDY' | 'EXAM' | 'CAREER' | 'AI_COMMUNITY'>('ALL');
   const [apiHealth, setApiHealth] = useState<{ status: string; uptime?: number; latency?: number } | null>(null);
+
+  // Global Shortcut for Command Palette (Ctrl+K or Cmd+K)
+  useEffect(() => {
+    const handleGlobalKeydown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsCommandPaletteOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeydown);
+    return () => window.removeEventListener('keydown', handleGlobalKeydown);
+  }, []);
 
   useEffect(() => {
     checkHealth();
@@ -1022,6 +1038,115 @@ function DashboardContent() {
     });
 
     setSubjects(updatedSubs);
+  };
+
+  const handleSelectPhaseFromPalette = (phaseId: string) => {
+    const mapping: Record<string, typeof activeView> = {
+      'dashboard': 'DASHBOARD',
+      'gpa': 'DASHBOARD',
+      'attendance': 'DASHBOARD',
+      'syllabus': 'SYLLABUS',
+      'calendar': 'PLANNER',
+      'notes': 'NOTES',
+      'audio-study': 'DASHBOARD',
+      'study-room': 'STUDY_ROOMS',
+      'quiz': 'QUESTION_BANK',
+      'habits': 'CIRCADIAN_FOCUS',
+      'budget': 'STUDENT_FINANCES',
+      'resume': 'RESUME',
+      'internships': 'INTERNSHIPS',
+      'mock-interview': 'MOCK_INTERVIEW',
+      'scholarships': 'SCHOLARSHIPS',
+      'portfolio': 'CAREER',
+      'alumni': 'ALUMNI_RADAR',
+      'micro-gigs': 'TUTOR_BOUNTY',
+      'career-roadmap': 'CAREER',
+      'coding-lab': 'CODE_SANDBOX',
+      'sleep': 'CIRCADIAN_FOCUS',
+      'meal-planner': 'HOSTEL_NUTRITION',
+      'mental-health': 'MENTAL_RESILIENCE',
+      'campus-events': 'HACKATHON_RADAR',
+      'peer-tutoring': 'TUTOR_BOUNTY',
+      'library-manager': 'NOTES',
+      'roommate-hub': 'COMMUNITY',
+      'lost-found': 'CAMPUS_EXCHANGE',
+      'fitness-hub': 'ERGONOMIC_WELLNESS',
+      'code-review': 'CODE_SANDBOX',
+      'research-papers': 'ARXIV_SCHOLAR',
+      'spaced-rep': 'REVISION',
+      'pomodoro-analytics': 'NEURAL_FLOW',
+      'course-bidding': 'DASHBOARD',
+      'crypto-grants': 'STUDY_GUILD_DAO',
+      'speech-trainer': 'MOCK_INTERVIEW',
+      'dataset-hub': 'RESEARCH_LAB',
+      'patent-search': 'PATENT_DRAFTER',
+      'crowdfunding': 'CAMPUS_INCUBATOR',
+      'neural-notes': 'CONCEPT_GRAPH',
+      'circuit-sim': 'HOLO_SIMULATIONS',
+      'satellite-tracker': 'ASTRODYNAMICS',
+      'protein-fold': 'HOLO_SIMULATIONS',
+      'neurofeedback': 'NEURAL_FLOW',
+      'defi-sim': 'STUDENT_FINANCES',
+      'quantum-sim': 'QUANTUM_LAB',
+      'carbon-tracker': 'CARBON_MARKET',
+      'thesis-defense': 'SOCRATIC_DEBATE',
+      'smart-contract': 'STUDY_GUILD_DAO',
+      'bci-interface': 'BCI_SPELLER',
+      'fluid-dynamics': 'HOLO_SIMULATIONS',
+      'crispr-sim': 'CRISPR_EDITOR',
+      'astrophysics': 'ASTRODYNAMICS',
+      'cyber-range': 'CODE_SANDBOX',
+      'synthetic-bio': 'CRISPR_EDITOR',
+      'particle-physics': 'QUANTUM_LAB',
+      'high-freq-trading': 'HFT_ORDERBOOK',
+      'optics-lab': 'QUANTUM_LAB',
+      'reinforcement-learning': 'CODE_SANDBOX',
+      'nanotech': 'HOLO_SIMULATIONS',
+      'fusion-plasma': 'FUSION_TOKAMAK',
+      'genomic-assembly': 'CRISPR_EDITOR',
+      'superconductor': 'QUANTUM_LAB',
+      'swarm-robotics': 'ROBOTICS_KINEMATICS',
+      'metamaterials': 'HOLO_SIMULATIONS',
+      'neuro-evolution': 'NEUROMORPHIC_SNN',
+      'space-propulsion': 'ASTRODYNAMICS',
+      'cryptanalysis': 'QUANTUM_QKD',
+      'climate-model': 'CARBON_MARKET',
+      'exoskeleton': 'ROBOTICS_KINEMATICS',
+      'dark-matter': 'GRAVITATIONAL_WAVES',
+      'synthetic-organism': 'CRISPR_EDITOR',
+      'quantum-annealing': 'QUANTUM_LAB',
+      'brain-tumor-ai': 'RESEARCH_LAB',
+      'carbon-capture': 'CARBON_MARKET',
+      'neural-radiance': 'HOLO_SIMULATIONS',
+      'cellular-automata': 'CODE_SANDBOX',
+      'microfluidics': 'LAB_NOTEBOOK',
+      'nuclear-fission': 'FUSION_TOKAMAK',
+      'multimodal-rag': 'RESEARCH_LAB',
+      'neuromorphic-snn': 'NEUROMORPHIC_SNN',
+      'qkd-network': 'QUANTUM_QKD',
+      'paper-referee': 'PAPER_REFEREE',
+      'crispr-designer': 'CRISPR_EDITOR',
+      'venture-safe': 'VENTURE_SAFE',
+      'synthetic-neural-net': 'NEUROMORPHIC_SNN',
+      'quantum-telemetry': 'QUANTUM_QKD',
+      'meta-referee': 'PAPER_REFEREE',
+      'prime-editing': 'CRISPR_EDITOR',
+      'startup-cap-table': 'VENTURE_SAFE',
+      'fusion-tokamak': 'FUSION_TOKAMAK',
+      'bci-speller': 'BCI_SPELLER',
+      'legal-contracts': 'LEGAL_ANALYZER',
+      'exoplanet-transit': 'EXOPLANET_PHOTOMETRY',
+      'carbon-market': 'CARBON_MARKET',
+      'gravitational-waves': 'GRAVITATIONAL_WAVES',
+      'robotics-kinematics': 'ROBOTICS_KINEMATICS',
+      'epigenetic-clock': 'EPIGENETIC_CLOCK',
+      'hft-orderbook': 'HFT_ORDERBOOK',
+      'century-grandmaster': 'CENTURY_GRANDMASTER',
+    };
+
+    if (mapping[phaseId]) {
+      setActiveView(mapping[phaseId]);
+    }
   };
 
   const filteredPhases = activeTab === 'ALL' 
@@ -2696,6 +2821,31 @@ function DashboardContent() {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            {/* Spotlight Command Palette (Ctrl+K) Trigger */}
+            <button
+              onClick={() => setIsCommandPaletteOpen(true)}
+              className="glass-pill glow-hover"
+              style={{
+                padding: '6px 14px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                color: '#c084fc',
+                border: '1px solid rgba(168, 85, 247, 0.3)',
+                background: 'rgba(168, 85, 247, 0.1)',
+                cursor: 'pointer'
+              }}
+              title="Open Command Palette (Ctrl + K / Cmd + K)"
+            >
+              <Search size={13} color="#c084fc" />
+              <span>Search</span>
+              <kbd style={{ fontSize: '0.65rem', padding: '1px 5px', borderRadius: '4px', background: 'rgba(168, 85, 247, 0.25)', color: '#e9d5ff', fontFamily: 'var(--font-mono)' }}>
+                Ctrl K
+              </kbd>
+            </button>
+
             {/* Telemetry */}
             <div className="glass-pill" style={{ padding: '6px 14px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem' }}>
               <div style={{
@@ -2801,6 +2951,9 @@ function DashboardContent() {
           </div>
         </div>
       </header>
+
+      {/* Global Real-Time Live Telemetry Ticker */}
+      <LiveTelemetryTicker />
 
       {/* Main Content */}
       <main style={{ maxWidth: '1280px', margin: '0 auto', padding: '28px 24px', flex: 1, width: '100%' }}>
@@ -3981,6 +4134,14 @@ function DashboardContent() {
         onClose={() => setIsLanguageModalOpen(false)}
         currentLanguage={currentLanguage}
         onSelectLanguage={(lang) => setCurrentLanguage(lang)}
+      />
+
+      {/* Global Spotlight Command Palette (Ctrl+K) */}
+      <CommandPaletteModal
+        isOpen={isCommandPaletteOpen}
+        onClose={() => setIsCommandPaletteOpen(false)}
+        onSelectPhase={handleSelectPhaseFromPalette}
+        currentPhaseId={activeView.toLowerCase().replace(/_/g, '-')}
       />
 
       {/* Footer */}
