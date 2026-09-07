@@ -31,6 +31,11 @@ import { FocusGardenView } from './components/FocusGardenView';
 import { AiPodcastStudioView } from './components/AiPodcastStudioView';
 import { CodeSandboxView } from './components/CodeSandboxView';
 import { RankPredictorMistakeVaultView } from './components/RankPredictorMistakeVaultView';
+import { VirtualCampusView } from './components/VirtualCampusView';
+import { AiSlideGeneratorView } from './components/AiSlideGeneratorView';
+import { AiMockInterviewView } from './components/AiMockInterviewView';
+import { NotesMarketplaceView } from './components/NotesMarketplaceView';
+import { CircadianFocusHabitView } from './components/CircadianFocusHabitView';
 import { LanguageSelectorModal } from './components/LanguageSelectorModal';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import { PwaInstallPromptWidget } from './components/PwaInstallPromptWidget';
@@ -80,6 +85,10 @@ import {
   Trees,
   Code2,
   Globe,
+  Presentation,
+  ShoppingBag,
+  Activity,
+  Landmark,
 } from 'lucide-react';
 
 interface PhaseItem {
@@ -112,6 +121,31 @@ const PHASES: PhaseItem[] = [
   { id: 'p18', number: '18', name: 'Deadlines & Push Alerts', pillar: 'OPPORTUNITIES', status: 'COMPLETED', deliverables: ['Exam Registration Reminders', 'Admit Card Alerts', 'SMS/Push Notifications', 'Calendar iCal Sync'] },
   { id: 'p19', number: '19', name: 'AI Personal Mentor 360°', pillar: 'AI_COMMUNITY', status: 'COMPLETED', deliverables: ['Cross-Module Intelligence', 'Personalized Daily Action Plan', 'Burnout Prevention Advisor', 'Dynamic Advice Feed'] },
   { id: 'p20', number: '20', name: 'Community & Production', pillar: 'AI_COMMUNITY', status: 'COMPLETED', deliverables: ['Virtual Study Rooms', 'Peer Doubt Discussion Forums', 'Docker Deployment', 'Full CI/CD Pipeline'] },
+  { id: 'p21', number: '21', name: 'Smart AI OCR Scanner', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Handwritten Formula OCR', 'LaTeX Math Extraction', '1-Click Note Conversion', 'Diagram Vectorization'] },
+  { id: 'p22', number: '22', name: 'Live Video/Audio Study Rooms', pillar: 'AI_COMMUNITY', status: 'COMPLETED', deliverables: ['WebRTC Video Mesh', 'Mute/Cam Controls', 'Live Room Chat', 'Synced Focus Timer'] },
+  { id: 'p23', number: '23', name: 'Interactive AI Voice Tutor', pillar: 'AI_COMMUNITY', status: 'COMPLETED', deliverables: ['Socratic Voice Engine', 'Speech Synthesis & Recognition', 'Realtime Math/Doubt Explanations'] },
+  { id: 'p24', number: '24', name: 'Knowledge Graph Visualizer', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Interactive Force Graph', 'Syllabus Prerequisite Links', 'Topic Weightage Node Sizing'] },
+  { id: 'p25', number: '25', name: 'Gamified Peer Quiz Arena', pillar: 'EXAM', status: 'COMPLETED', deliverables: ['Real-Time Multiplayer Battles', 'Live Score Board', 'Rapid Streak XP Multipliers'] },
+  { id: 'p26', number: '26', name: 'Smart Document Annotator', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Interactive PDF Highlighting', 'Inline Sticky Notes', 'Instant Flashcard Synthesizer'] },
+  { id: 'p27', number: '27', name: 'AI Custom Mock Synthesizer', pillar: 'EXAM', status: 'COMPLETED', deliverables: ['Custom Difficulty Blueprint', 'Weighted Section Generator', 'LaTeX Printable PDF Export'] },
+  { id: 'p28', number: '28', name: 'Focus Garden & Virtual Pet', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Gamified Tree Growth Engine', 'Tree Death on Early Exit', 'Botanical Inventory Showcase'] },
+  { id: 'p29', number: '29', name: 'AI Audio Study Studio', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['2-Speaker Socratic Dialogue', 'Script Generator', 'Synthesized Audio Playback'] },
+  { id: 'p30', number: '30', name: 'In-Browser Code Sandbox', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Multi-Language Execution (JS/Py/CPP)', 'LeetCode/GATE Coding Challenges', 'Output Telemetry Console'] },
+  { id: 'p31', number: '31', name: 'AIR Rank Predictor & Mistake Vault', pillar: 'EXAM', status: 'COMPLETED', deliverables: ['Monte-Carlo AIR Rank Engine', 'Categorized Mistake Log', 'Targeted Re-test Generator'] },
+  { id: 'p32', number: '32', name: 'Vernacular Multi-Language Hub', pillar: 'FOUNDATION', status: 'COMPLETED', deliverables: ['10+ Regional Indian & Global Languages', 'AI Multilingual Note Translater', 'Real-time UI Localization'] },
+  { id: 'p33', number: '33', name: 'Lo-Fi Ambient Focus Player', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Synthesized Binaural & Rain Waves', 'Persistent Floating Media Bar', 'Audio Visualizer Waveform'] },
+  { id: 'p34', number: '34', name: 'Progressive Web App (PWA)', pillar: 'FOUNDATION', status: 'COMPLETED', deliverables: ['Full Offline Support & Service Worker', '1-Click Install Banner', 'IndexedDB Sync Cache'] },
+  { id: 'p35', number: '35', name: 'Automated Daily Study Digest', pillar: 'AI_COMMUNITY', status: 'COMPLETED', deliverables: ['Automated Morning Briefing', 'Nightly Study Report Card', 'Telegram/WhatsApp Webhook Sync'] },
+  { id: 'p36', number: '36', name: 'AI Mind Map Studio', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Canvas 2D Interactive Tree', 'Dynamic Branch Expansion', 'PNG & SVG Studio Export'] },
+  { id: 'p37', number: '37', name: 'Flashcard Leitner Box', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['5-Box Leitner Memory Algorithm', 'Flip 3D Card Animation', 'Graduation Mastery Tracking'] },
+  { id: 'p38', number: '38', name: 'College Exam Timetable Engine', pillar: 'EXAM', status: 'COMPLETED', deliverables: ['Clash Detection Algorithm', 'Countdown Clocks & Hall Ticket Vault', 'iCal Calendar Export'] },
+  { id: 'p39', number: '39', name: 'Faculty & Peer Notes Exchange', pillar: 'AI_COMMUNITY', status: 'COMPLETED', deliverables: ['Upvoting & Verified Topper Badges', 'Department & Semester Filters', 'Direct PDF Reader'] },
+  { id: 'p40', number: '40', name: 'Study Quest & Streak Engine', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Daily Quests & Weekly Challenges', 'Tiered Achievement Badges', 'Streak Freeze Protections'] },
+  { id: 'p41', number: '41', name: '2D Multiplayer Virtual Campus', pillar: 'AI_COMMUNITY', status: 'COMPLETED', deliverables: ['Interactive 2D Canvas Map', 'Avatar Navigation & Live Peer Desks', 'Library & Cafe Study Zones'] },
+  { id: 'p42', number: '42', name: 'AI Animated Slide Generator', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Auto-Deck Synthesis from Notes', 'Rich Code/Formula Callouts', 'Web Speech Audio Narration'] },
+  { id: 'p43', number: '43', name: 'AI Mock Interview & Viva Coach', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Technical SDE & UPSC Viva Tracks', 'Web Speech Realtime Answer Capture', 'STAR Metric Comprehensive Scoring'] },
+  { id: 'p44', number: '44', name: 'Topper Notes & Resource Bazaar', pillar: 'AI_COMMUNITY', status: 'COMPLETED', deliverables: ['P2P Handwritten Note Vault', 'Peer Rating & Unlock with Study Coins', 'Verified Topper Upload Pipeline'] },
+  { id: 'p45', number: '45', name: 'Circadian Peak-Focus & Habit Engine', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Chronotype Peak-Focus Optimization', 'Hydration Tracker & Smart Hydrate Prompts', '20-20-20 Eye-Rest Interval Timer'] },
 ];
 
 const DEFAULT_DEMO_PROFILE: StudentProfile = {
@@ -322,7 +356,7 @@ const DEFAULT_SYLLABUS_OVERVIEW: SyllabusOverviewStats = {
 
 function DashboardContent() {
   const { user, tokens, isAuthenticated, logout } = useAuth();
-  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'ROADMAP'>('DASHBOARD');
+  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'ROADMAP'>('DASHBOARD');
   const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>('en');
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
   const [initialAiStudyContent, setInitialAiStudyContent] = useState<string>('');
@@ -1415,6 +1449,96 @@ function DashboardContent() {
                 <TrendingUp size={13} color={activeView === 'RANK_PREDICTOR' ? '#fff' : '#fbbf24'} /> AIR Predictor 🎯
               </button>
               <button
+                onClick={() => setActiveView('VIRTUAL_CAMPUS')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'VIRTUAL_CAMPUS' ? 'linear-gradient(135deg, #6366f1, #06b6d4)' : 'transparent',
+                  color: activeView === 'VIRTUAL_CAMPUS' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Landmark size={13} color={activeView === 'VIRTUAL_CAMPUS' ? '#fff' : '#818cf8'} /> 2D Campus 🏰
+              </button>
+              <button
+                onClick={() => setActiveView('SLIDE_GENERATOR')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'SLIDE_GENERATOR' ? 'linear-gradient(135deg, #a855f7, #6366f1)' : 'transparent',
+                  color: activeView === 'SLIDE_GENERATOR' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Presentation size={13} color={activeView === 'SLIDE_GENERATOR' ? '#fff' : '#c084fc'} /> Slide Studio 📊
+              </button>
+              <button
+                onClick={() => setActiveView('MOCK_INTERVIEW')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'MOCK_INTERVIEW' ? 'linear-gradient(135deg, #06b6d4, #10b981)' : 'transparent',
+                  color: activeView === 'MOCK_INTERVIEW' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Mic size={13} color={activeView === 'MOCK_INTERVIEW' ? '#fff' : '#22d3ee'} /> Viva & Interview 🎙️
+              </button>
+              <button
+                onClick={() => setActiveView('NOTES_MARKETPLACE')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'NOTES_MARKETPLACE' ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'transparent',
+                  color: activeView === 'NOTES_MARKETPLACE' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <ShoppingBag size={13} color={activeView === 'NOTES_MARKETPLACE' ? '#fff' : '#fbbf24'} /> Notes Bazaar 📚
+              </button>
+              <button
+                onClick={() => setActiveView('CIRCADIAN_FOCUS')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'CIRCADIAN_FOCUS' ? 'linear-gradient(135deg, #10b981, #f59e0b)' : 'transparent',
+                  color: activeView === 'CIRCADIAN_FOCUS' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Activity size={13} color={activeView === 'CIRCADIAN_FOCUS' ? '#fff' : '#34d399'} /> Circadian Focus ⚡
+              </button>
+              <button
                 onClick={() => setActiveView('ROADMAP')}
                 style={{
                   padding: '6px 14px',
@@ -1430,7 +1554,7 @@ function DashboardContent() {
                   color: activeView === 'ROADMAP' ? '#ffffff' : 'var(--text-secondary)',
                 }}
               >
-                <Layers size={13} /> 20-Phase Matrix
+                <Layers size={13} /> 45-Phase Matrix 🗺️
               </button>
             </div>
           </div>
@@ -1824,6 +1948,71 @@ function DashboardContent() {
           <RankPredictorMistakeVaultView />
         )}
 
+        {activeView === 'VIRTUAL_CAMPUS' && (
+          <VirtualCampusView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'SLIDE_GENERATOR' && (
+          <AiSlideGeneratorView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'MOCK_INTERVIEW' && (
+          <AiMockInterviewView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'NOTES_MARKETPLACE' && (
+          <NotesMarketplaceView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'CIRCADIAN_FOCUS' && (
+          <CircadianFocusHabitView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
         {activeView === 'ROADMAP' && (
           <div>
             {/* Top Progress & Banner */}
@@ -1838,12 +2027,12 @@ function DashboardContent() {
                   <div>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                       <span className="badge badge-completed">
-                        <CheckCircle2 size={12} /> ALL 20 PHASES FULLY IMPLEMENTED & OPERATIONAL (100% DONE!) 🏆
+                        <CheckCircle2 size={12} /> ALL 45 PHASES FULLY OPERATIONAL (100% DONE!) 🏆
                       </span>
-                      <span className="badge badge-active">100% PRODUCTION READY</span>
+                      <span className="badge badge-active">APEX EDITION v5.0</span>
                     </div>
                     <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>
-                      Master Execution Matrix <span className="gradient-text">(20 Phases)</span>
+                      Master Execution Matrix <span className="gradient-text">(45 Phases)</span>
                     </h2>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '4px' }}>
                       Complete roadmap tracking and architecture deliverables across Study, Exams, Career & Mentor layers.
@@ -2072,7 +2261,7 @@ function DashboardContent() {
         marginTop: 'auto',
         backgroundColor: 'rgba(9, 13, 22, 0.95)'
       }}>
-        StudentLife OS &bull; Automated Phase-by-Phase Roadmap &bull; Phase 10 Completed (Milestone 3 Started!)
+        StudentLife OS 5.0 (Apex Edition) &bull; 45 Phases Fully Operational &bull; 100% Production Ready 🏆
       </footer>
     </div>
   );

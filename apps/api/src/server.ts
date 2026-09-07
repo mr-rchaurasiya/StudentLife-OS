@@ -37,6 +37,11 @@ import focusGardenRouter from './routes/focus-garden.routes';
 import aiPodcastRouter from './routes/ai-podcast.routes';
 import codeSandboxRouter from './routes/code-sandbox.routes';
 import rankPredictorRouter from './routes/rank-predictor.routes';
+import virtualCampusRouter from './routes/virtual-campus.routes';
+import slideGeneratorRouter from './routes/slide-generator.routes';
+import mockInterviewRouter from './routes/mock-interview.routes';
+import notesMarketplaceRouter from './routes/notes-marketplace.routes';
+import circadianFocusRouter from './routes/circadian-focus.routes';
 import { errorHandler } from './middlewares/errorHandler';
 
 const app: Express = express();
@@ -88,6 +93,11 @@ app.use('/api/focus-garden', focusGardenRouter);
 app.use('/api/ai-podcast', aiPodcastRouter);
 app.use('/api/code-sandbox', codeSandboxRouter);
 app.use('/api/rank-predictor', rankPredictorRouter);
+app.use('/api/virtual-campus', virtualCampusRouter);
+app.use('/api/slide-generator', slideGeneratorRouter);
+app.use('/api/mock-interview', mockInterviewRouter);
+app.use('/api/notes-marketplace', notesMarketplaceRouter);
+app.use('/api/circadian-focus', circadianFocusRouter);
 
 // Global Error Handler
 app.use(errorHandler);

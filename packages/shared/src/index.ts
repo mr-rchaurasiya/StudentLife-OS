@@ -2088,3 +2088,190 @@ export interface RetestMistakeDto {
 // ==========================================
 export type SupportedLanguage = 'en' | 'hi' | 'hinglish' | 'bn' | 'ta' | 'te';
 
+// ==========================================
+// 41. 2D Multiplayer Virtual Campus (Phase 41)
+// ==========================================
+export type CampusZoneType = 'SILENT_LIBRARY' | 'CODE_LOUNGE' | 'UPSC_ROUNDTABLE' | 'CAFE_TERRACE';
+
+export interface CampusAvatar {
+  id: string;
+  name: string;
+  avatarEmoji: string;
+  outfitColor: string;
+  college: string;
+  currentTask: string;
+  zone: CampusZoneType;
+  x: number; // 0 to 100 percentage coordinates on 2D map
+  y: number;
+  isFocusing: boolean;
+  studyDurationMinutes: number;
+}
+
+export interface VirtualCampusState {
+  totalStudentsOnline: number;
+  activeZones: Array<{
+    type: CampusZoneType;
+    name: string;
+    description: string;
+    studentCount: number;
+    ambientSound: string;
+  }>;
+  peers: CampusAvatar[];
+  currentUser: CampusAvatar;
+}
+
+export interface MoveAvatarDto {
+  zone: CampusZoneType;
+  x: number;
+  y: number;
+  currentTask?: string;
+}
+
+// ==========================================
+// 42. AI Animated Slide & Visual Presentation (Phase 42)
+// ==========================================
+export interface SlideElement {
+  type: 'HEADING' | 'BULLET' | 'CODE_BLOCK' | 'FORMULA' | 'CALLOUT';
+  content: string;
+  highlightWords?: string[];
+}
+
+export interface SlideData {
+  slideNumber: number;
+  title: string;
+  subtitle?: string;
+  elements: SlideElement[];
+  voiceoverNarration: string;
+  diagramSvg?: string;
+}
+
+export interface SlideDeck {
+  id: string;
+  topic: string;
+  subject: string;
+  totalSlides: number;
+  slides: SlideData[];
+  createdAt: string;
+}
+
+export interface GenerateSlidesDto {
+  topic: string;
+  subject?: string;
+  sourceNotes?: string;
+  slideCount?: number;
+}
+
+// ==========================================
+// 43. AI Voice Mock Interview & Viva Coach (Phase 43)
+// ==========================================
+export type InterviewTrack = 'SDE_TECH' | 'UPSC_PERSONALITY' | 'DATA_SCIENCE_AI' | 'COLLEGE_VIVA';
+
+export interface InterviewQuestion {
+  id: string;
+  questionNumber: number;
+  category: string;
+  questionText: string;
+  hintKeywords: string[];
+  expectedPoints: string[];
+}
+
+export interface InterviewAnswerEvaluation {
+  questionId: string;
+  userSpeechAnswer: string;
+  overallScore: number; // 0 to 100
+  clarityScore: number;
+  starMethodScore: {
+    situation: number;
+    task: number;
+    action: number;
+    result: number;
+  };
+  strengths: string[];
+  improvements: string[];
+  suggestedAnswer: string;
+}
+
+export interface MockInterviewSession {
+  id: string;
+  track: InterviewTrack;
+  candidateName: string;
+  currentQuestionIndex: number;
+  questions: InterviewQuestion[];
+  evaluations: InterviewAnswerEvaluation[];
+  isCompleted: boolean;
+  totalScore: number;
+  createdAt: string;
+}
+
+export interface StartInterviewDto {
+  track: InterviewTrack;
+  candidateName?: string;
+  targetRoleOrExam?: string;
+}
+
+export interface SubmitInterviewResponseDto {
+  sessionId: string;
+  questionId: string;
+  spokenAnswer: string;
+}
+
+// ==========================================
+// 44. Topper Notes & Resource Marketplace (Phase 44)
+// ==========================================
+export interface TopperNoteResource {
+  id: string;
+  title: string;
+  author: string;
+  topperRankBadge: string;
+  exam: string;
+  subject: string;
+  pageCount: number;
+  rating: number;
+  downloadCount: number;
+  unlockCostCoins: number;
+  previewParagraphs: string[];
+  tags: string[];
+  isUnlocked: boolean;
+  createdAt: string;
+}
+
+export interface UploadResourceDto {
+  title: string;
+  exam: string;
+  subject: string;
+  topperRankBadge?: string;
+  content: string;
+  unlockCostCoins?: number;
+}
+
+export interface UnlockResourceDto {
+  resourceId: string;
+}
+
+// ==========================================
+// 45. Circadian Peak-Focus & Habit Engine (Phase 45)
+// ==========================================
+export interface CircadianSlot {
+  timeWindow: string; // e.g. "06:00 AM - 09:00 AM"
+  energyLevel: 'PEAK_COGNITIVE' | 'MODERATE_FOCUS' | 'LOW_ENERGY' | 'RECOVERY';
+  recommendedActivities: string[];
+  recommendedSubjectTypes: string[];
+}
+
+export interface CircadianProfile {
+  chronotype: 'EARLY_BIRD' | 'NIGHT_OWL' | 'BALANCED';
+  bestHoursForMathAndCoding: string;
+  bestHoursForRevision: string;
+  recommendedSleepWindow: string;
+  dailySlots: CircadianSlot[];
+  waterIntakeGlassesToday: number;
+  waterGoalGlasses: number;
+  screenBreaksTaken: number;
+  focusConsistencyScore: number;
+}
+
+export interface UpdateHabitDto {
+  action: 'DRINK_WATER' | 'TAKE_SCREEN_BREAK' | 'SET_CHRONOTYPE';
+  value?: string | number;
+}
+
