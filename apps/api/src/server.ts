@@ -67,6 +67,11 @@ import campusIncubatorRouter from './routes/campus-incubator.routes';
 import campusTransitRouter from './routes/campus-transit.routes';
 import mentalResilienceRouter from './routes/mental-resilience.routes';
 import quantumLabRouter from './routes/quantum-lab.routes';
+import fellowshipDrafterRouter from './routes/fellowship-drafter.routes';
+import hackathonWarRoomRouter from './routes/hackathon-war-room.routes';
+import speedReaderRouter from './routes/speed-reader.routes';
+import academicIntegrityRouter from './routes/academic-integrity.routes';
+import campusDigitalTwinRouter from './routes/campus-digital-twin.routes';
 import { errorHandler } from './middlewares/errorHandler';
 
 const app: Express = express();
@@ -148,6 +153,11 @@ app.use('/api/campus-incubator', campusIncubatorRouter);
 app.use('/api/campus-transit', campusTransitRouter);
 app.use('/api/mental-resilience', mentalResilienceRouter);
 app.use('/api/quantum-lab', quantumLabRouter);
+app.use('/api/fellowship-drafter', fellowshipDrafterRouter);
+app.use('/api/hackathon-war-room', hackathonWarRoomRouter);
+app.use('/api/speed-reader', speedReaderRouter);
+app.use('/api/academic-integrity', academicIntegrityRouter);
+app.use('/api/campus-digital-twin', campusDigitalTwinRouter);
 
 // Global Error Handler
 app.use(errorHandler);

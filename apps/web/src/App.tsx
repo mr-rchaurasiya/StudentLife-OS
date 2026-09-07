@@ -61,6 +61,11 @@ import { CampusIncubatorView } from './components/CampusIncubatorView';
 import { CampusTransitView } from './components/CampusTransitView';
 import { MentalResilienceView } from './components/MentalResilienceView';
 import { QuantumLabView } from './components/QuantumLabView';
+import { FellowshipDrafterView } from './components/FellowshipDrafterView';
+import { HackathonWarRoomView } from './components/HackathonWarRoomView';
+import { SpeedReaderView } from './components/SpeedReaderView';
+import { AcademicIntegrityView } from './components/AcademicIntegrityView';
+import { CampusDigitalTwinView } from './components/CampusDigitalTwinView';
 import { LanguageSelectorModal } from './components/LanguageSelectorModal';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import { PwaInstallPromptWidget } from './components/PwaInstallPromptWidget';
@@ -134,6 +139,8 @@ import {
   Bus,
   HeartPulse,
   Atom,
+  Zap,
+  MapPin,
 } from 'lucide-react';
 
 interface PhaseItem {
@@ -216,6 +223,11 @@ const PHASES: PhaseItem[] = [
   { id: 'p68', number: '68', name: 'Smart Campus Transit Radar', pillar: 'FOUNDATION', status: 'COMPLETED', deliverables: ['Live EV Shuttle GPS Telemetry', 'Route Hub ETA Countdown Clocks', 'Hostel Bike/E-Rickshaw Carpooling', 'Green Carbon Offset Credits'] },
   { id: 'p69', number: '69', name: 'Mental Resilience Sanctum', pillar: 'FOUNDATION', status: 'COMPLETED', deliverables: ['Interactive 4-7-8 Box Breathing Pacer', 'Socratic Cognitive Distortion Reframing', '5-4-3-2-1 Emergency Grounding', 'Psychological Exam Readiness Index'] },
   { id: 'p70', number: '70', name: 'Quantum Circuit & Bloch Lab', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Interactive Quantum Gate Sequencer (H/X/Y/Z/CNOT)', 'Real-Time Bloch Sphere Vector Coordinates', 'State Vector Probability Amplitudes |ψ|²', 'Bell & GHZ State Entanglement Sim'] },
+  { id: 'p71', number: '71', name: 'Global Fellowship & PMRF Drafter', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Fulbright / PMRF / DAAD / Rhodes SOP Architecture', 'Novelty & Methodology Formalizer', 'Referee Endorsement Matrix', 'LaTeX / PDF Grant Exporter'] },
+  { id: 'p72', number: '72', name: 'Hackathon 24h Sprint War-Room', pillar: 'AI_COMMUNITY', status: 'COMPLETED', deliverables: ['24-Hour Live Sprint Countdown Clock', 'Kanban Task Burndown Velocity Engine', 'Simulated Real-Time Git Commit Stream', '1-Click Devpost & GitHub Release Builder'] },
+  { id: 'p73', number: '73', name: 'AI RSVP Speed-Reader & Subvocalization Guard', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['300–1000 WPM RSVP Word Stream Engine', 'Optimal Recognition Point (ORP) Fixation Alignment', 'Larynx Subvocalization Inhibitor', 'Post-Reading Active Recall Comprehension Quiz'] },
+  { id: 'p74', number: '74', name: 'Academic Plagiarism & Hallucination Guard', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Deep Semantic Originality % Scanner', '145M+ DOI CrossRef Live Verification', 'Phantom AI Reference & Hallucination Flagging', 'Downloadable Originality Certificate'] },
+  { id: 'p75', number: '75', name: '3D Campus Digital Twin & Indoor Navigator', pillar: 'FOUNDATION', status: 'COMPLETED', deliverables: ['3D Building Spatial Node Telemetry', 'Topological Shortest Path Dijkstra Navigator', 'Acoustic Noise dB & Seat Occupancy Heatmaps', 'Multi-Floor Skybridge Waypointing'] },
 ];
 
 const DEFAULT_DEMO_PROFILE: StudentProfile = {
@@ -426,7 +438,7 @@ const DEFAULT_SYLLABUS_OVERVIEW: SyllabusOverviewStats = {
 
 function DashboardContent() {
   const { user, tokens, isAuthenticated, logout } = useAuth();
-  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'EXAM_TREND' | 'AI_WHITEBOARD' | 'STUDENT_FINANCES' | 'HOLO_SIMULATIONS' | 'SKILL_PASSPORT' | 'ARXIV_SCHOLAR' | 'SOCRATIC_DEBATE' | 'CAMPUS_EXCHANGE' | 'VIDEO_NAVIGATOR' | 'ERGONOMIC_WELLNESS' | 'RESEARCH_LAB' | 'NEURAL_FLOW' | 'HOSTEL_NUTRITION' | 'LATEX_STUDIO' | 'HACKATHON_RADAR' | 'PATENT_DRAFTER' | 'FACULTY_ADVISORY' | 'TUTOR_BOUNTY' | 'CAMPUS_PRINTING' | 'ALUMNI_RADAR' | 'STUDY_SWARM' | 'CAMPUS_INCUBATOR' | 'CAMPUS_TRANSIT' | 'MENTAL_RESILIENCE' | 'QUANTUM_LAB' | 'ROADMAP'>('DASHBOARD');
+  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'EXAM_TREND' | 'AI_WHITEBOARD' | 'STUDENT_FINANCES' | 'HOLO_SIMULATIONS' | 'SKILL_PASSPORT' | 'ARXIV_SCHOLAR' | 'SOCRATIC_DEBATE' | 'CAMPUS_EXCHANGE' | 'VIDEO_NAVIGATOR' | 'ERGONOMIC_WELLNESS' | 'RESEARCH_LAB' | 'NEURAL_FLOW' | 'HOSTEL_NUTRITION' | 'LATEX_STUDIO' | 'HACKATHON_RADAR' | 'PATENT_DRAFTER' | 'FACULTY_ADVISORY' | 'TUTOR_BOUNTY' | 'CAMPUS_PRINTING' | 'ALUMNI_RADAR' | 'STUDY_SWARM' | 'CAMPUS_INCUBATOR' | 'CAMPUS_TRANSIT' | 'MENTAL_RESILIENCE' | 'QUANTUM_LAB' | 'FELLOWSHIP_DRAFTER' | 'HACKATHON_WAR_ROOM' | 'SPEED_READER' | 'ACADEMIC_INTEGRITY' | 'CAMPUS_DIGITAL_TWIN' | 'ROADMAP'>('DASHBOARD');
   const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>('en');
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
   const [initialAiStudyContent, setInitialAiStudyContent] = useState<string>('');
@@ -2059,6 +2071,96 @@ function DashboardContent() {
                 <Atom size={13} color={activeView === 'QUANTUM_LAB' ? '#fff' : '#c084fc'} /> Quantum Lab ⚛️
               </button>
               <button
+                onClick={() => setActiveView('FELLOWSHIP_DRAFTER')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'FELLOWSHIP_DRAFTER' ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'transparent',
+                  color: activeView === 'FELLOWSHIP_DRAFTER' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <GraduationCap size={13} color={activeView === 'FELLOWSHIP_DRAFTER' ? '#fff' : '#fbbf24'} /> Fellowship Drafter 🏅
+              </button>
+              <button
+                onClick={() => setActiveView('HACKATHON_WAR_ROOM')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'HACKATHON_WAR_ROOM' ? 'linear-gradient(135deg, #ef4444, #f97316)' : 'transparent',
+                  color: activeView === 'HACKATHON_WAR_ROOM' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Swords size={13} color={activeView === 'HACKATHON_WAR_ROOM' ? '#fff' : '#f87171'} /> Hackathon War-Room ⚔️
+              </button>
+              <button
+                onClick={() => setActiveView('SPEED_READER')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'SPEED_READER' ? 'linear-gradient(135deg, #f59e0b, #eab308)' : 'transparent',
+                  color: activeView === 'SPEED_READER' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Zap size={13} color={activeView === 'SPEED_READER' ? '#fff' : '#fde047'} /> Speed Reader ⚡
+              </button>
+              <button
+                onClick={() => setActiveView('ACADEMIC_INTEGRITY')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'ACADEMIC_INTEGRITY' ? 'linear-gradient(135deg, #10b981, #14b8a6)' : 'transparent',
+                  color: activeView === 'ACADEMIC_INTEGRITY' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <ShieldCheck size={13} color={activeView === 'ACADEMIC_INTEGRITY' ? '#fff' : '#34d399'} /> Academic Integrity 🛡️
+              </button>
+              <button
+                onClick={() => setActiveView('CAMPUS_DIGITAL_TWIN')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'CAMPUS_DIGITAL_TWIN' ? 'linear-gradient(135deg, #3b82f6, #6366f1)' : 'transparent',
+                  color: activeView === 'CAMPUS_DIGITAL_TWIN' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <MapPin size={13} color={activeView === 'CAMPUS_DIGITAL_TWIN' ? '#fff' : '#60a5fa'} /> Campus Twin 🗺️
+              </button>
+              <button
                 onClick={() => setActiveView('ROADMAP')}
                 style={{
                   padding: '6px 14px',
@@ -2813,6 +2915,44 @@ function DashboardContent() {
           />
         )}
 
+        {activeView === 'FELLOWSHIP_DRAFTER' && (
+          <FellowshipDrafterView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'HACKATHON_WAR_ROOM' && (
+          <HackathonWarRoomView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'SPEED_READER' && (
+          <SpeedReaderView />
+        )}
+
+        {activeView === 'ACADEMIC_INTEGRITY' && (
+          <AcademicIntegrityView />
+        )}
+
+        {activeView === 'CAMPUS_DIGITAL_TWIN' && (
+          <CampusDigitalTwinView />
+        )}
+
         {activeView === 'ROADMAP' && (
           <div>
             {/* Top Progress & Banner */}
@@ -2827,12 +2967,12 @@ function DashboardContent() {
                   <div>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                       <span className="badge badge-completed">
-                        <CheckCircle2 size={12} /> ALL 70 PHASES FULLY OPERATIONAL (100% DONE!) 🏆
+                        <CheckCircle2 size={12} /> ALL 75 PHASES FULLY OPERATIONAL (100% DONE!) 🏆
                       </span>
-                      <span className="badge badge-active">OMNIVERSE EDITION v10.0</span>
+                      <span className="badge badge-active">HYPERION EDITION v11.0</span>
                     </div>
                     <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>
-                      Master Execution Matrix <span className="gradient-text">(70 Phases)</span>
+                      Master Execution Matrix <span className="gradient-text">(75 Phases)</span>
                     </h2>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '4px' }}>
                       Complete roadmap tracking and architecture deliverables across Study, Exams, Career & Mentor layers.
@@ -3061,7 +3201,7 @@ function DashboardContent() {
         marginTop: 'auto',
         backgroundColor: 'rgba(9, 13, 22, 0.95)'
       }}>
-        StudentLife OS 10.0 (Omniverse Edition) &bull; 70 Phases Fully Operational &bull; 100% Production Ready 🏆
+        StudentLife OS 11.0 (Hyperion Edition) &bull; 75 Phases Fully Operational &bull; 100% Production Ready 🏆
       </footer>
     </div>
   );

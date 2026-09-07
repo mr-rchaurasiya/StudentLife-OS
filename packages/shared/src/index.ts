@@ -3158,3 +3158,168 @@ export interface SimulateCircuitDto {
   }[];
   preset?: 'BELL_STATE' | 'SUPERPOSITION' | 'GHZ_STATE';
 }
+
+// ==========================================
+// 71. Autonomous Global Fellowship & PMRF Proposal Drafter (Phase 71)
+// ==========================================
+export type FellowshipType = 'PMRF_INDIA' | 'FULBRIGHT_NEHRU' | 'DAAD_GERMANY' | 'RHODES_OXFORD' | 'ERASMUS_MUNDUS';
+
+export interface FellowshipProposal {
+  id: string;
+  fellowshipType: FellowshipType;
+  applicantField: string;
+  statementOfPurpose: string;
+  researchMethodology: string;
+  broaderImpactStatements: string[];
+  refereeBulletPoints: string[];
+  competitiveIndexScore: number;
+  createdAt: string;
+}
+
+export interface DraftFellowshipDto {
+  fellowshipType: FellowshipType;
+  applicantField: string;
+  primaryResearchTopic: string;
+  pastAchievementsSummary?: string;
+}
+
+// ==========================================
+// 72. Live Hackathon War-Room & 24-Hour Sprint Command Hub (Phase 72)
+// ==========================================
+export interface HackathonSprintTask {
+  id: string;
+  title: string;
+  assigneeName: string;
+  role: 'FRONTEND' | 'BACKEND' | 'ML_AI' | 'DESIGN_PITCH';
+  status: 'TODO' | 'IN_PROGRESS' | 'DONE';
+  estimatedHours: number;
+}
+
+export interface HackathonGitCommit {
+  id: string;
+  author: string;
+  commitMessage: string;
+  branch: string;
+  timestamp: string;
+  linesAdded: number;
+}
+
+export interface HackathonWarRoomState {
+  hackathonName: string;
+  hoursRemaining: number;
+  totalTeamXp: number;
+  tasks: HackathonSprintTask[];
+  commits: HackathonGitCommit[];
+  devpostDraftMarkdown: string;
+}
+
+export interface PostSprintTaskDto {
+  title: string;
+  assigneeName: string;
+  role: 'FRONTEND' | 'BACKEND' | 'ML_AI' | 'DESIGN_PITCH';
+}
+
+export interface ExportDevpostDto {
+  projectName: string;
+  inspiration: string;
+  howWeBuiltIt: string;
+}
+
+// ==========================================
+// 73. AI RSVP Speed-Reading & Subvocalization Eliminator (Phase 73)
+// ==========================================
+export interface RsvpWordToken {
+  word: string;
+  orpIndex: number; // Optimal Recognition Point index
+  prefix: string;
+  pivotChar: string;
+  suffix: string;
+}
+
+export interface SpeedReaderSession {
+  id: string;
+  documentTitle: string;
+  targetWpm: number;
+  tokens: RsvpWordToken[];
+  totalWords: number;
+  comprehensionQuiz: {
+    question: string;
+    options: string[];
+    correctOptionIndex: number;
+  }[];
+}
+
+export interface StartSpeedReaderDto {
+  documentTitle: string;
+  rawArticleText: string;
+  targetWpm?: number;
+}
+
+export interface SubmitRecallQuizDto {
+  sessionId: string;
+  selectedAnswers: number[];
+}
+
+// ==========================================
+// 74. Academic Plagiarism & AI-Hallucination Integrity Inspector (Phase 74)
+// ==========================================
+export interface PlagiarismAuditSection {
+  sectionTitle: string;
+  similarityPercentage: number;
+  matchedSourceExcerpt?: string;
+  paraphraseRisk: 'LOW' | 'MODERATE' | 'HIGH';
+}
+
+export interface HallucinatedCitationReport {
+  citationText: string;
+  doiFound: boolean;
+  validationStatus: 'VERIFIED_CORRECT' | 'HALLUCINATED_OR_UNINDEXED';
+  recommendation: string;
+}
+
+export interface AcademicIntegrityReport {
+  id: string;
+  documentTitle: string;
+  overallOriginalityScore: number; // 0 to 100
+  plagiarismIndex: number; // 0 to 100
+  aiGeneratedLikelihoodPercent: number;
+  sections: PlagiarismAuditSection[];
+  citationsAudited: HallucinatedCitationReport[];
+  createdAt: string;
+}
+
+export interface AuditIntegrityDto {
+  documentTitle: string;
+  manuscriptText: string;
+}
+
+// ==========================================
+// 75. 3D Campus Digital Twin & Indoor Navigation Navigator (Phase 75)
+// ==========================================
+export interface CampusBuildingNode {
+  id: string;
+  buildingName: string;
+  code: string;
+  category: 'ACADEMIC' | 'LAB' | 'LIBRARY' | 'HOSTEL' | 'SPORTS';
+  coordinates: { x: number; y: number; z: number };
+  currentOccupancyPercent: number;
+  noiseLevelDb: number;
+  activeEventsCount: number;
+}
+
+export interface CampusDigitalTwinState {
+  buildings: CampusBuildingNode[];
+  recommendedQuietZones: string[];
+  activeNavigationRoute?: {
+    fromBuilding: string;
+    toBuilding: string;
+    walkingDistanceMeters: number;
+    estimatedMinutes: number;
+    waypointPath: string[];
+  };
+}
+
+export interface FindCampusRouteDto {
+  fromBuildingId: string;
+  toBuildingId: string;
+}
