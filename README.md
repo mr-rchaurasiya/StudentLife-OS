@@ -1,7 +1,7 @@
 <div align="center">
 
-# 🎓 StudentLife OS 14.0 (Genesis Edition)
-### *The Ultimate AI Super-App for Study, Exams, Coding, Campus, FinTech, Research, Bio-Feedback, Patents, Startups, Transit, Mental Resilience, Quantum Computing, Fellowships, Hackathons, Polyglot Translations, Olympiads, Kernel Profiling, Astrodynamics, Retrosynthesis, Scholar Tracking, DAOs, Neuromorphic SNNs, QKD Cryptography, Paper Refereeing, CRISPR Biotech & Venture SAFE Notes*
+# 🎓 StudentLife OS 15.0 (Centurion Singularity Edition)
+### *The Ultimate AI Super-App for Study, Exams, Coding, Campus, FinTech, Research, Bio-Feedback, Patents, Startups, Transit, Mental Resilience, Quantum Computing, Fellowships, Hackathons, Polyglot Translations, Olympiads, Kernel Profiling, Astrodynamics, Retrosynthesis, Scholar Tracking, DAOs, Neuromorphic SNNs, QKD Cryptography, Paper Refereeing, CRISPR Biotech, Venture SAFE Notes, Fusion Tokamaks, BCI Neuro-Spellers, Legal AI, Exoplanet Photometry & Carbon Credit Markets*
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React 18](https://img.shields.io/badge/React_18-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/)
@@ -11,25 +11,25 @@
 [![PWA Ready](https://img.shields.io/badge/PWA-Ready-orange?style=for-the-badge&logo=pwa&logoColor=white)](https://web.dev/progressive-web-apps/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-**StudentLife OS** is an all-in-one productivity suite, real-time focus sanctuary, and AI-driven workspace designed specifically for ambitious students preparing for competitive exams (IIT JEE, GATE, UPSC, NEET, Semester Finals), mastering university curriculums, defending research theses, launching campus startups, tracking smart transit, cultivating mental resilience, simulating quantum circuits, optimizing SIMD kernels, computing celestial orbits, retrosynthesizing molecules, tracking academic citations, governing collegiate DAOs, running neuromorphic SNN spikes, establishing BB84 quantum channels, reviewing conference papers, designing CRISPR gRNAs, and drafting venture SAFE agreements.
+**StudentLife OS** is an all-in-one productivity suite, real-time focus sanctuary, and AI-driven workspace designed specifically for ambitious students preparing for competitive exams (IIT JEE, GATE, UPSC, NEET, Semester Finals), mastering university curriculums, defending research theses, launching campus startups, tracking smart transit, cultivating mental resilience, simulating quantum circuits, optimizing SIMD kernels, computing celestial orbits, retrosynthesizing molecules, tracking academic citations, governing collegiate DAOs, running neuromorphic SNN spikes, establishing BB84 quantum channels, reviewing conference papers, designing CRISPR gRNAs, drafting venture SAFEs, simulating tokamak fusion plasma, hands-free BCI P300 typing, analyzing legal contracts, extracting exoplanet transits, and trading campus carbon credits.
 
-[🚀 Quick Start](#-quick-start) • [✨ Genesis Highlights](#-genesis-highlights) • [🏛️ 90-Phase Architecture](#️-complete-90-phase-architecture) • [📱 PWA & Mobile](#-pwa--offline-study-mode) • [☁️ Deployment](#️-cloud-deployment)
+[🚀 Quick Start](#-quick-start) • [✨ Centurion Highlights](#-centurion-highlights) • [🏛️ 95-Phase Architecture](#️-complete-95-phase-architecture) • [📱 PWA & Mobile](#-pwa--offline-study-mode) • [☁️ Deployment](#️-cloud-deployment)
 
 </div>
 
 ---
 
-## 🌟 Genesis Highlights (Phases 86 – 90 Genesis Edition)
+## 🌟 Centurion Highlights (Phases 91 – 95 Centurion Singularity Edition)
 
-- 🧠 **Neuromorphic Spiking Neural Network (SNN) & Memristor Lab (Phase 86)**: Biological Leaky Integrate-and-Fire (LIF) membrane potentials $V(t)$, STDP (Spike-Timing-Dependent Plasticity) synaptic weight learning, event-based compute raster plots, and Intel Loihi 2 / SpiNNaker 2 hardware telemetry.
-- 🔐 **Quantum Key Distribution (BB84 / E91 QKD) & Cryptography Simulator (Phase 87)**: Unconditional information-theoretic security using Alice-Bob photon polarizations, Eve eavesdropping detection via Quantum Bit Error Rate (QBER) spikes, and unbreakable One-Time Pad encryption.
-- 📝 **Autonomous Academic LaTeX Paper Referee & Reviewer 2 Scorer (Phase 88)**: Tier-1 conference peer-review rubric scoring (Novelty, Rigor, Statistics, Clarity), automated adversarial *Reviewer 2* critique generation, and camera-ready rebuttal strategy synthesizers.
-- 🧬 **3D CRISPR-Cas9 Guide-RNA (gRNA) & Off-Target Cleavage Predictor (Phase 89)**: 20-nt guide RNA spacer designer, `NGG` PAM recognition scanner, on-target Doench cleavage efficiency scoring, and CFD genome-wide off-target mismatch matrices.
-- 💼 **Student Venture Syndicate & YC Post-Money SAFE Note Builder (Phase 90)**: Y-Combinator standard Post-Money SAFE agreement auto-generator with valuation caps & discounts, multi-round cap-table equity dilution & waterfall models, and student angel syndicate deal memos.
+- ⚛️ **3D Computational Fusion Plasma & Tokamak Magnetic Trap Simulator (Phase 91)**: Lawson triple-product criterion $n \cdot T \cdot \tau_E \ge 3 \times 10^{21} \text{ keV}\cdot\text{s}\cdot\text{m}^{-3}$, toroidal/poloidal magnetic coil field confinement, MHD plasma equilibrium stability, and alpha-particle self-heating power balances.
+- 🧠 **BCI Brain-Computer Interface P300 Neuro-Speller Matrix (Phase 92)**: 6x6 alphanumeric flashing grid matrix, real-time P300 Event-Related Potential (ERP) peak detection, hands-free EEG typing buffer, and 10-20 system electrode montage telemetry (Cz, Pz, Oz).
+- ⚖️ **Autonomous Legal Contract Analyzer & Patent Infringement Risk Radar (Phase 93)**: Automated clause extraction, overreaching non-compete reasonableness scoring, unfair IP assignment redlines, and USPTO/WIPO prior art patent infringement collision radars.
+- 🪐 **Exoplanet Transit Photometry & Kepler Light-Curve Extractor (Phase 94)**: Occultation light-curve transit depth flux dip extraction ($\Delta F/F$), planetary radius modeling $R_p = R_\star \sqrt{\Delta F}$, and circumstellar Goldilocks Habitable Zone equilibrium temperature calculators.
+- 🌿 **Collegiate Carbon Credit Smart Market & ESG Offset Ledger (Phase 95)**: Scope 1, 2, and 3 campus greenhouse gas footprint modeling, peer-to-peer verified student carbon credit order books, solar rooftop/EV shuttle offset tokenization, and cryptographic SHA-256 green certificates.
 
 ---
 
-## 🏛️ Complete 90-Phase Architecture
+## 🏛️ Complete 95-Phase Architecture
 
 | Pillar | Phase | Module | Capabilities & Core Deliverables |
 |---|---|---|---|
@@ -123,6 +123,11 @@
 | | **88** | Paper Referee & Reviewer 2| Multi-criteria conference scoring, Reviewer 2 critique, rebuttal counter-proofs |
 | | **89** | CRISPR-Cas9 gRNA Predictor| 20-nt guide RNA designer, NGG PAM scanner, on-target Doench, CFD off-target risk |
 | | **90** | Venture Syndicate SAFE | YC Post-Money SAFE note drafter, cap-table dilution & equity waterfall model |
+| **Centurion Suite** | **91** | Fusion Tokamak Simulator | Lawson criterion $n\tau_E T \ge 3 \times 10^{21}$, toroidal/poloidal coils, MHD stability |
+| | **92** | BCI P300 Neuro-Speller | 6x6 flashing alphanumeric grid, P300 ERP detection, hands-free EEG typing |
+| | **93** | Legal Contract Analyzer | Clause risk extraction, non-compete reasonableness, USPTO patent infringement radar |
+| | **94** | Exoplanet Photometry | Occultation flux dip light curves, $R_p/R_\star$ planetary radius, Habitable Zone |
+| | **95** | Carbon Credit Market | Scope 1/2/3 GHG calculator, P2P carbon credit ledger, solar/EV offset tokenization |
 
 ---
 

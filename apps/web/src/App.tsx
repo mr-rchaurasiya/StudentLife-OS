@@ -81,6 +81,11 @@ import { QuantumKeyDistSimView } from './components/QuantumKeyDistSimView';
 import { AcademicPeerReviewerView } from './components/AcademicPeerReviewerView';
 import { CrisprGeneEditorView } from './components/CrisprGeneEditorView';
 import { VentureSyndicateSafeView } from './components/VentureSyndicateSafeView';
+import { FusionTokamakSimView } from './components/FusionTokamakSimView';
+import { BciNeuroSpellerView } from './components/BciNeuroSpellerView';
+import { LegalContractAnalyzerView } from './components/LegalContractAnalyzerView';
+import { ExoplanetPhotometryView } from './components/ExoplanetPhotometryView';
+import { CarbonCreditMarketView } from './components/CarbonCreditMarketView';
 import { LanguageSelectorModal } from './components/LanguageSelectorModal';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import { PwaInstallPromptWidget } from './components/PwaInstallPromptWidget';
@@ -163,6 +168,10 @@ import {
   Key,
   Scissors,
   DollarSign,
+  Flame,
+  ShieldAlert,
+  Leaf,
+  Orbit,
 } from 'lucide-react';
 
 interface PhaseItem {
@@ -265,6 +274,11 @@ const PHASES: PhaseItem[] = [
   { id: 'p88', number: '88', name: 'Academic LaTeX Paper Referee & Reviewer 2 Scorer', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Tier-1 Conference Peer-Review Rubric', 'Adversarial Reviewer #2 Critique Generator', 'Camera-Ready Acceptance Probability', 'Author Rebuttal Counter-Proofs Builder'] },
   { id: 'p89', number: '89', name: '3D CRISPR-Cas9 gRNA & Off-Target Cleavage Predictor', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['20-nt Guide RNA Spacer Designer', 'PAM (NGG) Recognition Scanner', 'On-Target Doench Cleavage Scoring Model', 'CFD Genome-Wide Off-Target Risk Matrix'] },
   { id: 'p90', number: '90', name: 'Student Venture Syndicate & YC Post-Money SAFE Note', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['YC Standard Post-Money SAFE Auto-Generator', 'Cap-Table Equity Dilution & Waterfall Simulator', 'Collegiate Micro-Angel Syndicate Deal Memos', 'Investor Q&A Simulation Engine'] },
+  { id: 'p91', number: '91', name: '3D Computational Fusion Plasma & Tokamak Magnetic Trap Simulator', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Lawson Criterion n*T*tau >= 3e21 Model', 'Toroidal & Poloidal Magnetic Field Coils', 'MHD Plasma Equilibrium Stability', 'Alpha Particle Self-Heating Power'] },
+  { id: 'p92', number: '92', name: 'BCI Brain-Computer Interface P300 Neuro-Speller Matrix', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['6x6 Alphanumeric Flashing Grid Matrix', 'Real-Time P300 ERP Peak Classifier', 'Hands-Free EEG Typing Buffer Engine', 'Cz / Pz / Oz Electrode Montage Telemetry'] },
+  { id: 'p93', number: '93', name: 'Autonomous Legal Contract Analyzer & Patent Infringement Risk Radar', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Unfair IP Assignment Clause Flagging', 'Non-Compete Reasonableness Index', 'AI Suggested Redline Replacements', 'USPTO / WIPO Patent Collision Radar'] },
+  { id: 'p94', number: '94', name: 'Exoplanet Transit Photometry & Kepler Light-Curve Extractor', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Differential Transit Flux Dip Curve (ΔF/F)', 'Planetary Radius Rp = R_* sqrt(ΔF) Model', 'Goldilocks Habitable Zone Equilibrium Temp', 'Kepler & TRAPPIST Stellar Analogue Presets'] },
+  { id: 'p95', number: '95', name: 'Collegiate Carbon Credit Smart Market & ESG Offset Ledger', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Campus Scope 1/2/3 GHG Emissions Engine', 'P2P Verified Student Carbon Offset Book', 'Solar Rooftop & EV Shuttle Tokenization', 'SHA-256 Cryptographic Green Certificates'] },
 ];
 
 const DEFAULT_DEMO_PROFILE: StudentProfile = {
@@ -475,7 +489,7 @@ const DEFAULT_SYLLABUS_OVERVIEW: SyllabusOverviewStats = {
 
 function DashboardContent() {
   const { user, tokens, isAuthenticated, logout } = useAuth();
-  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'EXAM_TREND' | 'AI_WHITEBOARD' | 'STUDENT_FINANCES' | 'HOLO_SIMULATIONS' | 'SKILL_PASSPORT' | 'ARXIV_SCHOLAR' | 'SOCRATIC_DEBATE' | 'CAMPUS_EXCHANGE' | 'VIDEO_NAVIGATOR' | 'ERGONOMIC_WELLNESS' | 'RESEARCH_LAB' | 'NEURAL_FLOW' | 'HOSTEL_NUTRITION' | 'LATEX_STUDIO' | 'HACKATHON_RADAR' | 'PATENT_DRAFTER' | 'FACULTY_ADVISORY' | 'TUTOR_BOUNTY' | 'CAMPUS_PRINTING' | 'ALUMNI_RADAR' | 'STUDY_SWARM' | 'CAMPUS_INCUBATOR' | 'CAMPUS_TRANSIT' | 'MENTAL_RESILIENCE' | 'QUANTUM_LAB' | 'FELLOWSHIP_DRAFTER' | 'HACKATHON_WAR_ROOM' | 'SPEED_READER' | 'ACADEMIC_INTEGRITY' | 'CAMPUS_DIGITAL_TWIN' | 'POLYGLOT_TRANSLATOR' | 'LAB_NOTEBOOK' | 'ANKI_FSRS' | 'MICRO_INTERNSHIP' | 'KNOWLEDGE_OLYMPIAD' | 'KERNEL_PROFILER' | 'ASTRODYNAMICS' | 'CHEMICAL_RETRO' | 'SCHOLAR_TRACKER' | 'STUDY_GUILD_DAO' | 'NEUROMORPHIC_SNN' | 'QUANTUM_QKD' | 'PAPER_REFEREE' | 'CRISPR_EDITOR' | 'VENTURE_SAFE' | 'ROADMAP'>('DASHBOARD');
+  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'EXAM_TREND' | 'AI_WHITEBOARD' | 'STUDENT_FINANCES' | 'HOLO_SIMULATIONS' | 'SKILL_PASSPORT' | 'ARXIV_SCHOLAR' | 'SOCRATIC_DEBATE' | 'CAMPUS_EXCHANGE' | 'VIDEO_NAVIGATOR' | 'ERGONOMIC_WELLNESS' | 'RESEARCH_LAB' | 'NEURAL_FLOW' | 'HOSTEL_NUTRITION' | 'LATEX_STUDIO' | 'HACKATHON_RADAR' | 'PATENT_DRAFTER' | 'FACULTY_ADVISORY' | 'TUTOR_BOUNTY' | 'CAMPUS_PRINTING' | 'ALUMNI_RADAR' | 'STUDY_SWARM' | 'CAMPUS_INCUBATOR' | 'CAMPUS_TRANSIT' | 'MENTAL_RESILIENCE' | 'QUANTUM_LAB' | 'FELLOWSHIP_DRAFTER' | 'HACKATHON_WAR_ROOM' | 'SPEED_READER' | 'ACADEMIC_INTEGRITY' | 'CAMPUS_DIGITAL_TWIN' | 'POLYGLOT_TRANSLATOR' | 'LAB_NOTEBOOK' | 'ANKI_FSRS' | 'MICRO_INTERNSHIP' | 'KNOWLEDGE_OLYMPIAD' | 'KERNEL_PROFILER' | 'ASTRODYNAMICS' | 'CHEMICAL_RETRO' | 'SCHOLAR_TRACKER' | 'STUDY_GUILD_DAO' | 'NEUROMORPHIC_SNN' | 'QUANTUM_QKD' | 'PAPER_REFEREE' | 'CRISPR_EDITOR' | 'VENTURE_SAFE' | 'FUSION_TOKAMAK' | 'BCI_SPELLER' | 'LEGAL_ANALYZER' | 'EXOPLANET_PHOTOMETRY' | 'CARBON_MARKET' | 'ROADMAP'>('DASHBOARD');
   const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>('en');
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
   const [initialAiStudyContent, setInitialAiStudyContent] = useState<string>('');
@@ -2468,6 +2482,96 @@ function DashboardContent() {
                 <DollarSign size={13} color={activeView === 'VENTURE_SAFE' ? '#fff' : '#fbbf24'} /> Venture SAFE 💼
               </button>
               <button
+                onClick={() => setActiveView('FUSION_TOKAMAK')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'FUSION_TOKAMAK' ? 'linear-gradient(135deg, #f97316, #ef4444)' : 'transparent',
+                  color: activeView === 'FUSION_TOKAMAK' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Flame size={13} color={activeView === 'FUSION_TOKAMAK' ? '#fff' : '#fb923c'} /> Fusion Tokamak 🔥
+              </button>
+              <button
+                onClick={() => setActiveView('BCI_SPELLER')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'BCI_SPELLER' ? 'linear-gradient(135deg, #a855f7, #6366f1)' : 'transparent',
+                  color: activeView === 'BCI_SPELLER' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Activity size={13} color={activeView === 'BCI_SPELLER' ? '#fff' : '#c084fc'} /> BCI Speller 🧠
+              </button>
+              <button
+                onClick={() => setActiveView('LEGAL_ANALYZER')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'LEGAL_ANALYZER' ? 'linear-gradient(135deg, #d97706, #b45309)' : 'transparent',
+                  color: activeView === 'LEGAL_ANALYZER' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <ShieldAlert size={13} color={activeView === 'LEGAL_ANALYZER' ? '#fff' : '#fbbf24'} /> Legal Analyzer ⚖️
+              </button>
+              <button
+                onClick={() => setActiveView('EXOPLANET_PHOTOMETRY')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'EXOPLANET_PHOTOMETRY' ? 'linear-gradient(135deg, #0284c7, #4f46e5)' : 'transparent',
+                  color: activeView === 'EXOPLANET_PHOTOMETRY' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Orbit size={13} color={activeView === 'EXOPLANET_PHOTOMETRY' ? '#fff' : '#38bdf8'} /> Exoplanet Light-Curve 🪐
+              </button>
+              <button
+                onClick={() => setActiveView('CARBON_MARKET')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'CARBON_MARKET' ? 'linear-gradient(135deg, #059669, #0d9488)' : 'transparent',
+                  color: activeView === 'CARBON_MARKET' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Leaf size={13} color={activeView === 'CARBON_MARKET' ? '#fff' : '#34d399'} /> Carbon Market 🌿
+              </button>
+              <button
                 onClick={() => setActiveView('ROADMAP')}
                 style={{
                   padding: '6px 14px',
@@ -3418,6 +3522,66 @@ function DashboardContent() {
           />
         )}
 
+        {activeView === 'FUSION_TOKAMAK' && (
+          <FusionTokamakSimView
+            onAddXp={(xp) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+            }}
+          />
+        )}
+
+        {activeView === 'BCI_SPELLER' && (
+          <BciNeuroSpellerView
+            onAddXp={(xp) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+            }}
+          />
+        )}
+
+        {activeView === 'LEGAL_ANALYZER' && (
+          <LegalContractAnalyzerView
+            onAddXp={(xp) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+            }}
+          />
+        )}
+
+        {activeView === 'EXOPLANET_PHOTOMETRY' && (
+          <ExoplanetPhotometryView
+            onAddXp={(xp) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+            }}
+          />
+        )}
+
+        {activeView === 'CARBON_MARKET' && (
+          <CarbonCreditMarketView
+            onAddXp={(xp) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+            }}
+          />
+        )}
+
         {activeView === 'ROADMAP' && (
           <div>
             {/* Top Progress & Banner */}
@@ -3432,12 +3596,12 @@ function DashboardContent() {
                   <div>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                       <span className="badge badge-completed">
-                        <CheckCircle2 size={12} /> ALL 90 PHASES FULLY OPERATIONAL (100% DONE!) 🏆
+                        <CheckCircle2 size={12} /> ALL 95 PHASES FULLY OPERATIONAL (100% DONE!) 🏆
                       </span>
-                      <span className="badge badge-active">GENESIS EDITION v14.0</span>
+                      <span className="badge badge-active">CENTURION SINGULARITY EDITION v15.0</span>
                     </div>
                     <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>
-                      Master Execution Matrix <span className="gradient-text">(90 Phases)</span>
+                      Master Execution Matrix <span className="gradient-text">(95 Phases)</span>
                     </h2>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '4px' }}>
                       Complete roadmap tracking and architecture deliverables across Study, Exams, Career & Mentor layers.
@@ -3666,7 +3830,7 @@ function DashboardContent() {
         marginTop: 'auto',
         backgroundColor: 'rgba(9, 13, 22, 0.95)'
       }}>
-        StudentLife OS 14.0 (Genesis Edition) &bull; 90 Phases Fully Operational &bull; 100% Production Ready 🏆
+        StudentLife OS 15.0 (Centurion Singularity Edition) &bull; 95 Phases Fully Operational &bull; 100% Production Ready 🏆
       </footer>
     </div>
   );

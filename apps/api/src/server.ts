@@ -87,6 +87,11 @@ import quantumQkdRouter from './routes/quantum-qkd.routes';
 import paperRefereeRouter from './routes/paper-referee.routes';
 import crisprEditorRouter from './routes/crispr-editor.routes';
 import ventureSyndicateRouter from './routes/venture-syndicate.routes';
+import fusionTokamakRouter from './routes/fusion-tokamak.routes';
+import bciSpellerRouter from './routes/bci-speller.routes';
+import legalAnalyzerRouter from './routes/legal-analyzer.routes';
+import exoplanetPhotometryRouter from './routes/exoplanet-photometry.routes';
+import carbonMarketRouter from './routes/carbon-market.routes';
 import { errorHandler } from './middlewares/errorHandler';
 
 const app: Express = express();
@@ -188,6 +193,11 @@ app.use('/api/quantum-qkd', quantumQkdRouter);
 app.use('/api/paper-referee', paperRefereeRouter);
 app.use('/api/crispr-editor', crisprEditorRouter);
 app.use('/api/venture-syndicate', ventureSyndicateRouter);
+app.use('/api/fusion-tokamak', fusionTokamakRouter);
+app.use('/api/bci-speller', bciSpellerRouter);
+app.use('/api/legal-analyzer', legalAnalyzerRouter);
+app.use('/api/exoplanet-photometry', exoplanetPhotometryRouter);
+app.use('/api/carbon-market', carbonMarketRouter);
 
 // Global Error Handler
 app.use(errorHandler);

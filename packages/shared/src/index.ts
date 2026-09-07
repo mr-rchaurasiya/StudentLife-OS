@@ -3804,4 +3804,153 @@ export interface GenerateSafeNoteDto {
   discountRatePercent?: number;
 }
 
+// ==========================================
+// 91. 3D Computational Fusion Plasma & Tokamak Magnetic Trap Simulator (Phase 91)
+// ==========================================
+export interface TokamakPlasmaParameters {
+  coreIonTemperatureKeV: number; // e.g. 15 keV (~150M Kelvin)
+  electronDensityM3: number; // e.g. 1.2e20 m^-3
+  energyConfinementTimeSeconds: number; // e.g. 3.8s
+  toroidalMagneticFieldTesla: number; // e.g. 5.3 Tesla
+  plasmaCurrentMegaAmps: number; // e.g. 15 MA
+  qFactorSafetySafety: number; // q_95 safety factor
+}
+
+export interface FusionReactionOutput {
+  id: string;
+  tokamakReactorName: string;
+  fusionGainQFactor: number; // Q = P_fusion / P_input
+  tripleProductKeVSM3: number; // n * T * tau_E
+  lawsonCriterionAchieved: boolean;
+  totalThermalPowerMegawatts: number;
+  alphaParticleHeatingMw: number;
+  plasmaStabilityStatus: 'STABLE_H_MODE' | 'EDGE_LOCALIZED_MODE' | 'DISRUPTION_RISK';
+}
+
+export interface SimulateTokamakPlasmaDto {
+  tokamakReactorName: string;
+  parameters: TokamakPlasmaParameters;
+  auxiliaryHeatingPowerMw: number;
+}
+
+// ==========================================
+// 92. BCI Brain-Computer Interface P300 Neuro-Speller Matrix (Phase 92)
+// ==========================================
+export interface BciMatrixTile {
+  char: string;
+  row: number;
+  col: number;
+  isFlashing: boolean;
+}
+
+export interface P300SpellerSession {
+  id: string;
+  targetWord: string;
+  spelledWord: string;
+  wordsPerMinute: number;
+  p300AmplitudeMicroVolts: number;
+  classificationConfidencePercent: number;
+  erpWaveform: { timeMs: number; czMv: number; pzMv: number; ozMv: number }[];
+  activeElectrodeMontage: string[];
+}
+
+export interface ProcessBciEpochDto {
+  targetWord: string;
+  currentSpelledText: string;
+  samplingRateHz: number;
+}
+
+// ==========================================
+// 93. Autonomous Legal Contract Analyzer & Patent Infringement Risk Radar (Phase 93)
+// ==========================================
+export interface ContractClauseRisk {
+  clauseTitle: string;
+  originalText: string;
+  riskCategory: 'UNFAIR_IP_ASSIGNMENT' | 'OVERREACHING_NON_COMPETE' | 'UNLIMITED_INDEMNITY' | 'HIDDEN_PENALTY';
+  severityLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  suggestedRedlineText: string;
+  legalJustification: string;
+}
+
+export interface LegalRiskAssessmentReport {
+  id: string;
+  contractTitle: string;
+  overallRiskScore: number; // 0 (Safe) to 100 (Hazardous)
+  contractSafetyTier: 'LOW_RISK_STUDENT_FRIENDLY' | 'MODERATE_REVIEW_ADVISED' | 'HIGH_RISK_DO_NOT_SIGN';
+  flaggedClauses: ContractClauseRisk[];
+  ipRetainedPercent: number;
+  patentInfringementRiskPercent: number;
+}
+
+export interface AnalyzeLegalContractDto {
+  contractTitle: string;
+  contractFullText: string;
+  studentRole: 'FREELANCER' | 'STUDENT_FOUNDER' | 'RESEARCH_ASSISTANT';
+}
+
+// ==========================================
+// 94. Exoplanet Transit Photometry & Kepler Light-Curve Extractor (Phase 94)
+// ==========================================
+export interface PhotometryDataPoint {
+  timeHours: number;
+  normalizedFlux: number;
+  fluxError: number;
+}
+
+export interface ExoplanetTransitAnalysis {
+  id: string;
+  starName: string;
+  planetName: string;
+  transitDepthPpm: number; // Parts per million
+  planetRadiusEarthRadii: number;
+  orbitalPeriodDays: number;
+  semiMajorAxisAu: number;
+  equilibriumTempKelvin: number;
+  isInHabitableZone: boolean;
+  transitLightCurve: PhotometryDataPoint[];
+}
+
+export interface AnalyzeTransitLightCurveDto {
+  starName: string;
+  stellarRadiusSolar: number;
+  stellarEffectiveTempK: number;
+  lightCurvePoints?: PhotometryDataPoint[];
+}
+
+// ==========================================
+// 95. Collegiate Carbon Credit Smart Market & ESG Offset Ledger (Phase 95)
+// ==========================================
+export interface CarbonCreditListing {
+  id: string;
+  campusProjectName: string;
+  creditType: 'SOLAR_ROOFTOP' | 'EV_SHUTTLE_OFFSET' | 'TREE_PLANTATION' | 'FOOD_WASTE_BIOGAS';
+  tonnesCo2Offset: number;
+  pricePerTonneCredits: number;
+  verifierOrganization: string;
+  sellerStudentOrg: string;
+  sha256CertificateHash: string;
+}
+
+export interface EsgFootprintReport {
+  id: string;
+  scope1EmissionsTonnes: number;
+  scope2EmissionsTonnes: number;
+  scope3EmissionsTonnes: number;
+  netCarbonBalanceTonnes: number;
+  greenCampusRating: 'PLATINUM' | 'GOLD' | 'SILVER';
+  activeListings: CarbonCreditListing[];
+}
+
+export interface TradeCarbonCreditDto {
+  listingId: string;
+  tonnesToBuy: number;
+  buyerAddress: string;
+}
+
+export interface CalculateEsgFootprintDto {
+  campusBuildingId: string;
+  electricityKwh: number;
+  transportKm: number;
+}
+
 
