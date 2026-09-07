@@ -8,9 +8,10 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "npm run dev --workspace=apps/web",
+    "dev": "concurrently -n \"API,WEB\" -c \"cyan,magenta\" \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:web": "npm run dev --workspace=apps/web",
     "dev:api": "npm run dev --workspace=apps/api",
-    "dev:all": "npm run dev --workspaces --if-present",
+    "dev:all": "concurrently -n \"API,WEB\" -c \"cyan,magenta\" \"npm:dev:api\" \"npm:dev:web\"",
     "build": "npm run build --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "test": "npm run test --workspaces --if-present"
@@ -23,5 +24,8 @@
     "career"
   ],
   "author": "StudentLife OS Team",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^10.0.5"
+  }
 }
