@@ -46,6 +46,11 @@ import { SocraticDebateArenaView } from './components/SocraticDebateArenaView';
 import { CampusExchangeView } from './components/CampusExchangeView';
 import { VideoLectureNavigatorView } from './components/VideoLectureNavigatorView';
 import { ErgonomicWellnessView } from './components/ErgonomicWellnessView';
+import { MultiAgentResearchLabView } from './components/MultiAgentResearchLabView';
+import { NeuralFlowTelemetryView } from './components/NeuralFlowTelemetryView';
+import { HostelMessNutritionView } from './components/HostelMessNutritionView';
+import { LatexThesisStudioView } from './components/LatexThesisStudioView';
+import { HackathonRadarView } from './components/HackathonRadarView';
 import { LanguageSelectorModal } from './components/LanguageSelectorModal';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import { PwaInstallPromptWidget } from './components/PwaInstallPromptWidget';
@@ -108,6 +113,10 @@ import {
   PackageSearch,
   Video,
   Eye,
+  Bot,
+  Waves,
+  Utensils,
+  FileCode2,
 } from 'lucide-react';
 
 interface PhaseItem {
@@ -175,6 +184,11 @@ const PHASES: PhaseItem[] = [
   { id: 'p53', number: '53', name: 'Smart Campus Lost & Found + Exchange', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Lost & Found Item Tracker', 'Peer Equipment/Calculator Exchange', 'Category Filtering', 'Contact Bridge'] },
   { id: 'p54', number: '54', name: 'Multimodal Video Lecture Navigator', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Timestamped Concept Markers', 'Whiteboard Math Proof Extraction', 'Printable Cheatsheet Markdown', 'Jump-to-Chapter Timeline'] },
   { id: 'p55', number: '55', name: 'Ergonomic Posture & Eye-Blink Monitor', pillar: 'FOUNDATION', status: 'COMPLETED', deliverables: ['Webcam Posture/Distance Telemetry', 'Blink Rate & Eye Strain Index', '20-20-20 Optical Rest Engine', 'Desk Micro-Stretch Routines'] },
+  { id: 'p56', number: '56', name: 'Multi-Agent AI Research Lab', pillar: 'AI_COMMUNITY', status: 'COMPLETED', deliverables: ['3 Autonomous AI Agents', 'Lit Scout / Critic / Synthesizer', 'Thesis Proposal Generator', 'Experiment Matrix Blueprint'] },
+  { id: 'p57', number: '57', name: 'Neural Biometric Flow Telemetry', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Multi-Band EEG Spectral Density', 'Dynamic 40Hz Gamma Modulator', 'Flow State Probability Gauge', 'Fatigue Recovery Predictor'] },
+  { id: 'p58', number: '58', name: 'Smart Hostel Mess & Nutrition', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Weekly Dining Schedule Manager', 'Student Dish Rating Board', 'Brain-Fuel Protein/Water Log', 'Caffeine-Sleep Latency Alert'] },
+  { id: 'p59', number: '59', name: 'Overleaf-Style LaTeX Thesis Studio', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Dual-Pane Live LaTeX Compiler', 'IEEE / ACM / Springer Templates', 'Natural Language Math Formatter', '1-Click Source/PDF Export'] },
+  { id: 'p60', number: '60', name: 'Global Hackathon Radar & Matchmaker', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Worldwide Competition Tracker', 'AI Teammate Matchmaker', 'Skill-Complementary Team Builder', 'Direct Contact Handoffs'] },
 ];
 
 const DEFAULT_DEMO_PROFILE: StudentProfile = {
@@ -385,7 +399,7 @@ const DEFAULT_SYLLABUS_OVERVIEW: SyllabusOverviewStats = {
 
 function DashboardContent() {
   const { user, tokens, isAuthenticated, logout } = useAuth();
-  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'EXAM_TREND' | 'AI_WHITEBOARD' | 'STUDENT_FINANCES' | 'HOLO_SIMULATIONS' | 'SKILL_PASSPORT' | 'ARXIV_SCHOLAR' | 'SOCRATIC_DEBATE' | 'CAMPUS_EXCHANGE' | 'VIDEO_NAVIGATOR' | 'ERGONOMIC_WELLNESS' | 'ROADMAP'>('DASHBOARD');
+  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'EXAM_TREND' | 'AI_WHITEBOARD' | 'STUDENT_FINANCES' | 'HOLO_SIMULATIONS' | 'SKILL_PASSPORT' | 'ARXIV_SCHOLAR' | 'SOCRATIC_DEBATE' | 'CAMPUS_EXCHANGE' | 'VIDEO_NAVIGATOR' | 'ERGONOMIC_WELLNESS' | 'RESEARCH_LAB' | 'NEURAL_FLOW' | 'HOSTEL_NUTRITION' | 'LATEX_STUDIO' | 'HACKATHON_RADAR' | 'ROADMAP'>('DASHBOARD');
   const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>('en');
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
   const [initialAiStudyContent, setInitialAiStudyContent] = useState<string>('');
@@ -1748,6 +1762,96 @@ function DashboardContent() {
                 <Eye size={13} color={activeView === 'ERGONOMIC_WELLNESS' ? '#fff' : '#34d399'} /> Ergonomics Bio-Cam 👁️
               </button>
               <button
+                onClick={() => setActiveView('RESEARCH_LAB')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'RESEARCH_LAB' ? 'linear-gradient(135deg, #6366f1, #a855f7)' : 'transparent',
+                  color: activeView === 'RESEARCH_LAB' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Bot size={13} color={activeView === 'RESEARCH_LAB' ? '#fff' : '#818cf8'} /> AI Research Lab 🧬
+              </button>
+              <button
+                onClick={() => setActiveView('NEURAL_FLOW')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'NEURAL_FLOW' ? 'linear-gradient(135deg, #ec4899, #8b5cf6)' : 'transparent',
+                  color: activeView === 'NEURAL_FLOW' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Waves size={13} color={activeView === 'NEURAL_FLOW' ? '#fff' : '#f472b6'} /> Neural Flow 🧠
+              </button>
+              <button
+                onClick={() => setActiveView('HOSTEL_NUTRITION')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'HOSTEL_NUTRITION' ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'transparent',
+                  color: activeView === 'HOSTEL_NUTRITION' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Utensils size={13} color={activeView === 'HOSTEL_NUTRITION' ? '#fff' : '#fbbf24'} /> Hostel Mess 🥗
+              </button>
+              <button
+                onClick={() => setActiveView('LATEX_STUDIO')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'LATEX_STUDIO' ? 'linear-gradient(135deg, #06b6d4, #3b82f6)' : 'transparent',
+                  color: activeView === 'LATEX_STUDIO' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <FileCode2 size={13} color={activeView === 'LATEX_STUDIO' ? '#fff' : '#22d3ee'} /> LaTeX Studio 📐
+              </button>
+              <button
+                onClick={() => setActiveView('HACKATHON_RADAR')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'HACKATHON_RADAR' ? 'linear-gradient(135deg, #ef4444, #f59e0b)' : 'transparent',
+                  color: activeView === 'HACKATHON_RADAR' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Trophy size={13} color={activeView === 'HACKATHON_RADAR' ? '#fff' : '#f87171'} /> Hackathons 🏆
+              </button>
+              <button
                 onClick={() => setActiveView('ROADMAP')}
                 style={{
                   padding: '6px 14px',
@@ -1763,7 +1867,7 @@ function DashboardContent() {
                   color: activeView === 'ROADMAP' ? '#ffffff' : 'var(--text-secondary)',
                 }}
               >
-                <Layers size={13} /> 55-Phase Quantum Matrix 🗺️
+                <Layers size={13} /> 60-Phase Singularity Matrix 🗺️
               </button>
             </div>
           </div>
@@ -2307,6 +2411,71 @@ function DashboardContent() {
           <ErgonomicWellnessView />
         )}
 
+        {activeView === 'RESEARCH_LAB' && (
+          <MultiAgentResearchLabView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'NEURAL_FLOW' && (
+          <NeuralFlowTelemetryView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'HOSTEL_NUTRITION' && (
+          <HostelMessNutritionView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'LATEX_STUDIO' && (
+          <LatexThesisStudioView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'HACKATHON_RADAR' && (
+          <HackathonRadarView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
         {activeView === 'ROADMAP' && (
           <div>
             {/* Top Progress & Banner */}
@@ -2321,12 +2490,12 @@ function DashboardContent() {
                   <div>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                       <span className="badge badge-completed">
-                        <CheckCircle2 size={12} /> ALL 55 PHASES FULLY OPERATIONAL (100% DONE!) 🏆
+                        <CheckCircle2 size={12} /> ALL 60 PHASES FULLY OPERATIONAL (100% DONE!) 🏆
                       </span>
-                      <span className="badge badge-active">QUANTUM EDITION v7.0</span>
+                      <span className="badge badge-active">SINGULARITY EDITION v8.0</span>
                     </div>
                     <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>
-                      Master Execution Matrix <span className="gradient-text">(55 Phases)</span>
+                      Master Execution Matrix <span className="gradient-text">(60 Phases)</span>
                     </h2>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '4px' }}>
                       Complete roadmap tracking and architecture deliverables across Study, Exams, Career & Mentor layers.
@@ -2555,7 +2724,7 @@ function DashboardContent() {
         marginTop: 'auto',
         backgroundColor: 'rgba(9, 13, 22, 0.95)'
       }}>
-        StudentLife OS 7.0 (Quantum Edition) &bull; 55 Phases Fully Operational &bull; 100% Production Ready 🏆
+        StudentLife OS 8.0 (Singularity Edition) &bull; 60 Phases Fully Operational &bull; 100% Production Ready 🏆
       </footer>
     </div>
   );

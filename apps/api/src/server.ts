@@ -52,6 +52,11 @@ import socraticDebateRouter from './routes/socratic-debate.routes';
 import campusExchangeRouter from './routes/campus-exchange.routes';
 import videoNavigatorRouter from './routes/video-navigator.routes';
 import ergonomicWellnessRouter from './routes/ergonomic-wellness.routes';
+import researchLabRouter from './routes/research-lab.routes';
+import neuralFlowRouter from './routes/neural-flow.routes';
+import hostelNutritionRouter from './routes/hostel-nutrition.routes';
+import latexStudioRouter from './routes/latex-studio.routes';
+import hackathonRadarRouter from './routes/hackathon-radar.routes';
 import { errorHandler } from './middlewares/errorHandler';
 
 const app: Express = express();
@@ -118,6 +123,11 @@ app.use('/api/socratic-debate', socraticDebateRouter);
 app.use('/api/campus-exchange', campusExchangeRouter);
 app.use('/api/video-navigator', videoNavigatorRouter);
 app.use('/api/ergonomic-wellness', ergonomicWellnessRouter);
+app.use('/api/research-lab', researchLabRouter);
+app.use('/api/neural-flow', neuralFlowRouter);
+app.use('/api/hostel-nutrition', hostelNutritionRouter);
+app.use('/api/latex-studio', latexStudioRouter);
+app.use('/api/hackathon-radar', hackathonRadarRouter);
 
 // Global Error Handler
 app.use(errorHandler);

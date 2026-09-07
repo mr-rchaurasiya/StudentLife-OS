@@ -2591,5 +2591,183 @@ export interface LogErgonomicSessionDto {
   distanceCm?: number;
 }
 
+// ==========================================
+// 56. Multi-Agent AI Research Lab & Thesis Proposal Generator (Phase 56)
+// ==========================================
+export type ResearchAgentRole = 'LITERATURE_SCOUT' | 'METHODOLOGY_CRITIC' | 'PROPOSAL_SYNTHESIZER';
+
+export interface ResearchAgentMessage {
+  agentRole: ResearchAgentRole;
+  agentName: string;
+  avatarColor: string;
+  timestamp: string;
+  content: string;
+  citationsReferenced: string[];
+}
+
+export interface ResearchHypothesisProposal {
+  id: string;
+  topicTitle: string;
+  domain: string;
+  hypothesisStatement: string;
+  literatureGapsIdentified: string[];
+  proposedMethodology: string;
+  expectedDeliverables: string[];
+  suggestedExperimentSteps: string[];
+  targetConferencesOrJournals: string[];
+  agentDialogues: ResearchAgentMessage[];
+  createdAt: string;
+}
+
+export interface RunResearchAgentsDto {
+  researchTopic: string;
+  domain?: string;
+  additionalConstraints?: string;
+}
+
+// ==========================================
+// 57. Neural Biometric Flow & Attention Telemetry (Phase 57)
+// ==========================================
+export interface BrainWaveBands {
+  alphaBandHz: number; // 8 - 12 Hz (Relaxed Alertness & Memory)
+  betaBandHz: number;  // 13 - 30 Hz (Active Problem Solving)
+  thetaBandHz: number; // 4 - 8 Hz (Deep Creativity & Intuition)
+  gammaBandHz: number; // 30 - 50 Hz (Hyper-Focus & Cross-Modal Processing)
+}
+
+export interface NeuralFlowTelemetry {
+  flowStateScore: number; // 0 - 100
+  dominantWaveBand: 'ALPHA' | 'BETA' | 'THETA' | 'GAMMA';
+  waves: BrainWaveBands;
+  binauralTuningFrequencyHz: number;
+  focusImmersionMinutes: number;
+  cognitiveFatiguePercent: number;
+  recommendedModulation: string;
+  timestamp: string;
+}
+
+export interface AdjustBinauralFrequencyDto {
+  targetWaveBand: 'ALPHA' | 'BETA' | 'THETA' | 'GAMMA';
+  customHz?: number;
+}
+
+// ==========================================
+// 58. Smart Hostel Mess & Student Nutrition Brain-Fuel Tracker (Phase 58)
+// ==========================================
+export type MessMealSlot = 'BREAKFAST' | 'LUNCH' | 'EVENING_SNACKS' | 'DINNER';
+
+export interface MessMenuItem {
+  id: string;
+  slot: MessMealSlot;
+  dishName: string;
+  isVegetarian: boolean;
+  caloriesKcal: number;
+  proteinGrams: number;
+  brainFuelTag?: string; // e.g., "High Choline", "Omega-3 Rich", "Slow GI Carbs"
+  avgStudentRating: number; // 1.0 - 5.0
+}
+
+export interface HostelDailyMenu {
+  dayOfWeek: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY';
+  messHallName: string;
+  meals: MessMenuItem[];
+}
+
+export interface NutrientIntakeLog {
+  totalCalories: number;
+  proteinGramsToday: number;
+  targetProteinGrams: number;
+  caffeineMgToday: number;
+  hydrationLitersToday: number;
+  brainNutrientStatus: {
+    omega3Status: 'OPTIMAL' | 'MODERATE' | 'LOW';
+    vitaminB12Status: 'OPTIMAL' | 'MODERATE' | 'LOW';
+    ironStatus: 'OPTIMAL' | 'MODERATE' | 'LOW';
+  };
+  sleepLatencyImpactWarning?: string;
+}
+
+export interface LogNutrientIntakeDto {
+  dishName: string;
+  caloriesKcal: number;
+  proteinGrams: number;
+  caffeineMg?: number;
+  waterMl?: number;
+}
+
+export interface RateMealDto {
+  dishId: string;
+  rating: number; // 1 to 5
+  feedbackComment?: string;
+}
+
+// ==========================================
+// 59. Interactive LaTeX Academic Paper & Thesis Studio (Phase 59)
+// ==========================================
+export type LatexDocumentTemplate = 'IEEE_TRANSACTIONS' | 'ACM_SIGCONF' | 'SPRINGER_LNCS' | 'NEURIPS_PAPER';
+
+export interface LatexPaperProject {
+  id: string;
+  title: string;
+  authorNames: string[];
+  template: LatexDocumentTemplate;
+  abstractText: string;
+  latexSourceCode: string;
+  compiledHtmlPreview: string;
+  wordCount: number;
+  lastCompiledAt: string;
+}
+
+export interface CompileLatexDto {
+  latexSourceCode: string;
+  template?: LatexDocumentTemplate;
+}
+
+export interface FormatMathEquationDto {
+  naturalLanguageMathDescription: string;
+}
+
+// ==========================================
+// 60. Global Hackathon Radar & AI Team Formation Matchmaker (Phase 60)
+// ==========================================
+export type HackathonFormat = 'ONLINE_GLOBAL' | 'IN_PERSON_CAMPUS' | 'HYBRID';
+
+export interface HackathonTeamNeed {
+  roleTitle: string; // e.g. "Full-Stack React Engineer", "Computer Vision ML Specialist"
+  skillsRequired: string[];
+  isFilled: boolean;
+}
+
+export interface HackathonEvent {
+  id: string;
+  title: string;
+  organizer: string;
+  format: HackathonFormat;
+  prizePool: string;
+  daysRemaining: number;
+  registrationDeadline: string;
+  bannerGradient: string;
+  themes: string[];
+  portalUrl: string;
+  openTeamSpotsCount: number;
+  featuredChallenge: string;
+}
+
+export interface HackathonTeamMatchResult {
+  matchScorePercent: number;
+  teamName: string;
+  hackathonId: string;
+  hackathonTitle: string;
+  members: Array<{ name: string; role: string; avatarUrl: string }>;
+  openRolesNeeded: string[];
+  contactHandle: string;
+}
+
+export interface FindTeammatesDto {
+  mySkills: string[];
+  preferredTheme?: string;
+  preferredFormat?: HackathonFormat;
+}
+
 
 
