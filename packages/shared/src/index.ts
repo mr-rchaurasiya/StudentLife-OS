@@ -2769,5 +2769,171 @@ export interface FindTeammatesDto {
   preferredFormat?: HackathonFormat;
 }
 
+// ==========================================
+// 61. Autonomous AI Patent & IP Drafter (Phase 61)
+// ==========================================
+export type PatentJurisdiction = 'USPTO_USA' | 'IPO_INDIA' | 'EPO_EUROPE' | 'WIPO_PCT';
+
+export interface ProvisionalPatentDraft {
+  id: string;
+  inventionTitle: string;
+  inventorNames: string[];
+  jurisdiction: PatentJurisdiction;
+  technicalField: string;
+  backgroundPriorArtGaps: string[];
+  summaryOfInvention: string;
+  independentClaims: string[];
+  patentabilityScore: number; // 0 - 100
+  noveltySearchKeywords: string[];
+  createdAt: string;
+}
+
+export interface DraftPatentDto {
+  projectTitle: string;
+  projectDescription: string;
+  technicalField?: string;
+  jurisdiction?: PatentJurisdiction;
+}
+
+export interface PatentSearchQueryDto {
+  queryKeywords: string;
+}
+
+// ==========================================
+// 62. Faculty Office Hours & 1-on-1 Advisory Scheduler (Phase 62)
+// ==========================================
+export type AdvisoryPurpose = 'THESIS_GUIDANCE' | 'LOR_REQUEST' | 'EXAM_GRADE_REVIEW' | 'RESEARCH_FELLOWSHIP';
+
+export interface FacultyOfficeSlot {
+  id: string;
+  professorName: string;
+  department: string;
+  officeRoom: string;
+  avatarUrl: string;
+  availableDays: string[];
+  timeSlotFormatted: string; // e.g., "14:00 - 16:00 IST"
+  maxStudentsPerSlot: number;
+  currentBookingsCount: number;
+}
+
+export interface AdvisoryBooking {
+  id: string;
+  facultyId: string;
+  professorName: string;
+  studentName: string;
+  scheduledDate: string;
+  scheduledTime: string;
+  purpose: AdvisoryPurpose;
+  agendaDescription: string;
+  briefingPacketSummary: string;
+  status: 'CONFIRMED' | 'COMPLETED' | 'CANCELLED';
+  createdAt: string;
+}
+
+export interface BookAdvisorySlotDto {
+  facultyId: string;
+  scheduledDate: string;
+  purpose: AdvisoryPurpose;
+  agendaDescription: string;
+}
+
+// ==========================================
+// 63. AI Micro-Tutoring & Peer Doubt Bounty Marketplace (Phase 63)
+// ==========================================
+export type TutorBountyStatus = 'OPEN' | 'IN_SESSION' | 'SOLVED' | 'EXPIRED';
+
+export interface PeerTutorBounty {
+  id: string;
+  studentName: string;
+  studentAvatar: string;
+  subjectTag: string;
+  topicTitle: string;
+  doubtDescription: string;
+  coinBountyReward: number;
+  xpReward: number;
+  urgencyMinutes: number; // e.g. 15 mins
+  status: TutorBountyStatus;
+  assignedTutorName?: string;
+  createdAt: string;
+}
+
+export interface CreateTutorBountyDto {
+  subjectTag: string;
+  topicTitle: string;
+  doubtDescription: string;
+  coinBountyReward?: number;
+  urgencyMinutes?: number;
+}
+
+export interface AcceptTutorBountyDto {
+  bountyId: string;
+}
+
+// ==========================================
+// 64. Smart Campus Printing & Laser Plotter Queue Hub (Phase 64)
+// ==========================================
+export type PrintLocation = 'CENTRAL_LIBRARY' | 'CS_DEPT_LAB' | 'HOSTEL_XEROX_HUB';
+export type PrintJobStatus = 'QUEUED' | 'READY_FOR_PICKUP' | 'PRINTING' | 'COMPLETED';
+
+export interface CampusPrintJob {
+  id: string;
+  documentTitle: string;
+  pageCount: number;
+  isDoubleSided: boolean;
+  isColor: boolean;
+  estimatedCostINR: number;
+  location: PrintLocation;
+  qrReleaseCode: string;
+  status: PrintJobStatus;
+  createdAt: string;
+}
+
+export interface CreatePrintJobDto {
+  documentTitle: string;
+  pageCount: number;
+  isDoubleSided?: boolean;
+  isColor?: boolean;
+  location?: PrintLocation;
+}
+
+// ==========================================
+// 65. AI Alumni Mentorship & Senior Career Guidance Radar (Phase 65)
+// ==========================================
+export type AlumniIndustry = 'BIG_TECH' | 'QUANT_FINANCE' | 'DEEP_TECH_AI' | 'SPACE_ROBOTICS' | 'MANAGEMENT_CONSULTING';
+
+export interface AlumnusMentor {
+  id: string;
+  fullName: string;
+  graduationYear: number;
+  degree: string;
+  companyName: string;
+  currentDesignation: string;
+  industry: AlumniIndustry;
+  avatarUrl: string;
+  linkedinHandle: string;
+  bioSnippet: string;
+  availableCoffeeSlotsCount: number;
+  topAdviceTag: string;
+}
+
+export interface AlumniMentorshipRequest {
+  id: string;
+  mentorId: string;
+  mentorName: string;
+  studentName: string;
+  requestedDate: string;
+  topicDiscussion: string;
+  aiSuggestedIcebreaker: string;
+  status: 'PENDING_APPROVAL' | 'ACCEPTED' | 'COMPLETED';
+  meetingRoomUrl?: string;
+  createdAt: string;
+}
+
+export interface RequestAlumniChatDto {
+  mentorId: string;
+  topicDiscussion: string;
+  preferredDate?: string;
+}
+
 
 

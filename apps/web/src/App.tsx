@@ -51,6 +51,11 @@ import { NeuralFlowTelemetryView } from './components/NeuralFlowTelemetryView';
 import { HostelMessNutritionView } from './components/HostelMessNutritionView';
 import { LatexThesisStudioView } from './components/LatexThesisStudioView';
 import { HackathonRadarView } from './components/HackathonRadarView';
+import { PatentDrafterView } from './components/PatentDrafterView';
+import { FacultyAdvisoryView } from './components/FacultyAdvisoryView';
+import { TutorBountyMarketView } from './components/TutorBountyMarketView';
+import { CampusPrintingQueueView } from './components/CampusPrintingQueueView';
+import { AlumniMentorshipRadarView } from './components/AlumniMentorshipRadarView';
 import { LanguageSelectorModal } from './components/LanguageSelectorModal';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import { PwaInstallPromptWidget } from './components/PwaInstallPromptWidget';
@@ -72,6 +77,7 @@ import {
   GraduationCap,
   BookOpen,
   FileCheck2,
+  FileCheck,
   Briefcase,
   Sparkles,
   CheckCircle2,
@@ -117,6 +123,8 @@ import {
   Waves,
   Utensils,
   FileCode2,
+  Coins,
+  Printer,
 } from 'lucide-react';
 
 interface PhaseItem {
@@ -189,6 +197,11 @@ const PHASES: PhaseItem[] = [
   { id: 'p58', number: '58', name: 'Smart Hostel Mess & Nutrition', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Weekly Dining Schedule Manager', 'Student Dish Rating Board', 'Brain-Fuel Protein/Water Log', 'Caffeine-Sleep Latency Alert'] },
   { id: 'p59', number: '59', name: 'Overleaf-Style LaTeX Thesis Studio', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Dual-Pane Live LaTeX Compiler', 'IEEE / ACM / Springer Templates', 'Natural Language Math Formatter', '1-Click Source/PDF Export'] },
   { id: 'p60', number: '60', name: 'Global Hackathon Radar & Matchmaker', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Worldwide Competition Tracker', 'AI Teammate Matchmaker', 'Skill-Complementary Team Builder', 'Direct Contact Handoffs'] },
+  { id: 'p61', number: '61', name: 'AI Patent & IP Drafter', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['USPTO/IPO Provisional Drafting', 'Independent & Dependent Claims Synthesizer', 'Novelty Prior-Art Boolean Queries', 'Patentability Index Calculator'] },
+  { id: 'p62', number: '62', name: 'Faculty 1-on-1 Advisory', pillar: 'FOUNDATION', status: 'COMPLETED', deliverables: ['Real-Time Office Hours Calendar', 'Pre-Meeting Briefing Pack Synthesizer', 'LOR & Research Endorsement Requests', 'Virtual Room Bridge'] },
+  { id: 'p63', number: '63', name: 'Peer Tutor Bounty Market', pillar: 'AI_COMMUNITY', status: 'COMPLETED', deliverables: ['Doubt Bounty Escrow Engine', 'Study Coin Micro-Payments', '1-on-1 Whiteboard Solving Sessions', 'Tutor Credibility Badges'] },
+  { id: 'p64', number: '64', name: 'Smart Campus Print Hub', pillar: 'FOUNDATION', status: 'COMPLETED', deliverables: ['Library/Hostel Print Node Radar', 'Dynamic Duplex/Color Cost Calculator', 'Encrypted 4-Digit Release PINs', 'Direct PDF Upload & Queue Telemetry'] },
+  { id: 'p65', number: '65', name: 'AI Alumni Mentorship Radar', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Verified Alumni Career Directory', '15-Min Coffee Chat Booker', 'AI Socratic Icebreaker Generator', 'Direct Meet & Mentorship Telemetry'] },
 ];
 
 const DEFAULT_DEMO_PROFILE: StudentProfile = {
@@ -399,7 +412,7 @@ const DEFAULT_SYLLABUS_OVERVIEW: SyllabusOverviewStats = {
 
 function DashboardContent() {
   const { user, tokens, isAuthenticated, logout } = useAuth();
-  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'EXAM_TREND' | 'AI_WHITEBOARD' | 'STUDENT_FINANCES' | 'HOLO_SIMULATIONS' | 'SKILL_PASSPORT' | 'ARXIV_SCHOLAR' | 'SOCRATIC_DEBATE' | 'CAMPUS_EXCHANGE' | 'VIDEO_NAVIGATOR' | 'ERGONOMIC_WELLNESS' | 'RESEARCH_LAB' | 'NEURAL_FLOW' | 'HOSTEL_NUTRITION' | 'LATEX_STUDIO' | 'HACKATHON_RADAR' | 'ROADMAP'>('DASHBOARD');
+  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'EXAM_TREND' | 'AI_WHITEBOARD' | 'STUDENT_FINANCES' | 'HOLO_SIMULATIONS' | 'SKILL_PASSPORT' | 'ARXIV_SCHOLAR' | 'SOCRATIC_DEBATE' | 'CAMPUS_EXCHANGE' | 'VIDEO_NAVIGATOR' | 'ERGONOMIC_WELLNESS' | 'RESEARCH_LAB' | 'NEURAL_FLOW' | 'HOSTEL_NUTRITION' | 'LATEX_STUDIO' | 'HACKATHON_RADAR' | 'PATENT_DRAFTER' | 'FACULTY_ADVISORY' | 'TUTOR_BOUNTY' | 'CAMPUS_PRINTING' | 'ALUMNI_RADAR' | 'ROADMAP'>('DASHBOARD');
   const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>('en');
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
   const [initialAiStudyContent, setInitialAiStudyContent] = useState<string>('');
@@ -1852,6 +1865,96 @@ function DashboardContent() {
                 <Trophy size={13} color={activeView === 'HACKATHON_RADAR' ? '#fff' : '#f87171'} /> Hackathons 🏆
               </button>
               <button
+                onClick={() => setActiveView('PATENT_DRAFTER')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'PATENT_DRAFTER' ? 'linear-gradient(135deg, #10b981, #06b6d4)' : 'transparent',
+                  color: activeView === 'PATENT_DRAFTER' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <FileCheck size={13} color={activeView === 'PATENT_DRAFTER' ? '#fff' : '#34d399'} /> Patent & IP 📜
+              </button>
+              <button
+                onClick={() => setActiveView('FACULTY_ADVISORY')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'FACULTY_ADVISORY' ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'transparent',
+                  color: activeView === 'FACULTY_ADVISORY' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <GraduationCap size={13} color={activeView === 'FACULTY_ADVISORY' ? '#fff' : '#818cf8'} /> Faculty Advisory 🎓
+              </button>
+              <button
+                onClick={() => setActiveView('TUTOR_BOUNTY')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'TUTOR_BOUNTY' ? 'linear-gradient(135deg, #f59e0b, #ef4444)' : 'transparent',
+                  color: activeView === 'TUTOR_BOUNTY' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Coins size={13} color={activeView === 'TUTOR_BOUNTY' ? '#fff' : '#fbbf24'} /> Tutor Bounty 💰
+              </button>
+              <button
+                onClick={() => setActiveView('CAMPUS_PRINTING')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'CAMPUS_PRINTING' ? 'linear-gradient(135deg, #06b6d4, #3b82f6)' : 'transparent',
+                  color: activeView === 'CAMPUS_PRINTING' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Printer size={13} color={activeView === 'CAMPUS_PRINTING' ? '#fff' : '#22d3ee'} /> Campus Print 🖨️
+              </button>
+              <button
+                onClick={() => setActiveView('ALUMNI_RADAR')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'ALUMNI_RADAR' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : 'transparent',
+                  color: activeView === 'ALUMNI_RADAR' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Users size={13} color={activeView === 'ALUMNI_RADAR' ? '#fff' : '#c084fc'} /> Alumni Mentors 🌐
+              </button>
+              <button
                 onClick={() => setActiveView('ROADMAP')}
                 style={{
                   padding: '6px 14px',
@@ -1867,7 +1970,7 @@ function DashboardContent() {
                   color: activeView === 'ROADMAP' ? '#ffffff' : 'var(--text-secondary)',
                 }}
               >
-                <Layers size={13} /> 60-Phase Singularity Matrix 🗺️
+                <Layers size={13} /> 65-Phase Cosmos Matrix 🗺️
               </button>
             </div>
           </div>
@@ -2476,6 +2579,71 @@ function DashboardContent() {
           />
         )}
 
+        {activeView === 'PATENT_DRAFTER' && (
+          <PatentDrafterView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'FACULTY_ADVISORY' && (
+          <FacultyAdvisoryView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'TUTOR_BOUNTY' && (
+          <TutorBountyMarketView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'CAMPUS_PRINTING' && (
+          <CampusPrintingQueueView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'ALUMNI_RADAR' && (
+          <AlumniMentorshipRadarView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
         {activeView === 'ROADMAP' && (
           <div>
             {/* Top Progress & Banner */}
@@ -2490,12 +2658,12 @@ function DashboardContent() {
                   <div>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                       <span className="badge badge-completed">
-                        <CheckCircle2 size={12} /> ALL 60 PHASES FULLY OPERATIONAL (100% DONE!) 🏆
+                        <CheckCircle2 size={12} /> ALL 65 PHASES FULLY OPERATIONAL (100% DONE!) 🏆
                       </span>
-                      <span className="badge badge-active">SINGULARITY EDITION v8.0</span>
+                      <span className="badge badge-active">COSMOS EDITION v9.0</span>
                     </div>
                     <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>
-                      Master Execution Matrix <span className="gradient-text">(60 Phases)</span>
+                      Master Execution Matrix <span className="gradient-text">(65 Phases)</span>
                     </h2>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '4px' }}>
                       Complete roadmap tracking and architecture deliverables across Study, Exams, Career & Mentor layers.
@@ -2724,7 +2892,7 @@ function DashboardContent() {
         marginTop: 'auto',
         backgroundColor: 'rgba(9, 13, 22, 0.95)'
       }}>
-        StudentLife OS 8.0 (Singularity Edition) &bull; 60 Phases Fully Operational &bull; 100% Production Ready 🏆
+        StudentLife OS 9.0 (Cosmos Edition) &bull; 65 Phases Fully Operational &bull; 100% Production Ready 🏆
       </footer>
     </div>
   );
