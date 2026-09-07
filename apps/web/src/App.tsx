@@ -76,6 +76,11 @@ import { AstrodynamicsOrbitSimView } from './components/AstrodynamicsOrbitSimVie
 import { ChemicalRetrosynthesisView } from './components/ChemicalRetrosynthesisView';
 import { ScholarCitationTrackerView } from './components/ScholarCitationTrackerView';
 import { StudyGuildDaoView } from './components/StudyGuildDaoView';
+import { NeuromorphicSnnLabView } from './components/NeuromorphicSnnLabView';
+import { QuantumKeyDistSimView } from './components/QuantumKeyDistSimView';
+import { AcademicPeerReviewerView } from './components/AcademicPeerReviewerView';
+import { CrisprGeneEditorView } from './components/CrisprGeneEditorView';
+import { VentureSyndicateSafeView } from './components/VentureSyndicateSafeView';
 import { LanguageSelectorModal } from './components/LanguageSelectorModal';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import { PwaInstallPromptWidget } from './components/PwaInstallPromptWidget';
@@ -155,6 +160,9 @@ import {
   FlaskConical,
   Crown,
   Vote,
+  Key,
+  Scissors,
+  DollarSign,
 } from 'lucide-react';
 
 interface PhaseItem {
@@ -252,6 +260,11 @@ const PHASES: PhaseItem[] = [
   { id: 'p83', number: '83', name: 'AI Chemical Retrosynthesis & Molecule Designer', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Synthon Backward Disconnection Engine', 'Multi-Step Synthetic Reaction Pathways', 'Catalyst & Reagent Safety Predictor', 'Canonical SMILES Chemoinformatics Matrix'] },
   { id: 'p84', number: '84', name: 'Autonomous Google Scholar Citation & h-Index Tracker', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Real-Time h-Index & i10-Index Telemetry', 'Monthly Citation Acceleration Forecasting', 'Co-Author Synergy Matrix', '1-Click IEEE/Nature Formatted CV Export'] },
   { id: 'p85', number: '85', name: 'Decentralized Collegiate Study Guild & Quadratic DAO', pillar: 'AI_COMMUNITY', status: 'COMPLETED', deliverables: ['Sybil-Resistant Quadratic Voting (Cost = Votes²)', 'Collegiate Multi-Sig Treasury Allocation', 'SHA-256 Tamper-Proof On-Chain Proposals', 'Student Chapter Governance Forum'] },
+  { id: 'p86', number: '86', name: 'Neuromorphic Spiking Neural Network (SNN) Lab', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['LIF Membrane Potential V(t) Dynamics', 'STDP Synaptic Weight Learning Updates', 'Event-Driven Neuromorphic Sensor Telemetry', 'Sub-Nanojoule Hardware Benchmarks'] },
+  { id: 'p87', number: '87', name: 'Quantum Key Distribution (BB84 QKD) & Cryptography', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Alice-Bob Photon Polarization Basis Matcher', 'Eve Eavesdropping QBER Detection Trigger', 'Unconditional Information-Theoretic Security', 'One-Time Pad Cipher Encryption Vault'] },
+  { id: 'p88', number: '88', name: 'Academic LaTeX Paper Referee & Reviewer 2 Scorer', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Tier-1 Conference Peer-Review Rubric', 'Adversarial Reviewer #2 Critique Generator', 'Camera-Ready Acceptance Probability', 'Author Rebuttal Counter-Proofs Builder'] },
+  { id: 'p89', number: '89', name: '3D CRISPR-Cas9 gRNA & Off-Target Cleavage Predictor', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['20-nt Guide RNA Spacer Designer', 'PAM (NGG) Recognition Scanner', 'On-Target Doench Cleavage Scoring Model', 'CFD Genome-Wide Off-Target Risk Matrix'] },
+  { id: 'p90', number: '90', name: 'Student Venture Syndicate & YC Post-Money SAFE Note', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['YC Standard Post-Money SAFE Auto-Generator', 'Cap-Table Equity Dilution & Waterfall Simulator', 'Collegiate Micro-Angel Syndicate Deal Memos', 'Investor Q&A Simulation Engine'] },
 ];
 
 const DEFAULT_DEMO_PROFILE: StudentProfile = {
@@ -462,7 +475,7 @@ const DEFAULT_SYLLABUS_OVERVIEW: SyllabusOverviewStats = {
 
 function DashboardContent() {
   const { user, tokens, isAuthenticated, logout } = useAuth();
-  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'EXAM_TREND' | 'AI_WHITEBOARD' | 'STUDENT_FINANCES' | 'HOLO_SIMULATIONS' | 'SKILL_PASSPORT' | 'ARXIV_SCHOLAR' | 'SOCRATIC_DEBATE' | 'CAMPUS_EXCHANGE' | 'VIDEO_NAVIGATOR' | 'ERGONOMIC_WELLNESS' | 'RESEARCH_LAB' | 'NEURAL_FLOW' | 'HOSTEL_NUTRITION' | 'LATEX_STUDIO' | 'HACKATHON_RADAR' | 'PATENT_DRAFTER' | 'FACULTY_ADVISORY' | 'TUTOR_BOUNTY' | 'CAMPUS_PRINTING' | 'ALUMNI_RADAR' | 'STUDY_SWARM' | 'CAMPUS_INCUBATOR' | 'CAMPUS_TRANSIT' | 'MENTAL_RESILIENCE' | 'QUANTUM_LAB' | 'FELLOWSHIP_DRAFTER' | 'HACKATHON_WAR_ROOM' | 'SPEED_READER' | 'ACADEMIC_INTEGRITY' | 'CAMPUS_DIGITAL_TWIN' | 'POLYGLOT_TRANSLATOR' | 'LAB_NOTEBOOK' | 'ANKI_FSRS' | 'MICRO_INTERNSHIP' | 'KNOWLEDGE_OLYMPIAD' | 'KERNEL_PROFILER' | 'ASTRODYNAMICS' | 'CHEMICAL_RETRO' | 'SCHOLAR_TRACKER' | 'STUDY_GUILD_DAO' | 'ROADMAP'>('DASHBOARD');
+  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'EXAM_TREND' | 'AI_WHITEBOARD' | 'STUDENT_FINANCES' | 'HOLO_SIMULATIONS' | 'SKILL_PASSPORT' | 'ARXIV_SCHOLAR' | 'SOCRATIC_DEBATE' | 'CAMPUS_EXCHANGE' | 'VIDEO_NAVIGATOR' | 'ERGONOMIC_WELLNESS' | 'RESEARCH_LAB' | 'NEURAL_FLOW' | 'HOSTEL_NUTRITION' | 'LATEX_STUDIO' | 'HACKATHON_RADAR' | 'PATENT_DRAFTER' | 'FACULTY_ADVISORY' | 'TUTOR_BOUNTY' | 'CAMPUS_PRINTING' | 'ALUMNI_RADAR' | 'STUDY_SWARM' | 'CAMPUS_INCUBATOR' | 'CAMPUS_TRANSIT' | 'MENTAL_RESILIENCE' | 'QUANTUM_LAB' | 'FELLOWSHIP_DRAFTER' | 'HACKATHON_WAR_ROOM' | 'SPEED_READER' | 'ACADEMIC_INTEGRITY' | 'CAMPUS_DIGITAL_TWIN' | 'POLYGLOT_TRANSLATOR' | 'LAB_NOTEBOOK' | 'ANKI_FSRS' | 'MICRO_INTERNSHIP' | 'KNOWLEDGE_OLYMPIAD' | 'KERNEL_PROFILER' | 'ASTRODYNAMICS' | 'CHEMICAL_RETRO' | 'SCHOLAR_TRACKER' | 'STUDY_GUILD_DAO' | 'NEUROMORPHIC_SNN' | 'QUANTUM_QKD' | 'PAPER_REFEREE' | 'CRISPR_EDITOR' | 'VENTURE_SAFE' | 'ROADMAP'>('DASHBOARD');
   const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>('en');
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
   const [initialAiStudyContent, setInitialAiStudyContent] = useState<string>('');
@@ -2365,6 +2378,96 @@ function DashboardContent() {
                 <Vote size={13} color={activeView === 'STUDY_GUILD_DAO' ? '#fff' : '#fbbf24'} /> Guild DAO 🏛️
               </button>
               <button
+                onClick={() => setActiveView('NEUROMORPHIC_SNN')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'NEUROMORPHIC_SNN' ? 'linear-gradient(135deg, #8b5cf6, #d946ef)' : 'transparent',
+                  color: activeView === 'NEUROMORPHIC_SNN' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Zap size={13} color={activeView === 'NEUROMORPHIC_SNN' ? '#fff' : '#c084fc'} /> SNN Brain Lab 🧠
+              </button>
+              <button
+                onClick={() => setActiveView('QUANTUM_QKD')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'QUANTUM_QKD' ? 'linear-gradient(135deg, #059669, #0d9488)' : 'transparent',
+                  color: activeView === 'QUANTUM_QKD' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Key size={13} color={activeView === 'QUANTUM_QKD' ? '#fff' : '#34d399'} /> QKD BB84 🔐
+              </button>
+              <button
+                onClick={() => setActiveView('PAPER_REFEREE')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'PAPER_REFEREE' ? 'linear-gradient(135deg, #2563eb, #4f46e5)' : 'transparent',
+                  color: activeView === 'PAPER_REFEREE' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <FileCheck size={13} color={activeView === 'PAPER_REFEREE' ? '#fff' : '#60a5fa'} /> Paper Referee 📝
+              </button>
+              <button
+                onClick={() => setActiveView('CRISPR_EDITOR')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'CRISPR_EDITOR' ? 'linear-gradient(135deg, #e11d48, #db2777)' : 'transparent',
+                  color: activeView === 'CRISPR_EDITOR' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Scissors size={13} color={activeView === 'CRISPR_EDITOR' ? '#fff' : '#fb7185'} /> CRISPR Cas9 🧬
+              </button>
+              <button
+                onClick={() => setActiveView('VENTURE_SAFE')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'VENTURE_SAFE' ? 'linear-gradient(135deg, #059669, #d97706)' : 'transparent',
+                  color: activeView === 'VENTURE_SAFE' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <DollarSign size={13} color={activeView === 'VENTURE_SAFE' ? '#fff' : '#fbbf24'} /> Venture SAFE 💼
+              </button>
+              <button
                 onClick={() => setActiveView('ROADMAP')}
                 style={{
                   padding: '6px 14px',
@@ -2380,7 +2483,7 @@ function DashboardContent() {
                   color: activeView === 'ROADMAP' ? '#ffffff' : 'var(--text-secondary)',
                 }}
               >
-                <Layers size={13} /> 85-Phase Matrix 🗺️
+                <Layers size={13} /> 90-Phase Matrix 🗺️
               </button>
             </div>
           </div>
@@ -3255,6 +3358,66 @@ function DashboardContent() {
           />
         )}
 
+        {activeView === 'NEUROMORPHIC_SNN' && (
+          <NeuromorphicSnnLabView
+            onAddXp={(xp) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+            }}
+          />
+        )}
+
+        {activeView === 'QUANTUM_QKD' && (
+          <QuantumKeyDistSimView
+            onAddXp={(xp) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+            }}
+          />
+        )}
+
+        {activeView === 'PAPER_REFEREE' && (
+          <AcademicPeerReviewerView
+            onAddXp={(xp) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+            }}
+          />
+        )}
+
+        {activeView === 'CRISPR_EDITOR' && (
+          <CrisprGeneEditorView
+            onAddXp={(xp) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+            }}
+          />
+        )}
+
+        {activeView === 'VENTURE_SAFE' && (
+          <VentureSyndicateSafeView
+            onAddXp={(xp) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+            }}
+          />
+        )}
+
         {activeView === 'ROADMAP' && (
           <div>
             {/* Top Progress & Banner */}
@@ -3269,12 +3432,12 @@ function DashboardContent() {
                   <div>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                       <span className="badge badge-completed">
-                        <CheckCircle2 size={12} /> ALL 85 PHASES FULLY OPERATIONAL (100% DONE!) 🏆
+                        <CheckCircle2 size={12} /> ALL 90 PHASES FULLY OPERATIONAL (100% DONE!) 🏆
                       </span>
-                      <span className="badge badge-active">PROMETHEUS EDITION v13.0</span>
+                      <span className="badge badge-active">GENESIS EDITION v14.0</span>
                     </div>
                     <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>
-                      Master Execution Matrix <span className="gradient-text">(85 Phases)</span>
+                      Master Execution Matrix <span className="gradient-text">(90 Phases)</span>
                     </h2>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '4px' }}>
                       Complete roadmap tracking and architecture deliverables across Study, Exams, Career & Mentor layers.
@@ -3503,7 +3666,7 @@ function DashboardContent() {
         marginTop: 'auto',
         backgroundColor: 'rgba(9, 13, 22, 0.95)'
       }}>
-        StudentLife OS 13.0 (Prometheus Edition) &bull; 85 Phases Fully Operational &bull; 100% Production Ready 🏆
+        StudentLife OS 14.0 (Genesis Edition) &bull; 90 Phases Fully Operational &bull; 100% Production Ready 🏆
       </footer>
     </div>
   );

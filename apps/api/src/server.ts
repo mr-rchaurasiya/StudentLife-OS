@@ -82,6 +82,11 @@ import astrodynamicsSimRouter from './routes/astrodynamics-sim.routes';
 import chemicalRetrosynthesisRouter from './routes/chemical-retrosynthesis.routes';
 import scholarTrackerRouter from './routes/scholar-tracker.routes';
 import studyGuildDaoRouter from './routes/study-guild-dao.routes';
+import neuromorphicSnnRouter from './routes/neuromorphic-snn.routes';
+import quantumQkdRouter from './routes/quantum-qkd.routes';
+import paperRefereeRouter from './routes/paper-referee.routes';
+import crisprEditorRouter from './routes/crispr-editor.routes';
+import ventureSyndicateRouter from './routes/venture-syndicate.routes';
 import { errorHandler } from './middlewares/errorHandler';
 
 const app: Express = express();
@@ -178,6 +183,11 @@ app.use('/api/astrodynamics-sim', astrodynamicsSimRouter);
 app.use('/api/chemical-retrosynthesis', chemicalRetrosynthesisRouter);
 app.use('/api/scholar-tracker', scholarTrackerRouter);
 app.use('/api/study-guild-dao', studyGuildDaoRouter);
+app.use('/api/neuromorphic-snn', neuromorphicSnnRouter);
+app.use('/api/quantum-qkd', quantumQkdRouter);
+app.use('/api/paper-referee', paperRefereeRouter);
+app.use('/api/crispr-editor', crisprEditorRouter);
+app.use('/api/venture-syndicate', ventureSyndicateRouter);
 
 // Global Error Handler
 app.use(errorHandler);

@@ -3639,4 +3639,169 @@ export interface CreateGuildProposalDto {
   justification: string;
 }
 
+// ==========================================
+// 86. Neuromorphic Spiking Neural Network (SNN) & Memristor Lab (Phase 86)
+// ==========================================
+export interface SpikingNeuronConfig {
+  neuronType: 'LIF' | 'IZHIKEVICH' | 'ADAPTIVE_EXPONENTIAL';
+  restingPotentialMv: number;
+  thresholdPotentialMv: number;
+  decayConstantTauMs: number;
+  refractoryPeriodMs: number;
+}
+
+export interface SynapticWeightUpdate {
+  synapseId: string;
+  preSpikeTimeMs: number;
+  postSpikeTimeMs: number;
+  deltaWeight: number;
+  currentWeight: number;
+}
+
+export interface NeuromorphicSimulationResult {
+  id: string;
+  architectureName: string;
+  totalSpikesFired: number;
+  energyConsumptionJoules: number;
+  sparsityPercent: number;
+  voltageTraceMv: { timeMs: number; voltageMv: number; spiked: boolean }[];
+  synapticUpdates: SynapticWeightUpdate[];
+  neuromorphicHardwareChip: 'INTEL_LOIHI_2' | 'SPINNAKER_2' | 'BRAINDROP';
+}
+
+export interface RunSnnSimulationDto {
+  architectureName: string;
+  neuronConfig: SpikingNeuronConfig;
+  inputCurrentNanoAmps: number;
+  simulationDurationMs: number;
+}
+
+// ==========================================
+// 87. Quantum Key Distribution (BB84 / E91 QKD) & Cryptography Simulator (Phase 87)
+// ==========================================
+export interface QkdPhotonState {
+  index: number;
+  aliceBit: 0 | 1;
+  aliceBasis: 'RECTILINEAR' | 'DIAGONAL';
+  eveIntercepted: boolean;
+  eveBasis?: 'RECTILINEAR' | 'DIAGONAL';
+  bobBasis: 'RECTILINEAR' | 'DIAGONAL';
+  bobMeasuredBit: 0 | 1;
+  basisMatched: boolean;
+  isSiftedKeyBit: boolean;
+}
+
+export interface QkdTransmissionReport {
+  id: string;
+  protocol: 'BB84' | 'E91_ENTANGLEMENT';
+  totalPhotonsSent: number;
+  siftedKeyLength: number;
+  qberPercent: number; // Quantum Bit Error Rate
+  eavesdropperDetected: boolean;
+  securityVerdict: 'SECURE_CHANNEL' | 'COMPROMISED_EAVESDROPPER_DETECTED';
+  samplePhotons: QkdPhotonState[];
+  finalSecretKeyHex: string;
+  encryptedSampleCipherHex?: string;
+}
+
+export interface SimulateQkdProtocolDto {
+  photonsCount: number;
+  enableEveEavesdropping: boolean;
+  channelNoisePercent?: number;
+}
+
+// ==========================================
+// 88. Autonomous Academic LaTeX Paper Referee & Reviewer 2 Scorer (Phase 88)
+// ==========================================
+export interface PeerReviewCriteriaScore {
+  criterion: 'TECHNICAL_NOVELTY' | 'METHODOLOGICAL_RIGOR' | 'STATISTICAL_VALIDITY' | 'CLARITY_STRUCTURE' | 'REPRODUCIBILITY';
+  scoreOutOf10: number;
+  comments: string;
+}
+
+export interface PaperRefereeReport {
+  id: string;
+  paperTitle: string;
+  overallScore: number; // 1 to 10
+  decisionRecommendation: 'STRONG_ACCEPT' | 'WEAK_ACCEPT' | 'BORDERLINE' | 'MAJOR_REVISION' | 'REJECT';
+  acceptanceProbabilityPercent: number;
+  criteriaScores: PeerReviewCriteriaScore[];
+  reviewer2Critique: string;
+  suggestedRebuttalStrategy: string[];
+  noveltyHighlights: string[];
+  methodologyGaps: string[];
+}
+
+export interface ReviewPaperSubmissionDto {
+  paperTitle: string;
+  targetVenue: string;
+  abstractText: string;
+  latexMethodologySnippet?: string;
+}
+
+// ==========================================
+// 89. 3D CRISPR-Cas9 Guide-RNA (gRNA) & Off-Target Cleavage Predictor (Phase 89)
+// ==========================================
+export interface OffTargetLocusPrediction {
+  locusId: string;
+  chromosomeLocation: string;
+  sequenceMismatchCount: number;
+  mismatchedBases: string;
+  cleavageProbabilityScore: number; // 0.0 to 1.0 (CFD Score)
+  riskLevel: 'LOW' | 'MODERATE' | 'HIGH';
+}
+
+export interface CrisprTargetAnalysis {
+  id: string;
+  targetGene: string;
+  pamMotif: string; // e.g. "NGG"
+  gRnaSequence20nt: string;
+  gcContentPercent: number;
+  onTargetDoenchScore: number; // 0 to 100
+  offTargetCount: number;
+  predictedCuts: OffTargetLocusPrediction[];
+  safetyCertification: 'APPROVED_FOR_SYNTHESIS' | 'WARNING_HIGH_OFF_TARGET_RISK';
+}
+
+export interface DesignGuideRnaDto {
+  targetGene: string;
+  genomicDnaSequence: string;
+  casProteinType?: 'SPCAS9' | 'CAS12A' | 'CAS13';
+}
+
+// ==========================================
+// 90. Student Venture Syndicate & YC Post-Money SAFE Note Builder (Phase 90)
+// ==========================================
+export interface CapTableShareholder {
+  holderName: string;
+  stakeType: 'FOUNDERS' | 'EMPLOYEE_POOL' | 'ANGEL_SYNDICATE' | 'OPTION_POOL';
+  sharesCount: number;
+  ownershipPercentPre: number;
+  ownershipPercentPost: number;
+}
+
+export interface VentureSafeAgreement {
+  id: string;
+  startupName: string;
+  founderName: string;
+  investorName: string;
+  investmentAmountUsd: number;
+  postMoneyValuationCapUsd: number;
+  discountRatePercent: number;
+  impliedEquityPercent: number;
+  governingLawState: string;
+  safeAgreementMarkdown: string;
+  capTableSimulation: CapTableShareholder[];
+  sha256ContractHash: string;
+}
+
+export interface GenerateSafeNoteDto {
+  startupName: string;
+  founderName: string;
+  investorName: string;
+  investmentAmountUsd: number;
+  postMoneyValuationCapUsd: number;
+  discountRatePercent?: number;
+}
+
 
