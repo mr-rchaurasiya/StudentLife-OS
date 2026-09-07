@@ -3488,3 +3488,155 @@ export interface SubmitOlympiadAnswerDto {
   buzzerTimeMs: number;
 }
 
+// ==========================================
+// 81. AI Autonomous Code Profiler & Kernel Optimizer (Phase 81)
+// ==========================================
+export interface SimdVectorizationReport {
+  loopVectorized: boolean;
+  instructionSet: 'AVX-512' | 'AVX2' | 'ARM_NEON' | 'SCALAR_FALLBACK';
+  speedupMultiplier: number;
+  assemblySnippet: string;
+}
+
+export interface CodeProfileAnalysis {
+  id: string;
+  functionName: string;
+  sourceLanguage: 'CPP' | 'RUST' | 'PYTHON';
+  timeComplexityBound: string;
+  spaceComplexityBound: string;
+  l1CacheMissRatePercent: number;
+  branchMispredictionPercent: number;
+  estimatedExecutionCycles: number;
+  simdOptimization: SimdVectorizationReport;
+  profilingRecommendations: string[];
+}
+
+export interface AnalyzeKernelCodeDto {
+  functionName: string;
+  sourceLanguage: 'CPP' | 'RUST' | 'PYTHON';
+  sourceCode: string;
+  targetArchitecture?: 'X86_64_AVX512' | 'ARM64_NEON';
+}
+
+// ==========================================
+// 82. 3D Celestial Astrodynamics & Satellite Orbit Propagator (Phase 82)
+// ==========================================
+export interface KeplerianOrbitParameters {
+  semiMajorAxisKm: number; // a
+  eccentricity: number; // e (0 = circular, 0 < e < 1 = elliptical)
+  inclinationDeg: number; // i
+  longitudeOfAscendingNodeDeg: number; // Ω
+  argumentOfPeriapsisDeg: number; // ω
+  trueAnomalyDeg: number; // ν
+  orbitalPeriodMinutes: number;
+  periapsisAltitudeKm: number;
+  apoapsisAltitudeKm: number;
+}
+
+export interface OrbitalTransferManeuver {
+  maneuverName: string;
+  deltaV1KmSec: number;
+  deltaV2KmSec: number;
+  totalDeltaVKmSec: number;
+  transferTimeHours: number;
+  trajectoryDescription: string;
+}
+
+export interface PropagateOrbitDto {
+  targetOrbitName: string;
+  primaryBody: 'EARTH' | 'MOON' | 'MARS' | 'SUN';
+  semiMajorAxisKm: number;
+  eccentricity: number;
+  inclinationDeg: number;
+}
+
+// ==========================================
+// 83. AI Chemical Retrosynthesis & Molecule Designer (Phase 83)
+// ==========================================
+export interface DisconnectionStep {
+  stepNumber: number;
+  targetFragment: string;
+  synthons: string[];
+  reagentsRequired: string[];
+  reactionName: string;
+  predictedYieldPercent: number;
+  conditions: string;
+}
+
+export interface RetrosyntheticPathway {
+  id: string;
+  moleculeName: string;
+  smilesFormula: string;
+  molecularWeight: number;
+  therapeuticCategory: string;
+  totalSynthesisSteps: number;
+  overallYieldEstimatePercent: number;
+  steps: DisconnectionStep[];
+}
+
+export interface PlanRetrosynthesisDto {
+  moleculeName: string;
+  smilesFormula: string;
+  maxDisconnectionDepth?: number;
+}
+
+// ==========================================
+// 84. Autonomous Google Scholar Citation & h-Index Tracker (Phase 84)
+// ==========================================
+export interface AcademicPublicationItem {
+  id: string;
+  title: string;
+  venue: string;
+  year: number;
+  citationsCount: number;
+  doi: string;
+  isHighlyCited: boolean;
+}
+
+export interface ScholarCitationProfile {
+  scholarName: string;
+  affiliation: string;
+  hIndex: number;
+  i10Index: number;
+  totalCitations: number;
+  citationsVelocityPerYear: { year: number; citations: number }[];
+  coAuthorNetwork: { name: string; institution: string; sharedPapers: number }[];
+  topPublications: AcademicPublicationItem[];
+}
+
+export interface TrackScholarDto {
+  scholarName: string;
+  institutionDomain?: string;
+}
+
+// ==========================================
+// 85. Decentralized Collegiate Study Guild & Quadratic DAO Forum (Phase 85)
+// ==========================================
+export type GuildProposalCategory = 'HARDWARE_ACQUISITION' | 'COURSE_LICENSE' | 'HACKATHON_SPONSORSHIP' | 'CAMPUS_EVENT';
+
+export interface GuildProposal {
+  id: string;
+  title: string;
+  proposerName: string;
+  category: GuildProposalCategory;
+  requestedTreasuryCoins: number;
+  quadraticVotesAccumulated: number;
+  totalVotersCount: number;
+  quorumReached: boolean;
+  status: 'VOTING_ACTIVE' | 'PASSED_FUNDED' | 'REJECTED';
+  onChainProposalHash: string;
+}
+
+export interface CastGuildVoteDto {
+  proposalId: string;
+  creditsToSpend: number; // In Quadratic voting, votes = sqrt(credits)
+}
+
+export interface CreateGuildProposalDto {
+  title: string;
+  category: GuildProposalCategory;
+  requestedTreasuryCoins: number;
+  justification: string;
+}
+
+

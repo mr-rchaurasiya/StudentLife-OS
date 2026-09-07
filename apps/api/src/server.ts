@@ -77,6 +77,11 @@ import electronicLabNotebookRouter from './routes/electronic-lab-notebook.routes
 import ankiFsrsRouter from './routes/anki-fsrs.routes';
 import microInternshipRouter from './routes/micro-internship.routes';
 import knowledgeOlympiadRouter from './routes/knowledge-olympiad.routes';
+import kernelProfilerRouter from './routes/kernel-profiler.routes';
+import astrodynamicsSimRouter from './routes/astrodynamics-sim.routes';
+import chemicalRetrosynthesisRouter from './routes/chemical-retrosynthesis.routes';
+import scholarTrackerRouter from './routes/scholar-tracker.routes';
+import studyGuildDaoRouter from './routes/study-guild-dao.routes';
 import { errorHandler } from './middlewares/errorHandler';
 
 const app: Express = express();
@@ -168,6 +173,11 @@ app.use('/api/electronic-lab-notebook', electronicLabNotebookRouter);
 app.use('/api/anki-fsrs', ankiFsrsRouter);
 app.use('/api/micro-internship', microInternshipRouter);
 app.use('/api/knowledge-olympiad', knowledgeOlympiadRouter);
+app.use('/api/kernel-profiler', kernelProfilerRouter);
+app.use('/api/astrodynamics-sim', astrodynamicsSimRouter);
+app.use('/api/chemical-retrosynthesis', chemicalRetrosynthesisRouter);
+app.use('/api/scholar-tracker', scholarTrackerRouter);
+app.use('/api/study-guild-dao', studyGuildDaoRouter);
 
 // Global Error Handler
 app.use(errorHandler);

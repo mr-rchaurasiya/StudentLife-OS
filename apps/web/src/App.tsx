@@ -71,6 +71,11 @@ import { ElectronicLabNotebookView } from './components/ElectronicLabNotebookVie
 import { AnkiFsrsSyncView } from './components/AnkiFsrsSyncView';
 import { MicroInternshipEscrowView } from './components/MicroInternshipEscrowView';
 import { KnowledgeOlympiadView } from './components/KnowledgeOlympiadView';
+import { KernelProfilerStudioView } from './components/KernelProfilerStudioView';
+import { AstrodynamicsOrbitSimView } from './components/AstrodynamicsOrbitSimView';
+import { ChemicalRetrosynthesisView } from './components/ChemicalRetrosynthesisView';
+import { ScholarCitationTrackerView } from './components/ScholarCitationTrackerView';
+import { StudyGuildDaoView } from './components/StudyGuildDaoView';
 import { LanguageSelectorModal } from './components/LanguageSelectorModal';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import { PwaInstallPromptWidget } from './components/PwaInstallPromptWidget';
@@ -149,6 +154,7 @@ import {
   Languages,
   FlaskConical,
   Crown,
+  Vote,
 } from 'lucide-react';
 
 interface PhaseItem {
@@ -241,6 +247,11 @@ const PHASES: PhaseItem[] = [
   { id: 'p78', number: '78', name: 'AI Adaptive Anki & FSRS-v4 Sync', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Next-Gen FSRS-v4 Spaced Repetition Engine', 'Automated Cloze Deletion Synthesis {{c1::...}}', 'Stability (S) & Retrievability (R) Tracking', '1-Click Anki .apkg Package Exporter'] },
   { id: 'p79', number: '79', name: 'Micro-Internship & 48h Escrow Hub', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['24-48h Real-World Student Sprint Gigs', 'GitHub PR Milestone Proof-of-Work Verification', 'Study Coin Smart Escrow Release', 'Verifiable Skill Passport Portfolio Badges'] },
   { id: 'p80', number: '80', name: 'Inter-Collegiate Knowledge Olympiad', pillar: 'AI_COMMUNITY', status: 'COMPLETED', deliverables: ['Multi-Campus Live Buzzer Speed Battles', 'TrueSkill / Elo Grandmaster Ranking Ladder', 'Category Speed Rounds (Quantum/DSA/Bio)', 'Sub-50ms Buzzer Latency Compensation'] },
+  { id: 'p81', number: '81', name: 'AI Autonomous Code Profiler & SIMD Kernel Optimizer', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['CPU L1/L2 Cache-Miss Profiling', 'AVX-512 & ARM NEON Vectorization Matrix', 'Roofline Compute vs Memory Bound Chart', 'Hot-Loop Assembly Breakdown'] },
+  { id: 'p82', number: '82', name: '3D Celestial Astrodynamics & Orbit Propagator', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['6-Keplerian Orbital Elements Engine', 'Hohmann Interplanetary Transfer Delta-v Calculator', 'Lagrange Equilibrium Potential Wells', '3D Elliptical Satellite Trajectory Simulator'] },
+  { id: 'p83', number: '83', name: 'AI Chemical Retrosynthesis & Molecule Designer', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Synthon Backward Disconnection Engine', 'Multi-Step Synthetic Reaction Pathways', 'Catalyst & Reagent Safety Predictor', 'Canonical SMILES Chemoinformatics Matrix'] },
+  { id: 'p84', number: '84', name: 'Autonomous Google Scholar Citation & h-Index Tracker', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Real-Time h-Index & i10-Index Telemetry', 'Monthly Citation Acceleration Forecasting', 'Co-Author Synergy Matrix', '1-Click IEEE/Nature Formatted CV Export'] },
+  { id: 'p85', number: '85', name: 'Decentralized Collegiate Study Guild & Quadratic DAO', pillar: 'AI_COMMUNITY', status: 'COMPLETED', deliverables: ['Sybil-Resistant Quadratic Voting (Cost = Votes²)', 'Collegiate Multi-Sig Treasury Allocation', 'SHA-256 Tamper-Proof On-Chain Proposals', 'Student Chapter Governance Forum'] },
 ];
 
 const DEFAULT_DEMO_PROFILE: StudentProfile = {
@@ -451,7 +462,7 @@ const DEFAULT_SYLLABUS_OVERVIEW: SyllabusOverviewStats = {
 
 function DashboardContent() {
   const { user, tokens, isAuthenticated, logout } = useAuth();
-  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'EXAM_TREND' | 'AI_WHITEBOARD' | 'STUDENT_FINANCES' | 'HOLO_SIMULATIONS' | 'SKILL_PASSPORT' | 'ARXIV_SCHOLAR' | 'SOCRATIC_DEBATE' | 'CAMPUS_EXCHANGE' | 'VIDEO_NAVIGATOR' | 'ERGONOMIC_WELLNESS' | 'RESEARCH_LAB' | 'NEURAL_FLOW' | 'HOSTEL_NUTRITION' | 'LATEX_STUDIO' | 'HACKATHON_RADAR' | 'PATENT_DRAFTER' | 'FACULTY_ADVISORY' | 'TUTOR_BOUNTY' | 'CAMPUS_PRINTING' | 'ALUMNI_RADAR' | 'STUDY_SWARM' | 'CAMPUS_INCUBATOR' | 'CAMPUS_TRANSIT' | 'MENTAL_RESILIENCE' | 'QUANTUM_LAB' | 'FELLOWSHIP_DRAFTER' | 'HACKATHON_WAR_ROOM' | 'SPEED_READER' | 'ACADEMIC_INTEGRITY' | 'CAMPUS_DIGITAL_TWIN' | 'POLYGLOT_TRANSLATOR' | 'LAB_NOTEBOOK' | 'ANKI_FSRS' | 'MICRO_INTERNSHIP' | 'KNOWLEDGE_OLYMPIAD' | 'ROADMAP'>('DASHBOARD');
+  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'EXAM_TREND' | 'AI_WHITEBOARD' | 'STUDENT_FINANCES' | 'HOLO_SIMULATIONS' | 'SKILL_PASSPORT' | 'ARXIV_SCHOLAR' | 'SOCRATIC_DEBATE' | 'CAMPUS_EXCHANGE' | 'VIDEO_NAVIGATOR' | 'ERGONOMIC_WELLNESS' | 'RESEARCH_LAB' | 'NEURAL_FLOW' | 'HOSTEL_NUTRITION' | 'LATEX_STUDIO' | 'HACKATHON_RADAR' | 'PATENT_DRAFTER' | 'FACULTY_ADVISORY' | 'TUTOR_BOUNTY' | 'CAMPUS_PRINTING' | 'ALUMNI_RADAR' | 'STUDY_SWARM' | 'CAMPUS_INCUBATOR' | 'CAMPUS_TRANSIT' | 'MENTAL_RESILIENCE' | 'QUANTUM_LAB' | 'FELLOWSHIP_DRAFTER' | 'HACKATHON_WAR_ROOM' | 'SPEED_READER' | 'ACADEMIC_INTEGRITY' | 'CAMPUS_DIGITAL_TWIN' | 'POLYGLOT_TRANSLATOR' | 'LAB_NOTEBOOK' | 'ANKI_FSRS' | 'MICRO_INTERNSHIP' | 'KNOWLEDGE_OLYMPIAD' | 'KERNEL_PROFILER' | 'ASTRODYNAMICS' | 'CHEMICAL_RETRO' | 'SCHOLAR_TRACKER' | 'STUDY_GUILD_DAO' | 'ROADMAP'>('DASHBOARD');
   const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>('en');
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
   const [initialAiStudyContent, setInitialAiStudyContent] = useState<string>('');
@@ -2264,6 +2275,96 @@ function DashboardContent() {
                 <Crown size={13} color={activeView === 'KNOWLEDGE_OLYMPIAD' ? '#fff' : '#fde047'} /> Knowledge Olympiad 🏆
               </button>
               <button
+                onClick={() => setActiveView('KERNEL_PROFILER')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'KERNEL_PROFILER' ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'transparent',
+                  color: activeView === 'KERNEL_PROFILER' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Cpu size={13} color={activeView === 'KERNEL_PROFILER' ? '#fff' : '#818cf8'} /> SIMD Profiler ⚡
+              </button>
+              <button
+                onClick={() => setActiveView('ASTRODYNAMICS')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'ASTRODYNAMICS' ? 'linear-gradient(135deg, #8b5cf6, #d946ef)' : 'transparent',
+                  color: activeView === 'ASTRODYNAMICS' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Compass size={13} color={activeView === 'ASTRODYNAMICS' ? '#fff' : '#c084fc'} /> Astrodynamics 🛰️
+              </button>
+              <button
+                onClick={() => setActiveView('CHEMICAL_RETRO')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'CHEMICAL_RETRO' ? 'linear-gradient(135deg, #0d9488, #10b981)' : 'transparent',
+                  color: activeView === 'CHEMICAL_RETRO' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <FlaskConical size={13} color={activeView === 'CHEMICAL_RETRO' ? '#fff' : '#2dd4bf'} /> Retrosynthesis 🧪
+              </button>
+              <button
+                onClick={() => setActiveView('SCHOLAR_TRACKER')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'SCHOLAR_TRACKER' ? 'linear-gradient(135deg, #0284c7, #3b82f6)' : 'transparent',
+                  color: activeView === 'SCHOLAR_TRACKER' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <GraduationCap size={13} color={activeView === 'SCHOLAR_TRACKER' ? '#fff' : '#38bdf8'} /> Scholar Tracker 🎓
+              </button>
+              <button
+                onClick={() => setActiveView('STUDY_GUILD_DAO')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'STUDY_GUILD_DAO' ? 'linear-gradient(135deg, #d97706, #ea580c)' : 'transparent',
+                  color: activeView === 'STUDY_GUILD_DAO' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Vote size={13} color={activeView === 'STUDY_GUILD_DAO' ? '#fff' : '#fbbf24'} /> Guild DAO 🏛️
+              </button>
+              <button
                 onClick={() => setActiveView('ROADMAP')}
                 style={{
                   padding: '6px 14px',
@@ -2279,7 +2380,7 @@ function DashboardContent() {
                   color: activeView === 'ROADMAP' ? '#ffffff' : 'var(--text-secondary)',
                 }}
               >
-                <Layers size={13} /> 70-Phase Omniverse Matrix 🗺️
+                <Layers size={13} /> 85-Phase Matrix 🗺️
               </button>
             </div>
           </div>
@@ -3094,6 +3195,66 @@ function DashboardContent() {
           />
         )}
 
+        {activeView === 'KERNEL_PROFILER' && (
+          <KernelProfilerStudioView
+            onAddXp={(xp) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+            }}
+          />
+        )}
+
+        {activeView === 'ASTRODYNAMICS' && (
+          <AstrodynamicsOrbitSimView
+            onAddXp={(xp) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+            }}
+          />
+        )}
+
+        {activeView === 'CHEMICAL_RETRO' && (
+          <ChemicalRetrosynthesisView
+            onAddXp={(xp) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+            }}
+          />
+        )}
+
+        {activeView === 'SCHOLAR_TRACKER' && (
+          <ScholarCitationTrackerView
+            onAddXp={(xp) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+            }}
+          />
+        )}
+
+        {activeView === 'STUDY_GUILD_DAO' && (
+          <StudyGuildDaoView
+            onAddXp={(xp) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+            }}
+          />
+        )}
+
         {activeView === 'ROADMAP' && (
           <div>
             {/* Top Progress & Banner */}
@@ -3108,12 +3269,12 @@ function DashboardContent() {
                   <div>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                       <span className="badge badge-completed">
-                        <CheckCircle2 size={12} /> ALL 80 PHASES FULLY OPERATIONAL (100% DONE!) 🏆
+                        <CheckCircle2 size={12} /> ALL 85 PHASES FULLY OPERATIONAL (100% DONE!) 🏆
                       </span>
-                      <span className="badge badge-active">VALHALLA EDITION v12.0</span>
+                      <span className="badge badge-active">PROMETHEUS EDITION v13.0</span>
                     </div>
                     <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>
-                      Master Execution Matrix <span className="gradient-text">(80 Phases)</span>
+                      Master Execution Matrix <span className="gradient-text">(85 Phases)</span>
                     </h2>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '4px' }}>
                       Complete roadmap tracking and architecture deliverables across Study, Exams, Career & Mentor layers.
@@ -3342,7 +3503,7 @@ function DashboardContent() {
         marginTop: 'auto',
         backgroundColor: 'rgba(9, 13, 22, 0.95)'
       }}>
-        StudentLife OS 12.0 (Valhalla Edition) &bull; 80 Phases Fully Operational &bull; 100% Production Ready 🏆
+        StudentLife OS 13.0 (Prometheus Edition) &bull; 85 Phases Fully Operational &bull; 100% Production Ready 🏆
       </footer>
     </div>
   );
