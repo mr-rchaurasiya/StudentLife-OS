@@ -56,6 +56,11 @@ import { FacultyAdvisoryView } from './components/FacultyAdvisoryView';
 import { TutorBountyMarketView } from './components/TutorBountyMarketView';
 import { CampusPrintingQueueView } from './components/CampusPrintingQueueView';
 import { AlumniMentorshipRadarView } from './components/AlumniMentorshipRadarView';
+import { AiStudySwarmView } from './components/AiStudySwarmView';
+import { CampusIncubatorView } from './components/CampusIncubatorView';
+import { CampusTransitView } from './components/CampusTransitView';
+import { MentalResilienceView } from './components/MentalResilienceView';
+import { QuantumLabView } from './components/QuantumLabView';
 import { LanguageSelectorModal } from './components/LanguageSelectorModal';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import { PwaInstallPromptWidget } from './components/PwaInstallPromptWidget';
@@ -125,6 +130,10 @@ import {
   FileCode2,
   Coins,
   Printer,
+  Rocket,
+  Bus,
+  HeartPulse,
+  Atom,
 } from 'lucide-react';
 
 interface PhaseItem {
@@ -202,6 +211,11 @@ const PHASES: PhaseItem[] = [
   { id: 'p63', number: '63', name: 'Peer Tutor Bounty Market', pillar: 'AI_COMMUNITY', status: 'COMPLETED', deliverables: ['Doubt Bounty Escrow Engine', 'Study Coin Micro-Payments', '1-on-1 Whiteboard Solving Sessions', 'Tutor Credibility Badges'] },
   { id: 'p64', number: '64', name: 'Smart Campus Print Hub', pillar: 'FOUNDATION', status: 'COMPLETED', deliverables: ['Library/Hostel Print Node Radar', 'Dynamic Duplex/Color Cost Calculator', 'Encrypted 4-Digit Release PINs', 'Direct PDF Upload & Queue Telemetry'] },
   { id: 'p65', number: '65', name: 'AI Alumni Mentorship Radar', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Verified Alumni Career Directory', '15-Min Coffee Chat Booker', 'AI Socratic Icebreaker Generator', 'Direct Meet & Mentorship Telemetry'] },
+  { id: 'p66', number: '66', name: 'Autonomous Study Buddy Swarm', pillar: 'AI_COMMUNITY', status: 'COMPLETED', deliverables: ['3-Agent AI Peer Study Circle', 'Socratic Adversarial & Proof Scaffolding', 'Group Oral Viva Examiner', 'Mastery Calibration Scorecard'] },
+  { id: 'p67', number: '67', name: 'Campus Startup Incubator', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Project-to-Startup AI Synthesizer', '10-Slide VC Pitch Deck Builder', 'TAM/SAM/SOM Market Ceiling Model', 'NIDHI/YC Collegiate Grants Radar'] },
+  { id: 'p68', number: '68', name: 'Smart Campus Transit Radar', pillar: 'FOUNDATION', status: 'COMPLETED', deliverables: ['Live EV Shuttle GPS Telemetry', 'Route Hub ETA Countdown Clocks', 'Hostel Bike/E-Rickshaw Carpooling', 'Green Carbon Offset Credits'] },
+  { id: 'p69', number: '69', name: 'Mental Resilience Sanctum', pillar: 'FOUNDATION', status: 'COMPLETED', deliverables: ['Interactive 4-7-8 Box Breathing Pacer', 'Socratic Cognitive Distortion Reframing', '5-4-3-2-1 Emergency Grounding', 'Psychological Exam Readiness Index'] },
+  { id: 'p70', number: '70', name: 'Quantum Circuit & Bloch Lab', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Interactive Quantum Gate Sequencer (H/X/Y/Z/CNOT)', 'Real-Time Bloch Sphere Vector Coordinates', 'State Vector Probability Amplitudes |ψ|²', 'Bell & GHZ State Entanglement Sim'] },
 ];
 
 const DEFAULT_DEMO_PROFILE: StudentProfile = {
@@ -412,7 +426,7 @@ const DEFAULT_SYLLABUS_OVERVIEW: SyllabusOverviewStats = {
 
 function DashboardContent() {
   const { user, tokens, isAuthenticated, logout } = useAuth();
-  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'EXAM_TREND' | 'AI_WHITEBOARD' | 'STUDENT_FINANCES' | 'HOLO_SIMULATIONS' | 'SKILL_PASSPORT' | 'ARXIV_SCHOLAR' | 'SOCRATIC_DEBATE' | 'CAMPUS_EXCHANGE' | 'VIDEO_NAVIGATOR' | 'ERGONOMIC_WELLNESS' | 'RESEARCH_LAB' | 'NEURAL_FLOW' | 'HOSTEL_NUTRITION' | 'LATEX_STUDIO' | 'HACKATHON_RADAR' | 'PATENT_DRAFTER' | 'FACULTY_ADVISORY' | 'TUTOR_BOUNTY' | 'CAMPUS_PRINTING' | 'ALUMNI_RADAR' | 'ROADMAP'>('DASHBOARD');
+  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'EXAM_TREND' | 'AI_WHITEBOARD' | 'STUDENT_FINANCES' | 'HOLO_SIMULATIONS' | 'SKILL_PASSPORT' | 'ARXIV_SCHOLAR' | 'SOCRATIC_DEBATE' | 'CAMPUS_EXCHANGE' | 'VIDEO_NAVIGATOR' | 'ERGONOMIC_WELLNESS' | 'RESEARCH_LAB' | 'NEURAL_FLOW' | 'HOSTEL_NUTRITION' | 'LATEX_STUDIO' | 'HACKATHON_RADAR' | 'PATENT_DRAFTER' | 'FACULTY_ADVISORY' | 'TUTOR_BOUNTY' | 'CAMPUS_PRINTING' | 'ALUMNI_RADAR' | 'STUDY_SWARM' | 'CAMPUS_INCUBATOR' | 'CAMPUS_TRANSIT' | 'MENTAL_RESILIENCE' | 'QUANTUM_LAB' | 'ROADMAP'>('DASHBOARD');
   const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>('en');
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
   const [initialAiStudyContent, setInitialAiStudyContent] = useState<string>('');
@@ -1955,6 +1969,96 @@ function DashboardContent() {
                 <Users size={13} color={activeView === 'ALUMNI_RADAR' ? '#fff' : '#c084fc'} /> Alumni Mentors 🌐
               </button>
               <button
+                onClick={() => setActiveView('STUDY_SWARM')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'STUDY_SWARM' ? 'linear-gradient(135deg, #6366f1, #a855f7)' : 'transparent',
+                  color: activeView === 'STUDY_SWARM' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Bot size={13} color={activeView === 'STUDY_SWARM' ? '#fff' : '#818cf8'} /> Study Swarm 🤖
+              </button>
+              <button
+                onClick={() => setActiveView('CAMPUS_INCUBATOR')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'CAMPUS_INCUBATOR' ? 'linear-gradient(135deg, #f59e0b, #ef4444)' : 'transparent',
+                  color: activeView === 'CAMPUS_INCUBATOR' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Rocket size={13} color={activeView === 'CAMPUS_INCUBATOR' ? '#fff' : '#fbbf24'} /> Startup Incubator 🚀
+              </button>
+              <button
+                onClick={() => setActiveView('CAMPUS_TRANSIT')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'CAMPUS_TRANSIT' ? 'linear-gradient(135deg, #06b6d4, #10b981)' : 'transparent',
+                  color: activeView === 'CAMPUS_TRANSIT' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Bus size={13} color={activeView === 'CAMPUS_TRANSIT' ? '#fff' : '#22d3ee'} /> Campus Transit 🚌
+              </button>
+              <button
+                onClick={() => setActiveView('MENTAL_RESILIENCE')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'MENTAL_RESILIENCE' ? 'linear-gradient(135deg, #10b981, #06b6d4)' : 'transparent',
+                  color: activeView === 'MENTAL_RESILIENCE' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <HeartPulse size={13} color={activeView === 'MENTAL_RESILIENCE' ? '#fff' : '#34d399'} /> Resilience Sanctum 🧘
+              </button>
+              <button
+                onClick={() => setActiveView('QUANTUM_LAB')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'QUANTUM_LAB' ? 'linear-gradient(135deg, #a855f7, #6366f1)' : 'transparent',
+                  color: activeView === 'QUANTUM_LAB' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Atom size={13} color={activeView === 'QUANTUM_LAB' ? '#fff' : '#c084fc'} /> Quantum Lab ⚛️
+              </button>
+              <button
                 onClick={() => setActiveView('ROADMAP')}
                 style={{
                   padding: '6px 14px',
@@ -1970,7 +2074,7 @@ function DashboardContent() {
                   color: activeView === 'ROADMAP' ? '#ffffff' : 'var(--text-secondary)',
                 }}
               >
-                <Layers size={13} /> 65-Phase Cosmos Matrix 🗺️
+                <Layers size={13} /> 70-Phase Omniverse Matrix 🗺️
               </button>
             </div>
           </div>
@@ -2644,6 +2748,71 @@ function DashboardContent() {
           />
         )}
 
+        {activeView === 'STUDY_SWARM' && (
+          <AiStudySwarmView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'CAMPUS_INCUBATOR' && (
+          <CampusIncubatorView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'CAMPUS_TRANSIT' && (
+          <CampusTransitView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'MENTAL_RESILIENCE' && (
+          <MentalResilienceView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'QUANTUM_LAB' && (
+          <QuantumLabView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
         {activeView === 'ROADMAP' && (
           <div>
             {/* Top Progress & Banner */}
@@ -2658,12 +2827,12 @@ function DashboardContent() {
                   <div>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                       <span className="badge badge-completed">
-                        <CheckCircle2 size={12} /> ALL 65 PHASES FULLY OPERATIONAL (100% DONE!) 🏆
+                        <CheckCircle2 size={12} /> ALL 70 PHASES FULLY OPERATIONAL (100% DONE!) 🏆
                       </span>
-                      <span className="badge badge-active">COSMOS EDITION v9.0</span>
+                      <span className="badge badge-active">OMNIVERSE EDITION v10.0</span>
                     </div>
                     <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>
-                      Master Execution Matrix <span className="gradient-text">(65 Phases)</span>
+                      Master Execution Matrix <span className="gradient-text">(70 Phases)</span>
                     </h2>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '4px' }}>
                       Complete roadmap tracking and architecture deliverables across Study, Exams, Career & Mentor layers.
@@ -2892,7 +3061,7 @@ function DashboardContent() {
         marginTop: 'auto',
         backgroundColor: 'rgba(9, 13, 22, 0.95)'
       }}>
-        StudentLife OS 9.0 (Cosmos Edition) &bull; 65 Phases Fully Operational &bull; 100% Production Ready 🏆
+        StudentLife OS 10.0 (Omniverse Edition) &bull; 70 Phases Fully Operational &bull; 100% Production Ready 🏆
       </footer>
     </div>
   );

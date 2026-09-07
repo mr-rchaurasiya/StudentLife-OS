@@ -2935,5 +2935,226 @@ export interface RequestAlumniChatDto {
   preferredDate?: string;
 }
 
+// ==========================================
+// 66. Autonomous AI Study Buddy Swarm & Group Viva Simulator (Phase 66)
+// ==========================================
+export type StudyBuddyPersona = 'THEORY_ARCHITECT' | 'NUMERICAL_WIZARD' | 'SOCRATIC_SCEPTIC' | 'PROFESSOR_EXAMINER';
 
+export interface StudyBuddyPeer {
+  id: string;
+  name: string;
+  avatarEmoji: string;
+  persona: StudyBuddyPersona;
+  specialty: string;
+  confidenceLevel: number;
+}
 
+export interface SwarmMessage {
+  id: string;
+  senderId: string;
+  senderName: string;
+  senderRole: 'STUDENT' | 'PEER' | 'PROFESSOR';
+  content: string;
+  timestamp: string;
+  mathSnippet?: string;
+  citation?: string;
+}
+
+export interface GroupVivaSession {
+  id: string;
+  subjectTopic: string;
+  peers: StudyBuddyPeer[];
+  messages: SwarmMessage[];
+  currentQuestion?: string;
+  studentAnswerGrade?: {
+    scorePercent: number;
+    critique: string;
+    missedPoints: string[];
+    awardedXp: number;
+  };
+  isActive: boolean;
+}
+
+export interface StartSwarmSessionDto {
+  subjectTopic: string;
+  activePersonaIds?: string[];
+}
+
+export interface PostSwarmQueryDto {
+  sessionId: string;
+  questionOrDoubt: string;
+}
+
+export interface SubmitVivaAnswerDto {
+  sessionId: string;
+  studentAnswer: string;
+}
+
+// ==========================================
+// 67. Campus Startup Incubator & AI Pitch Deck Synthesizer (Phase 67)
+// ==========================================
+export type StartupStage = 'IDEA_VALIDATION' | 'PROTOTYPE_MVP' | 'EARLY_TRACTION' | 'SEED_FUNDRAISE';
+
+export interface PitchDeckSlide {
+  slideNumber: number;
+  title: string;
+  headline: string;
+  bulletPoints: string[];
+  visualCallout: string;
+  metricHighlight?: string;
+}
+
+export interface GrantOpportunity {
+  id: string;
+  grantName: string;
+  agency: string;
+  maxFundingINR: number;
+  applicationDeadline: string;
+  eligibilityScore: number;
+  applicationUrl: string;
+}
+
+export interface CampusStartupProject {
+  id: string;
+  startupName: string;
+  tagLine: string;
+  industryVertical: string;
+  stage: StartupStage;
+  problemStatement: string;
+  solutionStatement: string;
+  tamSamSom: {
+    tam: string;
+    sam: string;
+    som: string;
+  };
+  unitEconomics: {
+    cac: string;
+    ltv: string;
+    paybackMonths: number;
+  };
+  slides: PitchDeckSlide[];
+  matchedGrants: GrantOpportunity[];
+  createdAt: string;
+}
+
+export interface GeneratePitchDeckDto {
+  startupName: string;
+  industryVertical: string;
+  rawProjectIdea: string;
+  targetMarket?: string;
+}
+
+// ==========================================
+// 68. Campus Smart Transit & Shuttle Radar (Phase 68)
+// ==========================================
+export type TransitVehicleType = 'ELECTRIC_SHUTTLE' | 'E_RICKSHAW_EXPRESS' | 'BIKE_POOL';
+
+export interface ShuttleRouteNode {
+  id: string;
+  stopName: string;
+  stopLocationTag: string;
+  nextArrivalMinutes: number;
+  occupancyStatus: 'SEATS_AVAILABLE' | 'STANDING_ONLY' | 'FULL';
+}
+
+export interface ShuttleVehicle {
+  id: string;
+  vehicleNumber: string;
+  routeName: string;
+  vehicleType: TransitVehicleType;
+  currentStop: string;
+  nextStop: string;
+  etaMinutes: number;
+  speedKmph: number;
+  isLiveTracking: boolean;
+}
+
+export interface CarpoolRidePost {
+  id: string;
+  riderName: string;
+  fromLocation: string;
+  toLocation: string;
+  departureTime: string;
+  availableSeats: number;
+  coinRewardContribution: number;
+  status: 'OPEN' | 'FILLED' | 'COMPLETED';
+}
+
+export interface CampusTransitState {
+  activeShuttles: ShuttleVehicle[];
+  routeStops: ShuttleRouteNode[];
+  activeCarpoolPosts: CarpoolRidePost[];
+  userEcoCarbonSavedKg: number;
+}
+
+export interface BookCarpoolRideDto {
+  carpoolPostId: string;
+}
+
+// ==========================================
+// 69. AI Mental Resilience & Exam Anxiety Bio-Coaching Sanctum (Phase 69)
+// ==========================================
+export type BreathingPaceMode = 'BOX_BREATHING_4_4_4_4' | 'CALMING_4_7_8' | 'RAPID_GROUNDING_3_3_3';
+
+export interface AnxietyReframingRecord {
+  id: string;
+  catastrophizingThought: string;
+  cognitiveDistortionTag: string;
+  socraticReframe: string;
+  empowermentAction: string;
+  createdAt: string;
+}
+
+export interface ResilienceCheckinDto {
+  currentStressScore: number;
+  triggerSource: string;
+  rawWorryText: string;
+}
+
+export interface MentalSanctumState {
+  currentReadinessIndex: number;
+  dailyCheckinsCompleted: number;
+  reframedThoughts: AnxietyReframingRecord[];
+  activeBreathingMode: BreathingPaceMode;
+}
+
+// ==========================================
+// 70. Quantum Circuit & Bloch Sphere Simulator (Phase 70)
+// ==========================================
+export type QuantumGateType = 'H' | 'X' | 'Y' | 'Z' | 'CNOT' | 'T' | 'S';
+
+export interface BlochVector {
+  thetaDegrees: number;
+  phiDegrees: number;
+  x: number;
+  y: number;
+  z: number;
+  stateFormula: string;
+}
+
+export interface QuantumCircuitState {
+  qubitCount: number;
+  gatesApplied: {
+    qubitIndex: number;
+    gate: QuantumGateType;
+    stepIndex: number;
+  }[];
+  stateVectorProbabilities: {
+    stateBinary: string;
+    probability: number;
+    phaseDegrees: number;
+  }[];
+  blochVectors: BlochVector[];
+  entanglementMetric: number;
+  presetAlgorithmName?: string;
+}
+
+export interface SimulateCircuitDto {
+  qubitCount: number;
+  gates: {
+    qubitIndex: number;
+    gate: QuantumGateType;
+    stepIndex: number;
+  }[];
+  preset?: 'BELL_STATE' | 'SUPERPOSITION' | 'GHZ_STATE';
+}

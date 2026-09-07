@@ -62,6 +62,11 @@ import facultyAdvisoryRouter from './routes/faculty-advisory.routes';
 import tutorBountyRouter from './routes/tutor-bounty.routes';
 import campusPrintingRouter from './routes/campus-printing.routes';
 import alumniRadarRouter from './routes/alumni-radar.routes';
+import aiStudySwarmRouter from './routes/ai-study-swarm.routes';
+import campusIncubatorRouter from './routes/campus-incubator.routes';
+import campusTransitRouter from './routes/campus-transit.routes';
+import mentalResilienceRouter from './routes/mental-resilience.routes';
+import quantumLabRouter from './routes/quantum-lab.routes';
 import { errorHandler } from './middlewares/errorHandler';
 
 const app: Express = express();
@@ -138,6 +143,11 @@ app.use('/api/faculty-advisory', facultyAdvisoryRouter);
 app.use('/api/tutor-bounty', tutorBountyRouter);
 app.use('/api/campus-printing', campusPrintingRouter);
 app.use('/api/alumni-radar', alumniRadarRouter);
+app.use('/api/study-swarm', aiStudySwarmRouter);
+app.use('/api/campus-incubator', campusIncubatorRouter);
+app.use('/api/campus-transit', campusTransitRouter);
+app.use('/api/mental-resilience', mentalResilienceRouter);
+app.use('/api/quantum-lab', quantumLabRouter);
 
 // Global Error Handler
 app.use(errorHandler);
