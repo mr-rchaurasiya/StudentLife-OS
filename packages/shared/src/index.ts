@@ -2443,4 +2443,153 @@ export interface GenerateCredentialDto {
   skills: string[];
 }
 
+// ==========================================
+// 51. AI arXiv Scholar & Research Paper Synthesizer (Phase 51)
+// ==========================================
+export interface BibtexCitation {
+  rawBibtex: string;
+  apaFormatted: string;
+  ieeeFormatted: string;
+}
+
+export interface ResearchPaperSummary {
+  id: string;
+  title: string;
+  authors: string[];
+  publishedYear: number;
+  conferenceOrJournal: string;
+  arxivId: string;
+  abstractSummary: string;
+  coreMethodology: string;
+  keyBenchmarks: Array<{ metric: string; score: string; baselineScore: string }>;
+  keyTakeaways: string[];
+  bibtex: BibtexCitation;
+  pdfUrl: string;
+}
+
+export interface SearchPapersDto {
+  query: string;
+  domain?: 'AI_ML' | 'DISTRIBUTED_SYSTEMS' | 'QUANTUM_COMPUTING' | 'CYBERSECURITY';
+}
+
+// ==========================================
+// 52. AI Socratic Debate Arena & Thesis Defender (Phase 52)
+// ==========================================
+export type DebatePersona = 'STRICT_EXAMINER' | 'SKEPTICAL_PEER' | 'DIALECTICAL_PHILOSOPHER';
+
+export interface DebateTurn {
+  speaker: 'USER' | 'AI';
+  content: string;
+  timestamp: string;
+  fallacyDetected?: string;
+  strengthScore?: number; // 0 to 100
+}
+
+export interface DebateScorecard {
+  logicalCoherence: number;
+  evidenceWeight: number;
+  fallacyResistance: number;
+  persuasiveness: number;
+  overallScore: number;
+  summaryFeedback: string;
+}
+
+export interface DebateSession {
+  id: string;
+  topicMotion: string;
+  persona: DebatePersona;
+  turns: DebateTurn[];
+  isCompleted: boolean;
+  scorecard?: DebateScorecard;
+  createdAt: string;
+}
+
+export interface StartDebateDto {
+  topicMotion: string;
+  persona: DebatePersona;
+}
+
+export interface SubmitArgumentDto {
+  sessionId: string;
+  userArgument: string;
+}
+
+// ==========================================
+// 53. Smart Campus Lost & Found + Equipment Exchange (Phase 53)
+// ==========================================
+export type CampusItemCategory = 'CALCULATOR' | 'LAB_EQUIPMENT' | 'ID_DOCUMENT' | 'BOOK_STATIONERY' | 'ELECTRONICS';
+export type CampusItemType = 'LOST' | 'FOUND' | 'FOR_BORROW_RENT';
+
+export interface CampusItem {
+  id: string;
+  type: CampusItemType;
+  category: CampusItemCategory;
+  title: string;
+  locationDetails: string;
+  description: string;
+  reportedBy: string;
+  contactHandle: string;
+  status: 'OPEN' | 'RESOLVED' | 'CLAIMED';
+  dateReported: string;
+  imageUrl?: string;
+}
+
+export interface CreateCampusItemDto {
+  type: CampusItemType;
+  category: CampusItemCategory;
+  title: string;
+  locationDetails: string;
+  description: string;
+  contactHandle: string;
+}
+
+// ==========================================
+// 54. Multimodal Video Lecture Navigator (Phase 54)
+// ==========================================
+export interface LectureChapterMarker {
+  timestampSeconds: number;
+  timestampFormatted: string; // e.g. "14:32"
+  title: string;
+  keyConcepts: string[];
+  extractedWhiteboardMathProof?: string;
+}
+
+export interface VideoLectureAnalysis {
+  id: string;
+  videoTitle: string;
+  sourceUrl: string;
+  durationMinutes: number;
+  instructorName: string;
+  subject: string;
+  chapters: LectureChapterMarker[];
+  printableCheatsheetMarkdown: string;
+  createdAt: string;
+}
+
+export interface AnalyzeLectureDto {
+  videoUrl: string;
+  targetSubject?: string;
+}
+
+// ==========================================
+// 55. Ergonomic Posture & Eye-Blink Bio-Feedback (Phase 55)
+// ==========================================
+export interface ErgonomicWellnessProfile {
+  digitalEyeStrainScore: number; // 0 (healthy) to 100 (critical fatigue)
+  blinkRatePerMinute: number; // normal: 15-20, low: <10
+  currentPostureStatus: 'GOOD_UPRIGHT' | 'FORWARD_HEAD_SLOUCH' | 'TOO_CLOSE_TO_SCREEN';
+  screenDistanceCm: number;
+  screenTimeMinutesToday: number;
+  eyeBreaksCompleted: number;
+  stretchesCompleted: number;
+  activeAlerts: string[];
+}
+
+export interface LogErgonomicSessionDto {
+  blinkRatePerMinute?: number;
+  postureStatus?: 'GOOD_UPRIGHT' | 'FORWARD_HEAD_SLOUCH' | 'TOO_CLOSE_TO_SCREEN';
+  distanceCm?: number;
+}
+
+
 

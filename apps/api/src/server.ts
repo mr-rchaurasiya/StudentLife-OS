@@ -47,6 +47,11 @@ import aiWhiteboardRouter from './routes/ai-whiteboard.routes';
 import studentFinancesRouter from './routes/student-finances.routes';
 import holoSimulationsRouter from './routes/holo-simulations.routes';
 import skillPassportRouter from './routes/skill-passport.routes';
+import arxivScholarRouter from './routes/arxiv-scholar.routes';
+import socraticDebateRouter from './routes/socratic-debate.routes';
+import campusExchangeRouter from './routes/campus-exchange.routes';
+import videoNavigatorRouter from './routes/video-navigator.routes';
+import ergonomicWellnessRouter from './routes/ergonomic-wellness.routes';
 import { errorHandler } from './middlewares/errorHandler';
 
 const app: Express = express();
@@ -108,6 +113,11 @@ app.use('/api/ai-whiteboard', aiWhiteboardRouter);
 app.use('/api/student-finances', studentFinancesRouter);
 app.use('/api/holo-simulations', holoSimulationsRouter);
 app.use('/api/skill-passport', skillPassportRouter);
+app.use('/api/arxiv-scholar', arxivScholarRouter);
+app.use('/api/socratic-debate', socraticDebateRouter);
+app.use('/api/campus-exchange', campusExchangeRouter);
+app.use('/api/video-navigator', videoNavigatorRouter);
+app.use('/api/ergonomic-wellness', ergonomicWellnessRouter);
 
 // Global Error Handler
 app.use(errorHandler);

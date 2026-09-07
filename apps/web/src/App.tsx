@@ -41,6 +41,11 @@ import { AiWhiteboardStudioView } from './components/AiWhiteboardStudioView';
 import { StudentFinancesView } from './components/StudentFinancesView';
 import { HoloSimulations3DView } from './components/HoloSimulations3DView';
 import { SkillPassportCredentialView } from './components/SkillPassportCredentialView';
+import { ArxivScholarView } from './components/ArxivScholarView';
+import { SocraticDebateArenaView } from './components/SocraticDebateArenaView';
+import { CampusExchangeView } from './components/CampusExchangeView';
+import { VideoLectureNavigatorView } from './components/VideoLectureNavigatorView';
+import { ErgonomicWellnessView } from './components/ErgonomicWellnessView';
 import { LanguageSelectorModal } from './components/LanguageSelectorModal';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import { PwaInstallPromptWidget } from './components/PwaInstallPromptWidget';
@@ -98,6 +103,11 @@ import {
   Cpu,
   Palette,
   ShieldCheck,
+  FileSearch,
+  Scale,
+  PackageSearch,
+  Video,
+  Eye,
 } from 'lucide-react';
 
 interface PhaseItem {
@@ -160,6 +170,11 @@ const PHASES: PhaseItem[] = [
   { id: 'p48', number: '48', name: 'Student Financial & Expense Tracker', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Pocket Allowance Budget Optimizer', 'Campus Gig & Tutoring Matchmaker', 'Course & Test Series ROI Calculator'] },
   { id: 'p49', number: '49', name: '3D Science & CS Holo-Lab', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['5-Stage RISC CPU Pipeline Hazards', 'Double Pendulum Chaos Visualizer', 'Maxwell Electromagnetic Waves Simulation'] },
   { id: 'p50', number: '50', name: 'Verifiable Academic Skill Passport', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['SHA-256 Cryptographic Credential Vault', 'Public Recruiter Verification Links', '50-Phase Grandmaster Completion Trophy'] },
+  { id: 'p51', number: '51', name: 'AI arXiv Scholar & Synthesizer', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['arXiv Live Search & Fetch', '3-Column Paper Synthesizer', 'BibTeX/APA/IEEE Citations', 'Methodology vs Baseline Benchmarks'] },
+  { id: 'p52', number: '52', name: 'AI Socratic Debate Arena', pillar: 'AI_COMMUNITY', status: 'COMPLETED', deliverables: ['Adversarial Thesis Defense', 'Fallacy Detection Engine', 'Strength Scoring Algorithm', 'Debate Performance Scorecard'] },
+  { id: 'p53', number: '53', name: 'Smart Campus Lost & Found + Exchange', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Lost & Found Item Tracker', 'Peer Equipment/Calculator Exchange', 'Category Filtering', 'Contact Bridge'] },
+  { id: 'p54', number: '54', name: 'Multimodal Video Lecture Navigator', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Timestamped Concept Markers', 'Whiteboard Math Proof Extraction', 'Printable Cheatsheet Markdown', 'Jump-to-Chapter Timeline'] },
+  { id: 'p55', number: '55', name: 'Ergonomic Posture & Eye-Blink Monitor', pillar: 'FOUNDATION', status: 'COMPLETED', deliverables: ['Webcam Posture/Distance Telemetry', 'Blink Rate & Eye Strain Index', '20-20-20 Optical Rest Engine', 'Desk Micro-Stretch Routines'] },
 ];
 
 const DEFAULT_DEMO_PROFILE: StudentProfile = {
@@ -370,7 +385,7 @@ const DEFAULT_SYLLABUS_OVERVIEW: SyllabusOverviewStats = {
 
 function DashboardContent() {
   const { user, tokens, isAuthenticated, logout } = useAuth();
-  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'EXAM_TREND' | 'AI_WHITEBOARD' | 'STUDENT_FINANCES' | 'HOLO_SIMULATIONS' | 'SKILL_PASSPORT' | 'ROADMAP'>('DASHBOARD');
+  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'EXAM_TREND' | 'AI_WHITEBOARD' | 'STUDENT_FINANCES' | 'HOLO_SIMULATIONS' | 'SKILL_PASSPORT' | 'ARXIV_SCHOLAR' | 'SOCRATIC_DEBATE' | 'CAMPUS_EXCHANGE' | 'VIDEO_NAVIGATOR' | 'ERGONOMIC_WELLNESS' | 'ROADMAP'>('DASHBOARD');
   const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>('en');
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
   const [initialAiStudyContent, setInitialAiStudyContent] = useState<string>('');
@@ -1643,6 +1658,96 @@ function DashboardContent() {
                 <ShieldCheck size={13} color={activeView === 'SKILL_PASSPORT' ? '#fff' : '#fbbf24'} /> Skill Passport 🎖️
               </button>
               <button
+                onClick={() => setActiveView('ARXIV_SCHOLAR')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'ARXIV_SCHOLAR' ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'transparent',
+                  color: activeView === 'ARXIV_SCHOLAR' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <FileSearch size={13} color={activeView === 'ARXIV_SCHOLAR' ? '#fff' : '#818cf8'} /> arXiv Scholar 📄
+              </button>
+              <button
+                onClick={() => setActiveView('SOCRATIC_DEBATE')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'SOCRATIC_DEBATE' ? 'linear-gradient(135deg, #a855f7, #ec4899)' : 'transparent',
+                  color: activeView === 'SOCRATIC_DEBATE' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Scale size={13} color={activeView === 'SOCRATIC_DEBATE' ? '#fff' : '#c084fc'} /> Socratic Debate ⚖️
+              </button>
+              <button
+                onClick={() => setActiveView('CAMPUS_EXCHANGE')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'CAMPUS_EXCHANGE' ? 'linear-gradient(135deg, #f59e0b, #e11d48)' : 'transparent',
+                  color: activeView === 'CAMPUS_EXCHANGE' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <PackageSearch size={13} color={activeView === 'CAMPUS_EXCHANGE' ? '#fff' : '#fbbf24'} /> Campus Exchange 📦
+              </button>
+              <button
+                onClick={() => setActiveView('VIDEO_NAVIGATOR')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'VIDEO_NAVIGATOR' ? 'linear-gradient(135deg, #ec4899, #6366f1)' : 'transparent',
+                  color: activeView === 'VIDEO_NAVIGATOR' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Video size={13} color={activeView === 'VIDEO_NAVIGATOR' ? '#fff' : '#f472b6'} /> Video Navigator 🎬
+              </button>
+              <button
+                onClick={() => setActiveView('ERGONOMIC_WELLNESS')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'ERGONOMIC_WELLNESS' ? 'linear-gradient(135deg, #10b981, #06b6d4)' : 'transparent',
+                  color: activeView === 'ERGONOMIC_WELLNESS' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Eye size={13} color={activeView === 'ERGONOMIC_WELLNESS' ? '#fff' : '#34d399'} /> Ergonomics Bio-Cam 👁️
+              </button>
+              <button
                 onClick={() => setActiveView('ROADMAP')}
                 style={{
                   padding: '6px 14px',
@@ -1658,7 +1763,7 @@ function DashboardContent() {
                   color: activeView === 'ROADMAP' ? '#ffffff' : 'var(--text-secondary)',
                 }}
               >
-                <Layers size={13} /> 50-Phase Matrix 🗺️
+                <Layers size={13} /> 55-Phase Quantum Matrix 🗺️
               </button>
             </div>
           </div>
@@ -2182,6 +2287,26 @@ function DashboardContent() {
           />
         )}
 
+        {activeView === 'ARXIV_SCHOLAR' && (
+          <ArxivScholarView />
+        )}
+
+        {activeView === 'SOCRATIC_DEBATE' && (
+          <SocraticDebateArenaView />
+        )}
+
+        {activeView === 'CAMPUS_EXCHANGE' && (
+          <CampusExchangeView />
+        )}
+
+        {activeView === 'VIDEO_NAVIGATOR' && (
+          <VideoLectureNavigatorView />
+        )}
+
+        {activeView === 'ERGONOMIC_WELLNESS' && (
+          <ErgonomicWellnessView />
+        )}
+
         {activeView === 'ROADMAP' && (
           <div>
             {/* Top Progress & Banner */}
@@ -2196,12 +2321,12 @@ function DashboardContent() {
                   <div>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                       <span className="badge badge-completed">
-                        <CheckCircle2 size={12} /> ALL 50 PHASES FULLY OPERATIONAL (100% DONE!) 🏆
+                        <CheckCircle2 size={12} /> ALL 55 PHASES FULLY OPERATIONAL (100% DONE!) 🏆
                       </span>
-                      <span className="badge badge-active">INFINITY EDITION v6.0</span>
+                      <span className="badge badge-active">QUANTUM EDITION v7.0</span>
                     </div>
                     <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>
-                      Master Execution Matrix <span className="gradient-text">(50 Phases)</span>
+                      Master Execution Matrix <span className="gradient-text">(55 Phases)</span>
                     </h2>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '4px' }}>
                       Complete roadmap tracking and architecture deliverables across Study, Exams, Career & Mentor layers.
@@ -2430,7 +2555,7 @@ function DashboardContent() {
         marginTop: 'auto',
         backgroundColor: 'rgba(9, 13, 22, 0.95)'
       }}>
-        StudentLife OS 6.0 (Infinity Edition) &bull; 50 Phases Fully Operational &bull; 100% Production Ready 🏆
+        StudentLife OS 7.0 (Quantum Edition) &bull; 55 Phases Fully Operational &bull; 100% Production Ready 🏆
       </footer>
     </div>
   );
