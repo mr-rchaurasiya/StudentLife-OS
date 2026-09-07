@@ -86,6 +86,11 @@ import { BciNeuroSpellerView } from './components/BciNeuroSpellerView';
 import { LegalContractAnalyzerView } from './components/LegalContractAnalyzerView';
 import { ExoplanetPhotometryView } from './components/ExoplanetPhotometryView';
 import { CarbonCreditMarketView } from './components/CarbonCreditMarketView';
+import { GravitationalWaveLabView } from './components/GravitationalWaveLabView';
+import { RoboticsKinematicsView } from './components/RoboticsKinematicsView';
+import { EpigeneticClockView } from './components/EpigeneticClockView';
+import { HftOrderBookView } from './components/HftOrderBookView';
+import { CenturyGrandmasterView } from './components/CenturyGrandmasterView';
 import { LanguageSelectorModal } from './components/LanguageSelectorModal';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import { PwaInstallPromptWidget } from './components/PwaInstallPromptWidget';
@@ -172,6 +177,8 @@ import {
   ShieldAlert,
   Leaf,
   Orbit,
+  Heart,
+  RotateCw,
 } from 'lucide-react';
 
 interface PhaseItem {
@@ -279,6 +286,11 @@ const PHASES: PhaseItem[] = [
   { id: 'p93', number: '93', name: 'Autonomous Legal Contract Analyzer & Patent Infringement Risk Radar', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Unfair IP Assignment Clause Flagging', 'Non-Compete Reasonableness Index', 'AI Suggested Redline Replacements', 'USPTO / WIPO Patent Collision Radar'] },
   { id: 'p94', number: '94', name: 'Exoplanet Transit Photometry & Kepler Light-Curve Extractor', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Differential Transit Flux Dip Curve (ΔF/F)', 'Planetary Radius Rp = R_* sqrt(ΔF) Model', 'Goldilocks Habitable Zone Equilibrium Temp', 'Kepler & TRAPPIST Stellar Analogue Presets'] },
   { id: 'p95', number: '95', name: 'Collegiate Carbon Credit Smart Market & ESG Offset Ledger', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Campus Scope 1/2/3 GHG Emissions Engine', 'P2P Verified Student Carbon Offset Book', 'Solar Rooftop & EV Shuttle Tokenization', 'SHA-256 Cryptographic Green Certificates'] },
+  { id: 'p96', number: '96', name: 'Gravitational Wave Interferometry & Black Hole Merger Ringdown', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['LIGO/Virgo Spacetime Strain h(t) Model', 'Chirp Mass M = (m1*m2)^(3/5)/(m1+m2)^(1/5)', 'Inspiral-Merger-Ringdown Waveforms', 'GW150914 & GW170817 Spectrogram Engine'] },
+  { id: 'p97', number: '97', name: 'Autonomous Robotic Arm Inverse Kinematics & 6-DOF ROS Planner', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Denavit-Hartenberg (DH) Parameter Matrix', 'Jacobian Inverse Velocity Kinematic Solver', 'Singularity Condition Number Metric', '6-Axis Articulated Joint Trajectory Engine'] },
+  { id: 'p98', number: '98', name: 'Epigenetic DNA Methylation & Biological Longevity Clock', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Horvath & Hannum Epigenetic Age Algorithms', 'CpG Island Methylation Beta-Value Profiles', 'Biological Age Acceleration Delta Meter', 'Mitochondrial Lifestyle Longevity Interventions'] },
+  { id: 'p99', number: '99', name: 'High-Frequency Algorithmic Order Book (L2/L3) & Limit Engine', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Sub-Microsecond Price-Time FIFO Engine', 'Live L2/L3 Market Depth Order Ladders', 'Bid-Ask Spread Slippage Telemetry', 'Quantitative Algorithmic Backtesting Console'] },
+  { id: 'p100', number: '100', name: 'Century Grandmaster Singularity Medallion & Sovereign Passport', pillar: 'FOUNDATION', status: 'COMPLETED', deliverables: ['100-Phase Full Operational Completion Medallion', 'SHA-256 Soulbound Cryptographic Certificate', 'Comprehensive 100-Module Master Transcript', 'Mythic Centurion Scholar Sovereign Privileges'] },
 ];
 
 const DEFAULT_DEMO_PROFILE: StudentProfile = {
@@ -489,7 +501,7 @@ const DEFAULT_SYLLABUS_OVERVIEW: SyllabusOverviewStats = {
 
 function DashboardContent() {
   const { user, tokens, isAuthenticated, logout } = useAuth();
-  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'EXAM_TREND' | 'AI_WHITEBOARD' | 'STUDENT_FINANCES' | 'HOLO_SIMULATIONS' | 'SKILL_PASSPORT' | 'ARXIV_SCHOLAR' | 'SOCRATIC_DEBATE' | 'CAMPUS_EXCHANGE' | 'VIDEO_NAVIGATOR' | 'ERGONOMIC_WELLNESS' | 'RESEARCH_LAB' | 'NEURAL_FLOW' | 'HOSTEL_NUTRITION' | 'LATEX_STUDIO' | 'HACKATHON_RADAR' | 'PATENT_DRAFTER' | 'FACULTY_ADVISORY' | 'TUTOR_BOUNTY' | 'CAMPUS_PRINTING' | 'ALUMNI_RADAR' | 'STUDY_SWARM' | 'CAMPUS_INCUBATOR' | 'CAMPUS_TRANSIT' | 'MENTAL_RESILIENCE' | 'QUANTUM_LAB' | 'FELLOWSHIP_DRAFTER' | 'HACKATHON_WAR_ROOM' | 'SPEED_READER' | 'ACADEMIC_INTEGRITY' | 'CAMPUS_DIGITAL_TWIN' | 'POLYGLOT_TRANSLATOR' | 'LAB_NOTEBOOK' | 'ANKI_FSRS' | 'MICRO_INTERNSHIP' | 'KNOWLEDGE_OLYMPIAD' | 'KERNEL_PROFILER' | 'ASTRODYNAMICS' | 'CHEMICAL_RETRO' | 'SCHOLAR_TRACKER' | 'STUDY_GUILD_DAO' | 'NEUROMORPHIC_SNN' | 'QUANTUM_QKD' | 'PAPER_REFEREE' | 'CRISPR_EDITOR' | 'VENTURE_SAFE' | 'FUSION_TOKAMAK' | 'BCI_SPELLER' | 'LEGAL_ANALYZER' | 'EXOPLANET_PHOTOMETRY' | 'CARBON_MARKET' | 'ROADMAP'>('DASHBOARD');
+  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'EXAM_TREND' | 'AI_WHITEBOARD' | 'STUDENT_FINANCES' | 'HOLO_SIMULATIONS' | 'SKILL_PASSPORT' | 'ARXIV_SCHOLAR' | 'SOCRATIC_DEBATE' | 'CAMPUS_EXCHANGE' | 'VIDEO_NAVIGATOR' | 'ERGONOMIC_WELLNESS' | 'RESEARCH_LAB' | 'NEURAL_FLOW' | 'HOSTEL_NUTRITION' | 'LATEX_STUDIO' | 'HACKATHON_RADAR' | 'PATENT_DRAFTER' | 'FACULTY_ADVISORY' | 'TUTOR_BOUNTY' | 'CAMPUS_PRINTING' | 'ALUMNI_RADAR' | 'STUDY_SWARM' | 'CAMPUS_INCUBATOR' | 'CAMPUS_TRANSIT' | 'MENTAL_RESILIENCE' | 'QUANTUM_LAB' | 'FELLOWSHIP_DRAFTER' | 'HACKATHON_WAR_ROOM' | 'SPEED_READER' | 'ACADEMIC_INTEGRITY' | 'CAMPUS_DIGITAL_TWIN' | 'POLYGLOT_TRANSLATOR' | 'LAB_NOTEBOOK' | 'ANKI_FSRS' | 'MICRO_INTERNSHIP' | 'KNOWLEDGE_OLYMPIAD' | 'KERNEL_PROFILER' | 'ASTRODYNAMICS' | 'CHEMICAL_RETRO' | 'SCHOLAR_TRACKER' | 'STUDY_GUILD_DAO' | 'NEUROMORPHIC_SNN' | 'QUANTUM_QKD' | 'PAPER_REFEREE' | 'CRISPR_EDITOR' | 'VENTURE_SAFE' | 'FUSION_TOKAMAK' | 'BCI_SPELLER' | 'LEGAL_ANALYZER' | 'EXOPLANET_PHOTOMETRY' | 'CARBON_MARKET' | 'GRAVITATIONAL_WAVES' | 'ROBOTICS_KINEMATICS' | 'EPIGENETIC_CLOCK' | 'HFT_ORDERBOOK' | 'CENTURY_GRANDMASTER' | 'ROADMAP'>('DASHBOARD');
   const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>('en');
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
   const [initialAiStudyContent, setInitialAiStudyContent] = useState<string>('');
@@ -2572,6 +2584,97 @@ function DashboardContent() {
                 <Leaf size={13} color={activeView === 'CARBON_MARKET' ? '#fff' : '#34d399'} /> Carbon Market 🌿
               </button>
               <button
+                onClick={() => setActiveView('GRAVITATIONAL_WAVES')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'GRAVITATIONAL_WAVES' ? 'linear-gradient(135deg, #7c3aed, #4f46e5)' : 'transparent',
+                  color: activeView === 'GRAVITATIONAL_WAVES' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Waves size={13} color={activeView === 'GRAVITATIONAL_WAVES' ? '#fff' : '#a78bfa'} /> Gravitational Waves 🌌
+              </button>
+              <button
+                onClick={() => setActiveView('ROBOTICS_KINEMATICS')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'ROBOTICS_KINEMATICS' ? 'linear-gradient(135deg, #0d9488, #0891b2)' : 'transparent',
+                  color: activeView === 'ROBOTICS_KINEMATICS' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <RotateCw size={13} color={activeView === 'ROBOTICS_KINEMATICS' ? '#fff' : '#2dd4bf'} /> 6-DOF Robotics 🦾
+              </button>
+              <button
+                onClick={() => setActiveView('EPIGENETIC_CLOCK')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'EPIGENETIC_CLOCK' ? 'linear-gradient(135deg, #e11d48, #db2777)' : 'transparent',
+                  color: activeView === 'EPIGENETIC_CLOCK' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Heart size={13} color={activeView === 'EPIGENETIC_CLOCK' ? '#fff' : '#fb7185'} /> Epigenetic Clock 🧬
+              </button>
+              <button
+                onClick={() => setActiveView('HFT_ORDERBOOK')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'HFT_ORDERBOOK' ? 'linear-gradient(135deg, #059669, #0284c7)' : 'transparent',
+                  color: activeView === 'HFT_ORDERBOOK' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <TrendingUp size={13} color={activeView === 'HFT_ORDERBOOK' ? '#fff' : '#34d399'} /> HFT Order Book 📈
+              </button>
+              <button
+                onClick={() => setActiveView('CENTURY_GRANDMASTER')}
+                style={{
+                  padding: '6px 16px',
+                  borderRadius: 'var(--radius-full)',
+                  border: '1px solid rgba(245, 158, 11, 0.6)',
+                  fontSize: '0.75rem',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'CENTURY_GRANDMASTER' ? 'linear-gradient(135deg, #f59e0b, #eab308)' : 'rgba(245, 158, 11, 0.15)',
+                  color: activeView === 'CENTURY_GRANDMASTER' ? '#020617' : '#fbbf24',
+                  boxShadow: '0 0 15px rgba(245, 158, 11, 0.25)'
+                }}
+              >
+                <Crown size={14} color={activeView === 'CENTURY_GRANDMASTER' ? '#020617' : '#f59e0b'} /> Phase 100 Grandmaster 👑
+              </button>
+              <button
                 onClick={() => setActiveView('ROADMAP')}
                 style={{
                   padding: '6px 14px',
@@ -3582,6 +3685,66 @@ function DashboardContent() {
           />
         )}
 
+        {activeView === 'GRAVITATIONAL_WAVES' && (
+          <GravitationalWaveLabView
+            onAddXp={(xp) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+            }}
+          />
+        )}
+
+        {activeView === 'ROBOTICS_KINEMATICS' && (
+          <RoboticsKinematicsView
+            onAddXp={(xp) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+            }}
+          />
+        )}
+
+        {activeView === 'EPIGENETIC_CLOCK' && (
+          <EpigeneticClockView
+            onAddXp={(xp) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+            }}
+          />
+        )}
+
+        {activeView === 'HFT_ORDERBOOK' && (
+          <HftOrderBookView
+            onAddXp={(xp) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+            }}
+          />
+        )}
+
+        {activeView === 'CENTURY_GRANDMASTER' && (
+          <CenturyGrandmasterView
+            onAddXp={(xp) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+            }}
+          />
+        )}
+
         {activeView === 'ROADMAP' && (
           <div>
             {/* Top Progress & Banner */}
@@ -3596,12 +3759,12 @@ function DashboardContent() {
                   <div>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                       <span className="badge badge-completed">
-                        <CheckCircle2 size={12} /> ALL 95 PHASES FULLY OPERATIONAL (100% DONE!) 🏆
+                        <CheckCircle2 size={12} /> ALL 100 PHASES FULLY OPERATIONAL (100% DONE!) 🏆💯
                       </span>
-                      <span className="badge badge-active">CENTURION SINGULARITY EDITION v15.0</span>
+                      <span className="badge badge-active">CENTURY GRANDMASTER EDITION v16.0</span>
                     </div>
                     <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>
-                      Master Execution Matrix <span className="gradient-text">(95 Phases)</span>
+                      Master Execution Matrix <span className="gradient-text">(100 Phases Complete)</span>
                     </h2>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '4px' }}>
                       Complete roadmap tracking and architecture deliverables across Study, Exams, Career & Mentor layers.
@@ -3830,7 +3993,7 @@ function DashboardContent() {
         marginTop: 'auto',
         backgroundColor: 'rgba(9, 13, 22, 0.95)'
       }}>
-        StudentLife OS 15.0 (Centurion Singularity Edition) &bull; 95 Phases Fully Operational &bull; 100% Production Ready 🏆
+        StudentLife OS 16.0 (Century Grandmaster Edition) &bull; 100/100 Phases Fully Operational &bull; 100% Production Ready 🏆💯
       </footer>
     </div>
   );

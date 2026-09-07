@@ -3953,4 +3953,173 @@ export interface CalculateEsgFootprintDto {
   transportKm: number;
 }
 
+// ==========================================
+// 96. Gravitational Wave Interferometry & Black Hole Merger Ringdown Simulator (Phase 96)
+// ==========================================
+export interface WaveformStrainDataPoint {
+  timeMs: number; // Time relative to merger
+  strainH10Minus21: number; // Strain h(t) * 10^-21
+  frequencyHz: number;
+}
+
+export interface GravitationalWaveEvent {
+  id: string;
+  eventName: string;
+  primaryMassSolar: number;
+  secondaryMassSolar: number;
+  chirpMassSolar: number; // M = (m1*m2)^(3/5) / (m1+m2)^(1/5)
+  luminosityDistanceMpc: number;
+  peakGravitationalPowerWatts: number;
+  remnantBlackHoleMassSolar: number;
+  energyRadiatedSolarMasses: number;
+  detectorNetwork: string[];
+  strainWaveform: WaveformStrainDataPoint[];
+}
+
+export interface SimulateGwMergerDto {
+  primaryMassSolar: number;
+  secondaryMassSolar: number;
+  luminosityDistanceMpc?: number;
+  targetObservatory?: 'LIGO_HANFORD' | 'LIGO_LIVINGSTON' | 'VIRGO' | 'KAGRA';
+}
+
+// ==========================================
+// 97. Autonomous Robotic Arm Inverse Kinematics & 6-DOF ROS Trajectory Planner (Phase 97)
+// ==========================================
+export interface Joint6DofState {
+  jointNumber: number;
+  jointName: string;
+  currentAngleDeg: number;
+  minLimitDeg: number;
+  maxLimitDeg: number;
+  torqueNm: number;
+}
+
+export interface RoboticTrajectoryPlan {
+  id: string;
+  targetCoordinates: { x: number; y: number; z: number; rollDeg: number; pitchDeg: number; yawDeg: number };
+  joints: Joint6DofState[];
+  isReachabilityFeasible: boolean;
+  singularityDistanceMetric: number; // Condition number
+  executionTimeSec: number;
+  trajectoryWaypoints: Array<{ timeStepSec: number; jointAngles: number[] }>;
+}
+
+export interface ComputeInverseKinematicsDto {
+  targetX: number;
+  targetY: number;
+  targetZ: number;
+  targetRollDeg?: number;
+  targetPitchDeg?: number;
+  targetYawDeg?: number;
+}
+
+// ==========================================
+// 98. Epigenetic DNA Methylation & Biological Longevity Clock (Phase 98)
+// ==========================================
+export interface CpgSiteMethylation {
+  cpgId: string;
+  geneSymbol: string;
+  betaValuePercentage: number; // 0 to 100% methylation
+  biologicalImpact: 'CELLULAR_SENESCENCE' | 'DNA_REPAIR' | 'METABOLIC_EFFICIENCY' | 'INFLAMMATION_REGULATION';
+}
+
+export interface EpigeneticClockReport {
+  id: string;
+  chronologicalAgeYears: number;
+  epigeneticAgeHorvathYears: number;
+  epigeneticAgeHannumYears: number;
+  biologicalAgeAccelerationYears: number; // Negative is youthful, positive is accelerated aging
+  vitalityScorePercent: number;
+  analyzedCpgSites: CpgSiteMethylation[];
+  recommendedLifestyleInterventions: string[];
+}
+
+export interface AnalyzeEpigeneticClockDto {
+  chronologicalAgeYears: number;
+  dailySleepHours: number;
+  weeklyCardioMinutes: number;
+  mediterraneanDietAdherenceScore: number; // 1 to 10
+  stressIndex: number; // 1 to 10
+}
+
+// ==========================================
+// 99. High-Frequency Algorithmic Order Book (L2/L3) & Limit Order Matching Engine (Phase 99)
+// ==========================================
+export interface LimitOrder {
+  id: string;
+  side: 'BUY' | 'SELL';
+  priceUsd: number;
+  quantityLots: number;
+  timestampNano: number;
+  traderId: string;
+}
+
+export interface OrderBookLevel {
+  priceUsd: number;
+  aggregateQuantity: number;
+  orderCount: number;
+}
+
+export interface OrderBookSnapshot {
+  id: string;
+  symbol: string;
+  lastTradePriceUsd: number;
+  spreadBps: number;
+  bidLadder: OrderBookLevel[];
+  askLadder: OrderBookLevel[];
+  recentFills: Array<{ price: number; quantity: number; side: 'BUY' | 'SELL'; timestamp: string }>;
+  matchingEngineLatencyMicros: number;
+}
+
+export interface ExecuteHftTradeDto {
+  side: 'BUY' | 'SELL';
+  priceUsd: number;
+  quantityLots: number;
+  orderType: 'LIMIT' | 'MARKET';
+}
+
+// ==========================================
+// 100. Century Grandmaster Singularity Medallion & Sovereign Digital Campus Avatar (Phase 100)
+// ==========================================
+export interface CenturySoulboundCertificate {
+  id: string;
+  studentName: string;
+  college: string;
+  completionDate: string;
+  totalPhasesCompleted: 100;
+  totalXpAccumulated: number;
+  grandmasterTier: 'MYTHIC_CENTURION_SINGULARITY';
+  sha256SoulboundHash: string;
+  signatureRsa2048: string;
+  unlockedMasterAbilities: string[];
+}
+
+export interface MasterCurriculumTranscript {
+  totalModules: 100;
+  passedCount: 100;
+  masteryGpaEquivalent: 4.0;
+  pillarBreakdown: {
+    foundation: number;
+    studyAndResearch: number;
+    examsAndPractice: number;
+    careerAndFintech: number;
+    aiAndCommunity: number;
+    quantumAndAdvancedTech: number;
+  };
+}
+
+export interface CenturyGrandmasterProfile {
+  studentProfile: StudentProfile;
+  certificate: CenturySoulboundCertificate;
+  transcript: MasterCurriculumTranscript;
+}
+
+export interface ClaimCenturyMedallionDto {
+  studentName: string;
+  college?: string;
+  signaturePhrase?: string;
+}
+
+
 

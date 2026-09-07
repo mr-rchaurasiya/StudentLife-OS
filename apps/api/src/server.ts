@@ -92,6 +92,11 @@ import bciSpellerRouter from './routes/bci-speller.routes';
 import legalAnalyzerRouter from './routes/legal-analyzer.routes';
 import exoplanetPhotometryRouter from './routes/exoplanet-photometry.routes';
 import carbonMarketRouter from './routes/carbon-market.routes';
+import gravitationalWavesRouter from './routes/gravitational-waves.routes';
+import roboticsKinematicsRouter from './routes/robotics-kinematics.routes';
+import epigeneticClockRouter from './routes/epigenetic-clock.routes';
+import hftOrderBookRouter from './routes/hft-orderbook.routes';
+import centuryGrandmasterRouter from './routes/century-grandmaster.routes';
 import { errorHandler } from './middlewares/errorHandler';
 
 const app: Express = express();
@@ -198,6 +203,11 @@ app.use('/api/bci-speller', bciSpellerRouter);
 app.use('/api/legal-analyzer', legalAnalyzerRouter);
 app.use('/api/exoplanet-photometry', exoplanetPhotometryRouter);
 app.use('/api/carbon-market', carbonMarketRouter);
+app.use('/api/gravitational-waves', gravitationalWavesRouter);
+app.use('/api/robotics-kinematics', roboticsKinematicsRouter);
+app.use('/api/epigenetic-clock', epigeneticClockRouter);
+app.use('/api/hft-orderbook', hftOrderBookRouter);
+app.use('/api/century-grandmaster', centuryGrandmasterRouter);
 
 // Global Error Handler
 app.use(errorHandler);
