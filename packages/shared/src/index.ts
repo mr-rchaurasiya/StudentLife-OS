@@ -2275,3 +2275,172 @@ export interface UpdateHabitDto {
   value?: string | number;
 }
 
+// ==========================================
+// 46. AI Exam Paper Trend Forecaster (Phase 46)
+// ==========================================
+export interface TopicProbabilityData {
+  topicName: string;
+  historicalFrequencyCount: number;
+  probabilityPercent: number;
+  expectedMarksWeightage: number;
+  riskLevel: 'VERY_HIGH' | 'HIGH' | 'MEDIUM' | 'LOW';
+  recommendedAction: string;
+}
+
+export interface ExamTrendForecast {
+  examName: string;
+  analyzedYearSpan: string;
+  totalPYQQuestionsIndexed: number;
+  forecastAccuracyScore: number;
+  topPredictedTopics: TopicProbabilityData[];
+  predictedPaperDifficulty: 'EASY' | 'MODERATE' | 'CHALLENGING' | 'EXTREME';
+  highProbabilityQuestionPatterns: string[];
+}
+
+export interface PredictExamTrendsDto {
+  examName: string;
+  targetSubject?: string;
+}
+
+// ==========================================
+// 47. AI Collaborative Whiteboard Studio (Phase 47)
+// ==========================================
+export interface WhiteboardElement {
+  id: string;
+  type: 'RECTANGLE' | 'CIRCLE' | 'ARROW' | 'TEXT' | 'DIAMOND';
+  x: number;
+  y: number;
+  width?: number;
+  height?: number;
+  text?: string;
+  color: string;
+  fill?: string;
+}
+
+export interface WhiteboardDiagram {
+  id: string;
+  title: string;
+  topic: string;
+  elements: WhiteboardElement[];
+  generatedByAi: boolean;
+  notesSummary: string;
+  createdAt: string;
+}
+
+export interface AiDiagramRequestDto {
+  topic: string;
+  diagramType: 'FLOWCHART' | 'ARCHITECTURE' | 'ALGORITHM_TREE' | 'CONCEPT_MAP';
+}
+
+// ==========================================
+// 48. Student Financial & Expense Tracker (Phase 48)
+// ==========================================
+export type ExpenseCategory = 'MESS_FOOD' | 'BOOKS_STATIONERY' | 'HOSTEL_RENT' | 'COURSES_TESTS' | 'TRANSPORT' | 'LEISURE';
+
+export interface StudentExpenseItem {
+  id: string;
+  category: ExpenseCategory;
+  title: string;
+  amount: number;
+  date: string;
+}
+
+export interface StudentGigOpportunity {
+  id: string;
+  title: string;
+  payoutAmount: number;
+  requiredSkills: string[];
+  estimatedHours: string;
+  platform: string;
+}
+
+export interface StudentFinancialBudget {
+  monthlyBudget: number;
+  totalSpentThisMonth: number;
+  remainingAllowance: number;
+  savingsRatePercent: number;
+  expenses: StudentExpenseItem[];
+  suggestedGigs: StudentGigOpportunity[];
+}
+
+export interface AddExpenseDto {
+  category: ExpenseCategory;
+  title: string;
+  amount: number;
+}
+
+export interface CourseRoiCalcDto {
+  totalCourseCost: number;
+  durationMonths: number;
+  expectedStartingSalaryAnnual: number;
+}
+
+export interface CourseRoiResult {
+  paybackPeriodMonths: number;
+  threeYearRoiPercentage: number;
+  verdict: 'HIGH_ROI' | 'MODERATE_ROI' | 'LOW_ROI';
+  recommendations: string[];
+}
+
+// ==========================================
+// 49. 3D Interactive Science & CS Holo-Lab (Phase 49)
+// ==========================================
+export type SimulationCategory = 'COMPUTER_SCIENCE' | 'PHYSICS' | 'CHEMISTRY' | 'MATHEMATICS';
+
+export interface SimulationParameter {
+  id: string;
+  name: string;
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+  unit: string;
+}
+
+export interface Simulation3DModel {
+  id: string;
+  title: string;
+  category: SimulationCategory;
+  description: string;
+  keyFormulas: string[];
+  parameters: SimulationParameter[];
+  activeStageLabel?: string;
+  throughputRate?: number;
+}
+
+export interface RunSimulationDto {
+  simulationId: string;
+  parameters: Record<string, number>;
+}
+
+// ==========================================
+// 50. Verifiable Academic Skill Passport (Phase 50)
+// ==========================================
+export interface AcademicCredential {
+  id: string;
+  studentName: string;
+  credentialTitle: string;
+  issuer: string;
+  sha256VerificationHash: string;
+  issuedDate: string;
+  level: string;
+  verifiedSkills: string[];
+  xpMilestoneReached: number;
+  publicVerificationUrl: string;
+  status: 'VERIFIED' | 'REVOKED';
+}
+
+export interface VerifiedPassportSummary {
+  totalCredentialsIssued: number;
+  topRankPercentile: number;
+  totalVerifiedBadges: number;
+  grandmasterStatus: boolean;
+  credentials: AcademicCredential[];
+}
+
+export interface GenerateCredentialDto {
+  credentialTitle: string;
+  skills: string[];
+}
+
+

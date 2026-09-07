@@ -36,6 +36,11 @@ import { AiSlideGeneratorView } from './components/AiSlideGeneratorView';
 import { AiMockInterviewView } from './components/AiMockInterviewView';
 import { NotesMarketplaceView } from './components/NotesMarketplaceView';
 import { CircadianFocusHabitView } from './components/CircadianFocusHabitView';
+import { ExamTrendForecasterView } from './components/ExamTrendForecasterView';
+import { AiWhiteboardStudioView } from './components/AiWhiteboardStudioView';
+import { StudentFinancesView } from './components/StudentFinancesView';
+import { HoloSimulations3DView } from './components/HoloSimulations3DView';
+import { SkillPassportCredentialView } from './components/SkillPassportCredentialView';
 import { LanguageSelectorModal } from './components/LanguageSelectorModal';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import { PwaInstallPromptWidget } from './components/PwaInstallPromptWidget';
@@ -89,6 +94,10 @@ import {
   ShoppingBag,
   Activity,
   Landmark,
+  Wallet,
+  Cpu,
+  Palette,
+  ShieldCheck,
 } from 'lucide-react';
 
 interface PhaseItem {
@@ -146,6 +155,11 @@ const PHASES: PhaseItem[] = [
   { id: 'p43', number: '43', name: 'AI Mock Interview & Viva Coach', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Technical SDE & UPSC Viva Tracks', 'Web Speech Realtime Answer Capture', 'STAR Metric Comprehensive Scoring'] },
   { id: 'p44', number: '44', name: 'Topper Notes & Resource Bazaar', pillar: 'AI_COMMUNITY', status: 'COMPLETED', deliverables: ['P2P Handwritten Note Vault', 'Peer Rating & Unlock with Study Coins', 'Verified Topper Upload Pipeline'] },
   { id: 'p45', number: '45', name: 'Circadian Peak-Focus & Habit Engine', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Chronotype Peak-Focus Optimization', 'Hydration Tracker & Smart Hydrate Prompts', '20-20-20 Eye-Rest Interval Timer'] },
+  { id: 'p46', number: '46', name: 'AI Exam Paper Trend Forecaster', pillar: 'EXAM', status: 'COMPLETED', deliverables: ['10-Year PYQ Frequency Intelligence', 'Topic Recurrence Probability Radar', 'Chapter Skip Risk Metrics'] },
+  { id: 'p47', number: '47', name: 'AI Collaborative Whiteboard Studio', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Interactive Vector Canvas & Shapes', 'Prompt-to-Architecture Synthesizer', 'SVG Vector Exporter'] },
+  { id: 'p48', number: '48', name: 'Student Financial & Expense Tracker', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['Pocket Allowance Budget Optimizer', 'Campus Gig & Tutoring Matchmaker', 'Course & Test Series ROI Calculator'] },
+  { id: 'p49', number: '49', name: '3D Science & CS Holo-Lab', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['5-Stage RISC CPU Pipeline Hazards', 'Double Pendulum Chaos Visualizer', 'Maxwell Electromagnetic Waves Simulation'] },
+  { id: 'p50', number: '50', name: 'Verifiable Academic Skill Passport', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['SHA-256 Cryptographic Credential Vault', 'Public Recruiter Verification Links', '50-Phase Grandmaster Completion Trophy'] },
 ];
 
 const DEFAULT_DEMO_PROFILE: StudentProfile = {
@@ -356,7 +370,7 @@ const DEFAULT_SYLLABUS_OVERVIEW: SyllabusOverviewStats = {
 
 function DashboardContent() {
   const { user, tokens, isAuthenticated, logout } = useAuth();
-  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'ROADMAP'>('DASHBOARD');
+  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'EXAM_TREND' | 'AI_WHITEBOARD' | 'STUDENT_FINANCES' | 'HOLO_SIMULATIONS' | 'SKILL_PASSPORT' | 'ROADMAP'>('DASHBOARD');
   const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>('en');
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
   const [initialAiStudyContent, setInitialAiStudyContent] = useState<string>('');
@@ -1539,6 +1553,96 @@ function DashboardContent() {
                 <Activity size={13} color={activeView === 'CIRCADIAN_FOCUS' ? '#fff' : '#34d399'} /> Circadian Focus ⚡
               </button>
               <button
+                onClick={() => setActiveView('EXAM_TREND')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'EXAM_TREND' ? 'linear-gradient(135deg, #ec4899, #8b5cf6)' : 'transparent',
+                  color: activeView === 'EXAM_TREND' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <TrendingUp size={13} color={activeView === 'EXAM_TREND' ? '#fff' : '#f472b6'} /> Exam Trends 🔮
+              </button>
+              <button
+                onClick={() => setActiveView('AI_WHITEBOARD')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'AI_WHITEBOARD' ? 'linear-gradient(135deg, #06b6d4, #6366f1)' : 'transparent',
+                  color: activeView === 'AI_WHITEBOARD' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Palette size={13} color={activeView === 'AI_WHITEBOARD' ? '#fff' : '#38bdf8'} /> AI Whiteboard 🎨
+              </button>
+              <button
+                onClick={() => setActiveView('STUDENT_FINANCES')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'STUDENT_FINANCES' ? 'linear-gradient(135deg, #10b981, #059669)' : 'transparent',
+                  color: activeView === 'STUDENT_FINANCES' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Wallet size={13} color={activeView === 'STUDENT_FINANCES' ? '#fff' : '#34d399'} /> Finances & Gigs 💳
+              </button>
+              <button
+                onClick={() => setActiveView('HOLO_SIMULATIONS')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'HOLO_SIMULATIONS' ? 'linear-gradient(135deg, #8b5cf6, #3b82f6)' : 'transparent',
+                  color: activeView === 'HOLO_SIMULATIONS' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Cpu size={13} color={activeView === 'HOLO_SIMULATIONS' ? '#fff' : '#c084fc'} /> 3D Holo-Lab 🧬
+              </button>
+              <button
+                onClick={() => setActiveView('SKILL_PASSPORT')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'SKILL_PASSPORT' ? 'linear-gradient(135deg, #f59e0b, #e11d48)' : 'transparent',
+                  color: activeView === 'SKILL_PASSPORT' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <ShieldCheck size={13} color={activeView === 'SKILL_PASSPORT' ? '#fff' : '#fbbf24'} /> Skill Passport 🎖️
+              </button>
+              <button
                 onClick={() => setActiveView('ROADMAP')}
                 style={{
                   padding: '6px 14px',
@@ -1554,7 +1658,7 @@ function DashboardContent() {
                   color: activeView === 'ROADMAP' ? '#ffffff' : 'var(--text-secondary)',
                 }}
               >
-                <Layers size={13} /> 45-Phase Matrix 🗺️
+                <Layers size={13} /> 50-Phase Matrix 🗺️
               </button>
             </div>
           </div>
@@ -2013,6 +2117,71 @@ function DashboardContent() {
           />
         )}
 
+        {activeView === 'EXAM_TREND' && (
+          <ExamTrendForecasterView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'AI_WHITEBOARD' && (
+          <AiWhiteboardStudioView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'STUDENT_FINANCES' && (
+          <StudentFinancesView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'HOLO_SIMULATIONS' && (
+          <HoloSimulations3DView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'SKILL_PASSPORT' && (
+          <SkillPassportCredentialView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
         {activeView === 'ROADMAP' && (
           <div>
             {/* Top Progress & Banner */}
@@ -2027,12 +2196,12 @@ function DashboardContent() {
                   <div>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                       <span className="badge badge-completed">
-                        <CheckCircle2 size={12} /> ALL 45 PHASES FULLY OPERATIONAL (100% DONE!) 🏆
+                        <CheckCircle2 size={12} /> ALL 50 PHASES FULLY OPERATIONAL (100% DONE!) 🏆
                       </span>
-                      <span className="badge badge-active">APEX EDITION v5.0</span>
+                      <span className="badge badge-active">INFINITY EDITION v6.0</span>
                     </div>
                     <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>
-                      Master Execution Matrix <span className="gradient-text">(45 Phases)</span>
+                      Master Execution Matrix <span className="gradient-text">(50 Phases)</span>
                     </h2>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '4px' }}>
                       Complete roadmap tracking and architecture deliverables across Study, Exams, Career & Mentor layers.
@@ -2261,7 +2430,7 @@ function DashboardContent() {
         marginTop: 'auto',
         backgroundColor: 'rgba(9, 13, 22, 0.95)'
       }}>
-        StudentLife OS 5.0 (Apex Edition) &bull; 45 Phases Fully Operational &bull; 100% Production Ready 🏆
+        StudentLife OS 6.0 (Infinity Edition) &bull; 50 Phases Fully Operational &bull; 100% Production Ready 🏆
       </footer>
     </div>
   );

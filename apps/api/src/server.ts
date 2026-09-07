@@ -42,6 +42,11 @@ import slideGeneratorRouter from './routes/slide-generator.routes';
 import mockInterviewRouter from './routes/mock-interview.routes';
 import notesMarketplaceRouter from './routes/notes-marketplace.routes';
 import circadianFocusRouter from './routes/circadian-focus.routes';
+import examTrendRouter from './routes/exam-trend.routes';
+import aiWhiteboardRouter from './routes/ai-whiteboard.routes';
+import studentFinancesRouter from './routes/student-finances.routes';
+import holoSimulationsRouter from './routes/holo-simulations.routes';
+import skillPassportRouter from './routes/skill-passport.routes';
 import { errorHandler } from './middlewares/errorHandler';
 
 const app: Express = express();
@@ -98,6 +103,11 @@ app.use('/api/slide-generator', slideGeneratorRouter);
 app.use('/api/mock-interview', mockInterviewRouter);
 app.use('/api/notes-marketplace', notesMarketplaceRouter);
 app.use('/api/circadian-focus', circadianFocusRouter);
+app.use('/api/exam-trend', examTrendRouter);
+app.use('/api/ai-whiteboard', aiWhiteboardRouter);
+app.use('/api/student-finances', studentFinancesRouter);
+app.use('/api/holo-simulations', holoSimulationsRouter);
+app.use('/api/skill-passport', skillPassportRouter);
 
 // Global Error Handler
 app.use(errorHandler);
