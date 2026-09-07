@@ -72,6 +72,11 @@ import hackathonWarRoomRouter from './routes/hackathon-war-room.routes';
 import speedReaderRouter from './routes/speed-reader.routes';
 import academicIntegrityRouter from './routes/academic-integrity.routes';
 import campusDigitalTwinRouter from './routes/campus-digital-twin.routes';
+import polyglotTranslatorRouter from './routes/polyglot-translator.routes';
+import electronicLabNotebookRouter from './routes/electronic-lab-notebook.routes';
+import ankiFsrsRouter from './routes/anki-fsrs.routes';
+import microInternshipRouter from './routes/micro-internship.routes';
+import knowledgeOlympiadRouter from './routes/knowledge-olympiad.routes';
 import { errorHandler } from './middlewares/errorHandler';
 
 const app: Express = express();
@@ -158,6 +163,11 @@ app.use('/api/hackathon-war-room', hackathonWarRoomRouter);
 app.use('/api/speed-reader', speedReaderRouter);
 app.use('/api/academic-integrity', academicIntegrityRouter);
 app.use('/api/campus-digital-twin', campusDigitalTwinRouter);
+app.use('/api/polyglot-translator', polyglotTranslatorRouter);
+app.use('/api/electronic-lab-notebook', electronicLabNotebookRouter);
+app.use('/api/anki-fsrs', ankiFsrsRouter);
+app.use('/api/micro-internship', microInternshipRouter);
+app.use('/api/knowledge-olympiad', knowledgeOlympiadRouter);
 
 // Global Error Handler
 app.use(errorHandler);

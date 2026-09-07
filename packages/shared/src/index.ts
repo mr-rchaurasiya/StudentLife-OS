@@ -3323,3 +3323,168 @@ export interface FindCampusRouteDto {
   fromBuildingId: string;
   toBuildingId: string;
 }
+
+// ==========================================
+// 76. AI Polyglot Scientific Literature Translator (Phase 76)
+// ==========================================
+export type ScientificSourceLang = 'DE' | 'ZH' | 'JA' | 'FR' | 'RU';
+export type ScientificTargetLang = 'EN' | 'HI';
+
+export interface TranslatedParagraphUnit {
+  paragraphIndex: number;
+  sourceText: string;
+  translatedText: string;
+  extractedFormulas: string[];
+  scientificGlossaryTerms: { term: string; definition: string }[];
+}
+
+export interface PolyglotTranslationSession {
+  id: string;
+  documentTitle: string;
+  sourceLanguage: ScientificSourceLang;
+  targetLanguage: ScientificTargetLang;
+  preservedFormulaCount: number;
+  confidenceScore: number;
+  paragraphs: TranslatedParagraphUnit[];
+  createdAt: string;
+}
+
+export interface TranslatePaperDto {
+  documentTitle: string;
+  sourceLanguage: ScientificSourceLang;
+  targetLanguage: ScientificTargetLang;
+  rawManuscriptText: string;
+}
+
+// ==========================================
+// 77. Autonomous Electronic Lab Notebook & Hazard Logger (Phase 77)
+// ==========================================
+export interface ReagentSafetyData {
+  reagentName: string;
+  casNumber: string;
+  quantityMols: number;
+  ghsPictograms: string[];
+  hazardSummary: string;
+  ppeRecommendations: string[];
+}
+
+export interface LabExperimentLog {
+  id: string;
+  experimentTitle: string;
+  experimentType: 'WET_LAB_SYNTHESIS' | 'DRY_LAB_SIMULATION' | 'BIO_ASSAY';
+  hypothesis: string;
+  protocolSteps: { stepNumber: number; instruction: string; completed: boolean }[];
+  reagents: ReagentSafetyData[];
+  tamperProofSha256Hash: string;
+  timestamp: string;
+  status: 'IN_PROGRESS' | 'COMPLETED' | 'VERIFIED';
+}
+
+export interface CreateLabLogDto {
+  experimentTitle: string;
+  experimentType: 'WET_LAB_SYNTHESIS' | 'DRY_LAB_SIMULATION' | 'BIO_ASSAY';
+  hypothesis: string;
+  protocolSteps: string[];
+  reagents: Array<{
+    reagentName: string;
+    casNumber: string;
+    quantityMols: number;
+  }>;
+}
+
+// ==========================================
+// 78. AI Adaptive Anki & FSRS-v4 Memory Deck Synchronizer (Phase 78)
+// ==========================================
+export type FsrsGrade = 'AGAIN' | 'HARD' | 'GOOD' | 'EASY';
+
+export interface FsrsMemoryCard {
+  id: string;
+  clozeText: string; // e.g. "The {{c1::Hamiltonian}} represents total energy"
+  plainPrompt: string;
+  plainAnswer: string;
+  stability: number; // S (days)
+  difficulty: number; // D (1 to 10)
+  retrievabilityPercent: number; // R
+  repetitions: number;
+  dueTimestamp: string;
+  state: 'NEW' | 'LEARNING' | 'REVIEW' | 'RELEARNING';
+}
+
+export interface FsrsDeckState {
+  deckName: string;
+  totalCards: number;
+  dueTodayCount: number;
+  averageRetentionRate: number;
+  cards: FsrsMemoryCard[];
+}
+
+export interface ReviewFsrsCardDto {
+  cardId: string;
+  grade: FsrsGrade;
+}
+
+export interface GenerateClozeCardsDto {
+  deckName: string;
+  rawTextNotes: string;
+}
+
+// ==========================================
+// 79. Micro-Internship & 48h Sprint Escrow Hub (Phase 79)
+// ==========================================
+export type MicroGigCategory = 'AI_BENCHMARK' | 'FULLSTACK_FEATURE' | 'DATASET_CURATION' | 'SECURITY_AUDIT';
+
+export interface MicroInternshipGig {
+  id: string;
+  title: string;
+  sponsorOrganization: string;
+  category: MicroGigCategory;
+  bountyStudyCoins: number;
+  deadlineHours: number;
+  requirements: string[];
+  status: 'OPEN' | 'IN_SPRINT' | 'SUBMITTED' | 'APPROVED';
+  pullRequestUrl?: string;
+  escrowStatus: 'FUNDED_IN_ESCROW' | 'RELEASED_TO_STUDENT';
+}
+
+export interface SubmitProofOfWorkDto {
+  gigId: string;
+  pullRequestUrl: string;
+  submissionNotes: string;
+}
+
+// ==========================================
+// 80. Inter-Collegiate Knowledge Olympiad Arena (Phase 80)
+// ==========================================
+export type OlympiadLeague = 'BRONZE' | 'SILVER' | 'GOLD' | 'DIAMOND' | 'GRANDMASTER';
+
+export interface OlympiadMatchQuestion {
+  id: string;
+  category: string;
+  questionText: string;
+  options: string[];
+  correctIndex: number;
+  points: number;
+}
+
+export interface OlympiadMatchState {
+  matchId: string;
+  league: OlympiadLeague;
+  playerCollege: string;
+  opponentCollege: string;
+  playerScore: number;
+  opponentScore: number;
+  playerElo: number;
+  opponentElo: number;
+  currentQuestionIndex: number;
+  totalQuestions: number;
+  questions: OlympiadMatchQuestion[];
+  matchStatus: 'LIVE_BUZZER_ACTIVE' | 'ROUND_RESOLVED' | 'MATCH_CONCLUDED';
+}
+
+export interface SubmitOlympiadAnswerDto {
+  matchId: string;
+  questionId: string;
+  selectedOptionIndex: number;
+  buzzerTimeMs: number;
+}
+

@@ -66,6 +66,11 @@ import { HackathonWarRoomView } from './components/HackathonWarRoomView';
 import { SpeedReaderView } from './components/SpeedReaderView';
 import { AcademicIntegrityView } from './components/AcademicIntegrityView';
 import { CampusDigitalTwinView } from './components/CampusDigitalTwinView';
+import { PolyglotTranslatorView } from './components/PolyglotTranslatorView';
+import { ElectronicLabNotebookView } from './components/ElectronicLabNotebookView';
+import { AnkiFsrsSyncView } from './components/AnkiFsrsSyncView';
+import { MicroInternshipEscrowView } from './components/MicroInternshipEscrowView';
+import { KnowledgeOlympiadView } from './components/KnowledgeOlympiadView';
 import { LanguageSelectorModal } from './components/LanguageSelectorModal';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import { PwaInstallPromptWidget } from './components/PwaInstallPromptWidget';
@@ -141,6 +146,9 @@ import {
   Atom,
   Zap,
   MapPin,
+  Languages,
+  FlaskConical,
+  Crown,
 } from 'lucide-react';
 
 interface PhaseItem {
@@ -228,6 +236,11 @@ const PHASES: PhaseItem[] = [
   { id: 'p73', number: '73', name: 'AI RSVP Speed-Reader & Subvocalization Guard', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['300–1000 WPM RSVP Word Stream Engine', 'Optimal Recognition Point (ORP) Fixation Alignment', 'Larynx Subvocalization Inhibitor', 'Post-Reading Active Recall Comprehension Quiz'] },
   { id: 'p74', number: '74', name: 'Academic Plagiarism & Hallucination Guard', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Deep Semantic Originality % Scanner', '145M+ DOI CrossRef Live Verification', 'Phantom AI Reference & Hallucination Flagging', 'Downloadable Originality Certificate'] },
   { id: 'p75', number: '75', name: '3D Campus Digital Twin & Indoor Navigator', pillar: 'FOUNDATION', status: 'COMPLETED', deliverables: ['3D Building Spatial Node Telemetry', 'Topological Shortest Path Dijkstra Navigator', 'Acoustic Noise dB & Seat Occupancy Heatmaps', 'Multi-Floor Skybridge Waypointing'] },
+  { id: 'p76', number: '76', name: 'AI Polyglot Literature Translator', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['German/Chinese/Japanese/French Scientific Parsing', 'Inline LaTeX Math & Tensor Preservation', 'Dual-Pane Bilingual Synchronized Briefs', 'Domain Terminology Glossaries'] },
+  { id: 'p77', number: '77', name: 'Autonomous Electronic Lab Notebook', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Wet/Dry-Lab SOP Execution Checklist', 'Chemical Reagent GHS Hazard & PPE SDS Ratings', 'Reaction Stoichiometry Calculator', 'SHA-256 Tamper-Proof Protocol Signing'] },
+  { id: 'p78', number: '78', name: 'AI Adaptive Anki & FSRS-v4 Sync', pillar: 'STUDY', status: 'COMPLETED', deliverables: ['Next-Gen FSRS-v4 Spaced Repetition Engine', 'Automated Cloze Deletion Synthesis {{c1::...}}', 'Stability (S) & Retrievability (R) Tracking', '1-Click Anki .apkg Package Exporter'] },
+  { id: 'p79', number: '79', name: 'Micro-Internship & 48h Escrow Hub', pillar: 'CAREER', status: 'COMPLETED', deliverables: ['24-48h Real-World Student Sprint Gigs', 'GitHub PR Milestone Proof-of-Work Verification', 'Study Coin Smart Escrow Release', 'Verifiable Skill Passport Portfolio Badges'] },
+  { id: 'p80', number: '80', name: 'Inter-Collegiate Knowledge Olympiad', pillar: 'AI_COMMUNITY', status: 'COMPLETED', deliverables: ['Multi-Campus Live Buzzer Speed Battles', 'TrueSkill / Elo Grandmaster Ranking Ladder', 'Category Speed Rounds (Quantum/DSA/Bio)', 'Sub-50ms Buzzer Latency Compensation'] },
 ];
 
 const DEFAULT_DEMO_PROFILE: StudentProfile = {
@@ -438,7 +451,7 @@ const DEFAULT_SYLLABUS_OVERVIEW: SyllabusOverviewStats = {
 
 function DashboardContent() {
   const { user, tokens, isAuthenticated, logout } = useAuth();
-  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'EXAM_TREND' | 'AI_WHITEBOARD' | 'STUDENT_FINANCES' | 'HOLO_SIMULATIONS' | 'SKILL_PASSPORT' | 'ARXIV_SCHOLAR' | 'SOCRATIC_DEBATE' | 'CAMPUS_EXCHANGE' | 'VIDEO_NAVIGATOR' | 'ERGONOMIC_WELLNESS' | 'RESEARCH_LAB' | 'NEURAL_FLOW' | 'HOSTEL_NUTRITION' | 'LATEX_STUDIO' | 'HACKATHON_RADAR' | 'PATENT_DRAFTER' | 'FACULTY_ADVISORY' | 'TUTOR_BOUNTY' | 'CAMPUS_PRINTING' | 'ALUMNI_RADAR' | 'STUDY_SWARM' | 'CAMPUS_INCUBATOR' | 'CAMPUS_TRANSIT' | 'MENTAL_RESILIENCE' | 'QUANTUM_LAB' | 'FELLOWSHIP_DRAFTER' | 'HACKATHON_WAR_ROOM' | 'SPEED_READER' | 'ACADEMIC_INTEGRITY' | 'CAMPUS_DIGITAL_TWIN' | 'ROADMAP'>('DASHBOARD');
+  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'EXAM_TREND' | 'AI_WHITEBOARD' | 'STUDENT_FINANCES' | 'HOLO_SIMULATIONS' | 'SKILL_PASSPORT' | 'ARXIV_SCHOLAR' | 'SOCRATIC_DEBATE' | 'CAMPUS_EXCHANGE' | 'VIDEO_NAVIGATOR' | 'ERGONOMIC_WELLNESS' | 'RESEARCH_LAB' | 'NEURAL_FLOW' | 'HOSTEL_NUTRITION' | 'LATEX_STUDIO' | 'HACKATHON_RADAR' | 'PATENT_DRAFTER' | 'FACULTY_ADVISORY' | 'TUTOR_BOUNTY' | 'CAMPUS_PRINTING' | 'ALUMNI_RADAR' | 'STUDY_SWARM' | 'CAMPUS_INCUBATOR' | 'CAMPUS_TRANSIT' | 'MENTAL_RESILIENCE' | 'QUANTUM_LAB' | 'FELLOWSHIP_DRAFTER' | 'HACKATHON_WAR_ROOM' | 'SPEED_READER' | 'ACADEMIC_INTEGRITY' | 'CAMPUS_DIGITAL_TWIN' | 'POLYGLOT_TRANSLATOR' | 'LAB_NOTEBOOK' | 'ANKI_FSRS' | 'MICRO_INTERNSHIP' | 'KNOWLEDGE_OLYMPIAD' | 'ROADMAP'>('DASHBOARD');
   const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>('en');
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
   const [initialAiStudyContent, setInitialAiStudyContent] = useState<string>('');
@@ -2161,6 +2174,96 @@ function DashboardContent() {
                 <MapPin size={13} color={activeView === 'CAMPUS_DIGITAL_TWIN' ? '#fff' : '#60a5fa'} /> Campus Twin 🗺️
               </button>
               <button
+                onClick={() => setActiveView('POLYGLOT_TRANSLATOR')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'POLYGLOT_TRANSLATOR' ? 'linear-gradient(135deg, #8b5cf6, #a855f7)' : 'transparent',
+                  color: activeView === 'POLYGLOT_TRANSLATOR' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Languages size={13} color={activeView === 'POLYGLOT_TRANSLATOR' ? '#fff' : '#c084fc'} /> Polyglot Translator 🌐
+              </button>
+              <button
+                onClick={() => setActiveView('LAB_NOTEBOOK')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'LAB_NOTEBOOK' ? 'linear-gradient(135deg, #0d9488, #10b981)' : 'transparent',
+                  color: activeView === 'LAB_NOTEBOOK' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <FlaskConical size={13} color={activeView === 'LAB_NOTEBOOK' ? '#fff' : '#2dd4bf'} /> Lab Notebook 🧪
+              </button>
+              <button
+                onClick={() => setActiveView('ANKI_FSRS')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'ANKI_FSRS' ? 'linear-gradient(135deg, #f43f5e, #ec4899)' : 'transparent',
+                  color: activeView === 'ANKI_FSRS' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <RotateCcw size={13} color={activeView === 'ANKI_FSRS' ? '#fff' : '#fb7185'} /> Anki FSRS Sync 🔄
+              </button>
+              <button
+                onClick={() => setActiveView('MICRO_INTERNSHIP')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'MICRO_INTERNSHIP' ? 'linear-gradient(135deg, #f59e0b, #d97706)' : 'transparent',
+                  color: activeView === 'MICRO_INTERNSHIP' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Briefcase size={13} color={activeView === 'MICRO_INTERNSHIP' ? '#fff' : '#fbbf24'} /> Micro-Gigs Escrow 💼
+              </button>
+              <button
+                onClick={() => setActiveView('KNOWLEDGE_OLYMPIAD')}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: 'var(--radius-full)',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  backgroundColor: activeView === 'KNOWLEDGE_OLYMPIAD' ? 'linear-gradient(135deg, #eab308, #f97316)' : 'transparent',
+                  color: activeView === 'KNOWLEDGE_OLYMPIAD' ? '#ffffff' : 'var(--text-secondary)',
+                }}
+              >
+                <Crown size={13} color={activeView === 'KNOWLEDGE_OLYMPIAD' ? '#fff' : '#fde047'} /> Knowledge Olympiad 🏆
+              </button>
+              <button
                 onClick={() => setActiveView('ROADMAP')}
                 style={{
                   padding: '6px 14px',
@@ -2953,6 +3056,44 @@ function DashboardContent() {
           <CampusDigitalTwinView />
         )}
 
+        {activeView === 'POLYGLOT_TRANSLATOR' && (
+          <PolyglotTranslatorView />
+        )}
+
+        {activeView === 'LAB_NOTEBOOK' && (
+          <ElectronicLabNotebookView />
+        )}
+
+        {activeView === 'ANKI_FSRS' && (
+          <AnkiFsrsSyncView />
+        )}
+
+        {activeView === 'MICRO_INTERNSHIP' && (
+          <MicroInternshipEscrowView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'KNOWLEDGE_OLYMPIAD' && (
+          <KnowledgeOlympiadView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
         {activeView === 'ROADMAP' && (
           <div>
             {/* Top Progress & Banner */}
@@ -2967,12 +3108,12 @@ function DashboardContent() {
                   <div>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                       <span className="badge badge-completed">
-                        <CheckCircle2 size={12} /> ALL 75 PHASES FULLY OPERATIONAL (100% DONE!) 🏆
+                        <CheckCircle2 size={12} /> ALL 80 PHASES FULLY OPERATIONAL (100% DONE!) 🏆
                       </span>
-                      <span className="badge badge-active">HYPERION EDITION v11.0</span>
+                      <span className="badge badge-active">VALHALLA EDITION v12.0</span>
                     </div>
                     <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>
-                      Master Execution Matrix <span className="gradient-text">(75 Phases)</span>
+                      Master Execution Matrix <span className="gradient-text">(80 Phases)</span>
                     </h2>
                     <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '4px' }}>
                       Complete roadmap tracking and architecture deliverables across Study, Exams, Career & Mentor layers.
@@ -3201,7 +3342,7 @@ function DashboardContent() {
         marginTop: 'auto',
         backgroundColor: 'rgba(9, 13, 22, 0.95)'
       }}>
-        StudentLife OS 11.0 (Hyperion Edition) &bull; 75 Phases Fully Operational &bull; 100% Production Ready 🏆
+        StudentLife OS 12.0 (Valhalla Edition) &bull; 80 Phases Fully Operational &bull; 100% Production Ready 🏆
       </footer>
     </div>
   );
