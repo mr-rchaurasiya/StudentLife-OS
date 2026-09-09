@@ -123,101 +123,190 @@ export const DailyStudyDigestModal: React.FC<DailyStudyDigestModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full shadow-2xl relative overflow-hidden animate-scaleUp max-h-[90vh] flex flex-col">
+    <div 
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 9999,
+        backgroundColor: 'rgba(2, 6, 23, 0.85)',
+        backdropFilter: 'blur(10px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px'
+      }}
+    >
+      <div 
+        className="glass-panel"
+        style={{
+          backgroundColor: '#0f172a',
+          border: '1px solid rgba(245, 158, 11, 0.4)',
+          borderRadius: '24px',
+          maxWidth: '680px',
+          width: '100%',
+          boxShadow: '0 25px 60px rgba(0, 0, 0, 0.8)',
+          position: 'relative',
+          overflow: 'hidden',
+          maxHeight: '90vh',
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+      >
         {/* Header Ribbon */}
-        <div className="relative bg-gradient-to-r from-amber-500/20 via-indigo-600/20 to-purple-600/20 border-b border-slate-800 p-6 flex items-start justify-between">
-          <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/30">
-              <Sun className="w-6 h-6 text-white" />
+        <div 
+          style={{
+            background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(99, 102, 241, 0.2) 50%, rgba(168, 85, 247, 0.2) 100%)',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+            padding: '20px 24px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '16px'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <div 
+              style={{
+                width: '46px',
+                height: '46px',
+                borderRadius: '14px',
+                background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 6px 20px rgba(245, 158, 11, 0.35)',
+                flexShrink: 0
+              }}
+            >
+              <Sun size={24} color="#ffffff" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-amber-400">Daily Study Digest</span>
-                <span className="text-slate-500">•</span>
-                <span className="text-xs text-slate-400 font-medium">{digest.date}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#fbbf24' }}>
+                  Daily Study Digest
+                </span>
+                <span style={{ color: '#64748b' }}>&bull;</span>
+                <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>{digest.date}</span>
               </div>
-              <h2 className="text-lg font-bold text-white mt-0.5">{digest.greeting}</h2>
+              <h2 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#ffffff', margin: 0, letterSpacing: '-0.01em' }}>
+                {digest.greeting}
+              </h2>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-2 rounded-xl bg-slate-800/60 hover:bg-slate-700 text-slate-400 hover:text-white transition"
+            style={{
+              padding: '8px',
+              borderRadius: '10px',
+              background: 'rgba(255, 255, 255, 0.08)',
+              border: 'none',
+              color: '#94a3b8',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
           >
-            <X className="w-4 h-4" />
+            <X size={18} />
           </button>
         </div>
 
         {/* Scrollable Content */}
-        <div className="p-6 overflow-y-auto space-y-6 flex-1 text-xs">
+        <div style={{ padding: '24px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '20px', fontSize: '0.85rem' }}>
           {/* Quote of the Day */}
-          <div className="p-4 rounded-2xl bg-gradient-to-r from-slate-950/90 to-indigo-950/40 border border-indigo-500/30 shadow-inner">
-            <p className="text-sm italic text-indigo-200 leading-relaxed font-medium">
-              "{digest.motivationalQuote.quote}"
+          <div 
+            style={{
+              padding: '16px',
+              borderRadius: '16px',
+              background: 'linear-gradient(135deg, rgba(2, 6, 23, 0.8) 0%, rgba(30, 27, 75, 0.4) 100%)',
+              border: '1px solid rgba(99, 102, 241, 0.3)'
+            }}
+          >
+            <p style={{ margin: 0, fontSize: '0.88rem', fontStyle: 'italic', color: '#c7d2fe', lineHeight: 1.6, fontWeight: 500 }}>
+              &ldquo;{digest.motivationalQuote.quote}&rdquo;
             </p>
-            <p className="text-right text-[11px] text-slate-400 mt-2 font-semibold">
-              — {digest.motivationalQuote.author}
+            <p style={{ margin: '8px 0 0 0', textAlign: 'right', fontSize: '0.75rem', color: '#94a3b8', fontWeight: 700 }}>
+              &mdash; {digest.motivationalQuote.author}
             </p>
           </div>
 
           {/* Quick Metrics Bar */}
-          <div className="grid grid-cols-3 gap-3">
-            <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center gap-3">
-              <Flame className="w-5 h-5 text-amber-400" />
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
+            <div style={{ padding: '12px 14px', borderRadius: '14px', backgroundColor: 'rgba(2, 6, 23, 0.7)', border: '1px solid rgba(245, 158, 11, 0.25)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <Flame size={22} color="#fbbf24" style={{ flexShrink: 0 }} />
               <div>
-                <span className="text-[10px] text-slate-400 font-bold uppercase">Streak</span>
-                <div className="text-base font-black text-amber-400">{digest.currentStreakDays} Days 🔥</div>
+                <span style={{ fontSize: '0.68rem', color: '#94a3b8', fontWeight: 800, textTransform: 'uppercase', display: 'block' }}>Streak</span>
+                <div style={{ fontSize: '1rem', fontWeight: 900, color: '#fbbf24', fontFamily: 'monospace' }}>{digest.currentStreakDays} Days 🔥</div>
               </div>
             </div>
-            <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center gap-3">
-              <Clock className="w-5 h-5 text-cyan-400" />
+            <div style={{ padding: '12px 14px', borderRadius: '14px', backgroundColor: 'rgba(2, 6, 23, 0.7)', border: '1px solid rgba(56, 189, 248, 0.25)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <Clock size={22} color="#38bdf8" style={{ flexShrink: 0 }} />
               <div>
-                <span className="text-[10px] text-slate-400 font-bold uppercase">Goal</span>
-                <div className="text-base font-black text-cyan-300">{digest.targetFocusMinutes} Mins</div>
+                <span style={{ fontSize: '0.68rem', color: '#94a3b8', fontWeight: 800, textTransform: 'uppercase', display: 'block' }}>Goal</span>
+                <div style={{ fontSize: '1rem', fontWeight: 900, color: '#38bdf8', fontFamily: 'monospace' }}>{digest.targetFocusMinutes} Mins</div>
               </div>
             </div>
-            <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center gap-3">
-              <Layers className="w-5 h-5 text-purple-400" />
+            <div style={{ padding: '12px 14px', borderRadius: '14px', backgroundColor: 'rgba(2, 6, 23, 0.7)', border: '1px solid rgba(168, 85, 247, 0.25)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <Layers size={22} color="#c084fc" style={{ flexShrink: 0 }} />
               <div>
-                <span className="text-[10px] text-slate-400 font-bold uppercase">Due Cards</span>
-                <div className="text-base font-black text-purple-300">{digest.flashcardsDueCount} SM-2</div>
+                <span style={{ fontSize: '0.68rem', color: '#94a3b8', fontWeight: 800, textTransform: 'uppercase', display: 'block' }}>Due Cards</span>
+                <div style={{ fontSize: '1rem', fontWeight: 900, color: '#c084fc', fontFamily: 'monospace' }}>{digest.flashcardsDueCount} SM-2</div>
               </div>
             </div>
           </div>
 
           {/* Priority Tasks for Today */}
-          <div className="space-y-2.5">
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-indigo-400" />
-                Today's Priority Schedule ({digest.highPriorityTasks.length} Tasks)
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h3 style={{ fontSize: '0.9rem', fontWeight: 800, color: '#ffffff', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
+                <Calendar size={16} color="#818cf8" />
+                Today&apos;s Priority Schedule ({digest.highPriorityTasks.length} Tasks)
               </h3>
               <button
                 onClick={() => {
                   onClose();
                   onNavigateView?.('PLANNER');
                 }}
-                className="text-xs text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#818cf8',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}
               >
-                Open Planner <ArrowRight className="w-3.5 h-3.5" />
+                Open Planner <ArrowRight size={12} />
               </button>
             </div>
 
-            <div className="space-y-2">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {digest.highPriorityTasks.map((t) => (
                 <div
                   key={t.id}
-                  className="p-3 rounded-xl bg-slate-950/70 border border-slate-800 flex items-center justify-between"
+                  style={{
+                    padding: '12px 14px',
+                    borderRadius: '12px',
+                    backgroundColor: 'rgba(2, 6, 23, 0.7)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: '10px'
+                  }}
                 >
-                  <div className="flex items-center gap-2.5">
-                    <span className="w-2 h-2 rounded-full bg-indigo-500" />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#6366f1', flexShrink: 0 }} />
                     <div>
-                      <h4 className="text-xs font-semibold text-slate-100">{t.title}</h4>
-                      <p className="text-[11px] text-slate-400">{t.subjectName}</p>
+                      <h4 style={{ fontSize: '0.82rem', fontWeight: 700, color: '#f8fafc', margin: 0 }}>{t.title}</h4>
+                      <p style={{ fontSize: '0.72rem', color: '#94a3b8', margin: '2px 0 0 0' }}>{t.subjectName}</p>
                     </div>
                   </div>
-                  <span className="px-2 py-0.5 rounded-md bg-slate-800 text-[10px] text-slate-300 font-mono">
+                  <span style={{ padding: '2px 8px', borderRadius: '6px', backgroundColor: 'rgba(255, 255, 255, 0.08)', fontSize: '0.7rem', color: '#cbd5e1', fontFamily: 'monospace' }}>
                     {t.dueTime}
                   </span>
                 </div>
@@ -226,21 +315,30 @@ export const DailyStudyDigestModal: React.FC<DailyStudyDigestModalProps> = ({
           </div>
 
           {/* Exam Countdown Radar */}
-          <div className="space-y-2.5">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <Clock className="w-4 h-4 text-amber-400" />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <h3 style={{ fontSize: '0.9rem', fontWeight: 800, color: '#ffffff', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
+              <Clock size={16} color="#fbbf24" />
               Approaching Exam Milestones
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: '10px' }}>
               {digest.upcomingExamClocks.map((exam, idx) => (
                 <div
                   key={idx}
-                  className="p-3 rounded-xl bg-slate-950/60 border border-slate-800 flex flex-col justify-between"
+                  style={{
+                    padding: '12px',
+                    borderRadius: '12px',
+                    backgroundColor: 'rgba(2, 6, 23, 0.7)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    gap: '8px'
+                  }}
                 >
-                  <span className="text-[11px] font-semibold text-slate-300 line-clamp-1">{exam.title}</span>
-                  <div className="mt-2 flex items-baseline gap-1">
-                    <span className="text-lg font-black text-amber-400 font-mono">{exam.daysRemaining}</span>
-                    <span className="text-[10px] text-slate-400">days left</span>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#cbd5e1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{exam.title}</span>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                    <span style={{ fontSize: '1.2rem', fontWeight: 900, color: '#fbbf24', fontFamily: 'monospace' }}>{exam.daysRemaining}</span>
+                    <span style={{ fontSize: '0.7rem', color: '#94a3b8' }}>days left</span>
                   </div>
                 </div>
               ))}
@@ -249,31 +347,60 @@ export const DailyStudyDigestModal: React.FC<DailyStudyDigestModalProps> = ({
         </div>
 
         {/* Action Footer */}
-        <div className="p-4 border-t border-slate-800 bg-slate-950/80 flex flex-wrap items-center justify-between gap-3">
+        <div 
+          style={{
+            padding: '16px 24px',
+            borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+            backgroundColor: 'rgba(2, 6, 23, 0.9)',
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: '12px'
+          }}
+        >
           <button
             onClick={handleEnablePush}
             disabled={isPushEnabled}
-            className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition ${
-              isPushEnabled
-                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30'
-                : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700'
-            }`}
+            style={{
+              padding: '8px 14px',
+              borderRadius: '10px',
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              cursor: isPushEnabled ? 'default' : 'pointer',
+              border: isPushEnabled ? '1px solid rgba(52, 211, 153, 0.3)' : '1px solid rgba(255, 255, 255, 0.12)',
+              backgroundColor: isPushEnabled ? 'rgba(52, 211, 153, 0.12)' : 'rgba(255, 255, 255, 0.06)',
+              color: isPushEnabled ? '#34d399' : '#cbd5e1'
+            }}
           >
-            <Bell className="w-3.5 h-3.5" />
+            <Bell size={13} />
             {isPushEnabled ? 'Push Alerts Enabled ✓' : 'Enable Push Alerts (+30 XP)'}
           </button>
 
-          <div className="flex items-center gap-2">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <button
               onClick={handleClaimMorningXp}
               disabled={hasClaimedXp}
-              className={`px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition ${
-                hasClaimedXp
-                  ? 'bg-emerald-600/30 text-emerald-300 border border-emerald-500/40'
-                  : 'bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-md shadow-amber-500/20'
-              }`}
+              className="glow-hover"
+              style={{
+                padding: '9px 16px',
+                borderRadius: '10px',
+                fontSize: '0.78rem',
+                fontWeight: 800,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                cursor: hasClaimedXp ? 'default' : 'pointer',
+                border: hasClaimedXp ? '1px solid rgba(52, 211, 153, 0.4)' : 'none',
+                background: hasClaimedXp ? 'rgba(6, 78, 59, 0.4)' : 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                color: hasClaimedXp ? '#a7f3d0' : '#020617',
+                boxShadow: hasClaimedXp ? 'none' : '0 4px 14px rgba(245, 158, 11, 0.3)'
+              }}
             >
-              {hasClaimedXp ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Sparkles className="w-3.5 h-3.5" />}
+              {hasClaimedXp ? <CheckCircle2 size={14} /> : <Sparkles size={14} />}
               {hasClaimedXp ? 'XP Claimed (+25 XP)' : 'Claim Daily XP (+25 XP)'}
             </button>
 
@@ -282,7 +409,18 @@ export const DailyStudyDigestModal: React.FC<DailyStudyDigestModalProps> = ({
                 onClose();
                 onNavigateView?.('STUDY_ROOMS');
               }}
-              className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition"
+              className="glow-hover"
+              style={{
+                padding: '9px 18px',
+                borderRadius: '10px',
+                background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                border: 'none',
+                color: '#ffffff',
+                fontSize: '0.78rem',
+                fontWeight: 800,
+                cursor: 'pointer',
+                boxShadow: '0 4px 14px rgba(99, 102, 241, 0.35)'
+              }}
             >
               Start Focus Session 🚀
             </button>

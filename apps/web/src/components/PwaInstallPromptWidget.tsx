@@ -65,39 +65,103 @@ export const PwaInstallPromptWidget: React.FC<PwaInstallPromptWidgetProps> = ({
   if (isDismissed && isOnline) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 z-40 max-w-sm w-full animate-slideUp">
+    <div 
+      style={{
+        position: 'fixed',
+        bottom: '20px',
+        left: '20px',
+        zIndex: 9000,
+        maxWidth: '380px',
+        width: 'calc(100% - 40px)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px',
+        pointerEvents: 'auto'
+      }}
+    >
       {!isOnline && (
-        <div className="mb-2 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 backdrop-blur-xl shadow-2xl flex items-center gap-3 text-amber-300 text-xs font-semibold">
-          <WifiOff className="w-4 h-4 text-amber-400 shrink-0" />
-          <span>Offline Mode Active • Local Cached Flashcards & Notes are accessible!</span>
+        <div 
+          style={{
+            padding: '12px 16px',
+            borderRadius: '16px',
+            backgroundColor: 'rgba(245, 158, 11, 0.15)',
+            border: '1px solid rgba(245, 158, 11, 0.4)',
+            backdropFilter: 'blur(12px)',
+            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            color: '#fde68a',
+            fontSize: '0.78rem',
+            fontWeight: 600
+          }}
+        >
+          <WifiOff size={16} color="#fbbf24" style={{ flexShrink: 0 }} />
+          <span>Offline Mode Active &bull; Local Cached Flashcards &amp; Notes are accessible!</span>
         </div>
       )}
 
       {isInstallable && !isDismissed && (
-        <div className="p-4 rounded-3xl bg-slate-900/95 border border-indigo-500/40 backdrop-blur-xl shadow-2xl flex items-center justify-between gap-3 text-white">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center shrink-0 shadow-lg shadow-indigo-600/40">
-              <Download className="w-5 h-5 text-white animate-bounce" />
+        <div 
+          className="glass-panel"
+          style={{
+            padding: '16px',
+            borderRadius: '20px',
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            border: '1px solid rgba(99, 102, 241, 0.4)',
+            backdropFilter: 'blur(16px)',
+            boxShadow: '0 12px 35px rgba(0, 0, 0, 0.6)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '12px'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div 
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '12px',
+                background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                boxShadow: '0 4px 14px rgba(99, 102, 241, 0.4)'
+              }}
+            >
+              <Download size={20} color="#ffffff" />
             </div>
             <div>
-              <h4 className="text-xs font-bold text-white">Install StudentLife OS App</h4>
-              <p className="text-[11px] text-slate-400 leading-tight">Instant access from your home screen</p>
+              <h4 style={{ fontSize: '0.82rem', fontWeight: 800, color: '#ffffff', margin: 0 }}>Install StudentLife OS</h4>
+              <p style={{ fontSize: '0.72rem', color: '#94a3b8', margin: '2px 0 0 0' }}>Instant home screen &amp; offline launch</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <button
               onClick={handleInstallClick}
-              className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition"
+              className="glow-hover"
+              style={{
+                padding: '7px 14px',
+                borderRadius: '10px',
+                border: 'none',
+                background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                color: '#ffffff',
+                fontSize: '0.75rem',
+                fontWeight: 800,
+                cursor: 'pointer'
+              }}
             >
               Install
             </button>
             <button
               onClick={() => setIsDismissed(true)}
-              className="p-1.5 text-slate-400 hover:text-white transition"
+              style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: '4px' }}
               title="Dismiss"
             >
-              <X className="w-3.5 h-3.5" />
+              <X size={16} />
             </button>
           </div>
         </div>

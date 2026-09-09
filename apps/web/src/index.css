@@ -80,7 +80,8 @@ body {
 }
 
 /* Glassmorphism Classes */
-.glass-panel {
+.glass-panel,
+.glass-card {
   background: var(--bg-card);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
