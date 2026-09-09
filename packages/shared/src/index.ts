@@ -2108,7 +2108,14 @@ export type SupportedLanguage =
   | 'ja'
   | 'ru'
   | 'zh'
-  | 'ar';
+  | 'ar'
+  | 'pt'
+  | 'it'
+  | 'ko'
+  | 'nl'
+  | 'tr'
+  | 'id'
+  | 'vi';
 
 // ==========================================
 // 41. 2D Multiplayer Virtual Campus (Phase 41)

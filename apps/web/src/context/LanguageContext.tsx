@@ -1759,13 +1759,22 @@ export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {
   ru: {} as any,
   zh: {} as any,
   ar: {} as any,
+  // Additional Global Languages
+  pt: {} as any,
+  it: {} as any,
+  ko: {} as any,
+  nl: {} as any,
+  tr: {} as any,
+  id: {} as any,
+  vi: {} as any,
 };
 
 // Fill fallbacks
 const ALL_KEYS = Object.keys(TRANSLATIONS.en);
 const ALL_LANGS: SupportedLanguage[] = [
   'en', 'hinglish', 'hi', 'bn', 'te', 'ta', 'mr', 'gu', 'pa',
-  'kn', 'ml', 'or', 'ur', 'as', 'sa', 'es', 'fr', 'de', 'ja', 'ru', 'zh', 'ar'
+  'kn', 'ml', 'or', 'ur', 'as', 'sa', 'es', 'fr', 'de', 'ja', 'ru', 'zh', 'ar',
+  'pt', 'it', 'ko', 'nl', 'tr', 'id', 'vi'
 ];
 
 ALL_LANGS.forEach((lang) => {

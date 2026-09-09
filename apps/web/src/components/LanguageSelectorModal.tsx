@@ -219,6 +219,69 @@ const ALL_LANGUAGES: LanguageOption[] = [
     category: 'GLOBAL',
     flag: '🇸🇦',
     description: 'واجهة أكاديمية عربية كاملة لجميع التخصصات العلمية.'
+  },
+  {
+    code: 'pt',
+    name: 'Portuguese',
+    nativeName: 'Português',
+    badge: 'International',
+    category: 'GLOBAL',
+    flag: '🇧🇷',
+    description: 'Suporte acadêmico completo em português para exames e estudos universitários.'
+  },
+  {
+    code: 'it',
+    name: 'Italian',
+    nativeName: 'Italiano',
+    badge: 'International',
+    category: 'GLOBAL',
+    flag: '🇮🇹',
+    description: 'Interfaccia e supporto accademico in lingua italiana per università e ricerca.'
+  },
+  {
+    code: 'ko',
+    name: 'Korean',
+    nativeName: '한국어',
+    badge: 'International',
+    category: 'GLOBAL',
+    flag: '🇰🇷',
+    description: '학술 연구 및 시험 준비를 위한 한국어 인터페이스와 스마트 AI 도구.'
+  },
+  {
+    code: 'nl',
+    name: 'Dutch',
+    nativeName: 'Nederlands',
+    badge: 'International',
+    category: 'GLOBAL',
+    flag: '🇳🇱',
+    description: 'Volledige academische ondersteuning in het Nederlands voor studies en examens.'
+  },
+  {
+    code: 'tr',
+    name: 'Turkish',
+    nativeName: 'Türkçe',
+    badge: 'International',
+    category: 'GLOBAL',
+    flag: '🇹🇷',
+    description: 'Üniversite ve sınav hazırlığı için kapsamlı Türkçe akademik arayüz.'
+  },
+  {
+    code: 'id',
+    name: 'Indonesian',
+    nativeName: 'Bahasa Indonesia',
+    badge: 'International',
+    category: 'GLOBAL',
+    flag: '🇮🇩',
+    description: 'Platform studi dan persiapan ujian lengkap dalam Bahasa Indonesia.'
+  },
+  {
+    code: 'vi',
+    name: 'Vietnamese',
+    nativeName: 'Tiếng Việt',
+    badge: 'International',
+    category: 'GLOBAL',
+    flag: '🇻🇳',
+    description: 'Giao diện học tập và luyện thi thông minh hoàn toàn bằng Tiếng Việt.'
   }
 ];
 
