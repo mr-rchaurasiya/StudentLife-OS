@@ -10,7 +10,9 @@ import {
   Plus,
   Clock,
   BookOpen,
-  ListOrdered
+  ListOrdered,
+  X,
+  RefreshCw
 } from 'lucide-react';
 import {
   AiPodcast,
@@ -149,174 +151,316 @@ export const AiPodcastStudioView: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-slate-400 text-sm font-medium">Tuning 2-Host AI Podcast & Audio Dialogue Studio...</p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px' }}>
+          <RefreshCw size={36} color="#c084fc" className="animate-spin" />
+          <p style={{ color: '#94a3b8', fontSize: '0.9rem', fontWeight: 600 }}>Tuning 2-Host AI Podcast &amp; Audio Dialogue Studio...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', maxWidth: '1280px', margin: '0 auto', width: '100%', paddingBottom: '40px' }}>
       {/* Top Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-2xl p-6 shadow-2xl">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-purple-600 via-pink-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-purple-500/20">
-            <Mic className="w-6 h-6" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-white tracking-tight">AI Lecture-to-Podcast Studio</h1>
-              <span className="px-2.5 py-0.5 text-xs font-semibold bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-300 border border-purple-500/30 rounded-full flex items-center gap-1">
-                <Sparkles className="w-3 h-3" /> NotebookLM 2-Host Dialogue
-              </span>
+      <div 
+        className="glass-panel"
+        style={{
+          padding: '28px 32px',
+          background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.18) 0%, rgba(236, 72, 153, 0.18) 50%, rgba(15, 23, 42, 0.95) 100%)',
+          position: 'relative',
+          overflow: 'hidden',
+          border: '1px solid rgba(168, 85, 247, 0.35)',
+          borderRadius: '24px',
+          boxShadow: '0 0 35px rgba(168, 85, 247, 0.15)'
+        }}
+      >
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
+            <div 
+              style={{
+                width: '54px',
+                height: '54px',
+                borderRadius: '16px',
+                background: 'linear-gradient(135deg, #a855f7 0%, #ec4899 50%, #6366f1 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 8px 24px rgba(168, 85, 247, 0.35)',
+                flexShrink: 0
+              }}
+            >
+              <Mic size={28} color="#ffffff" />
             </div>
-            <p className="text-sm text-slate-400">
-              Convert any lecture notes or syllabus topic into an interactive two-host audio discussion you can listen to while commuting or walking.
-            </p>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '6px' }}>
+                <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em', margin: 0 }}>
+                  AI Lecture-to-Podcast Studio
+                </h1>
+                <span 
+                  style={{
+                    backgroundColor: 'rgba(168, 85, 247, 0.2)',
+                    color: '#e9d5ff',
+                    border: '1px solid rgba(168, 85, 247, 0.4)',
+                    padding: '3px 10px',
+                    borderRadius: '9999px',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px'
+                  }}
+                >
+                  <Sparkles size={12} color="#c084fc" /> NotebookLM 2-Host Dialogue
+                </span>
+              </div>
+              <p style={{ fontSize: '0.9rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
+                Convert any lecture notes or syllabus topic into an interactive two-host audio discussion you can listen to while commuting or walking.
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white rounded-xl font-semibold text-sm transition-all shadow-lg shadow-purple-500/25"
-          >
-            <Plus className="w-4 h-4" />
-            Generate New Podcast
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="glow-hover"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '11px 22px',
+                borderRadius: '14px',
+                border: 'none',
+                background: 'linear-gradient(135deg, #a855f7 0%, #ec4899 100%)',
+                color: '#ffffff',
+                fontWeight: 800,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                boxShadow: '0 6px 20px rgba(168, 85, 247, 0.35)'
+              }}
+            >
+              <Plus size={16} />
+              Generate New Podcast
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(280px, 320px) 1fr minmax(280px, 320px)', gap: '20px', alignItems: 'start' }}>
         
         {/* Left Side: Podcast Library (3 cols) */}
-        <div className="lg:col-span-3 space-y-4">
-          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3">
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider px-2 flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-purple-400" />
-              Podcast Library ({podcasts.length})
-            </h3>
-            <div className="space-y-2">
-              {podcasts.map(pod => {
-                const isActive = pod.id === activePodcast?.id;
-                return (
-                  <button
-                    key={pod.id}
-                    onClick={() => {
-                      setActivePodcastId(pod.id);
-                      handleResetPlayback();
-                    }}
-                    className={`w-full text-left p-3 rounded-xl transition-all border flex flex-col gap-1 ${
-                      isActive
-                        ? 'bg-gradient-to-r from-purple-950/60 to-slate-900 border-purple-500/50 shadow-md shadow-purple-950/50'
-                        : 'bg-slate-950/40 border-slate-800/60 hover:bg-slate-800/40 text-slate-400'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                        isActive ? 'bg-purple-500/20 text-purple-300' : 'bg-slate-800 text-slate-400'
-                      }`}>
-                        {pod.topic.split('&')[0]}
-                      </span>
-                      <span className="text-[11px] text-slate-500 font-mono">
-                        {pod.dialogueTurns.length} Turns
-                      </span>
-                    </div>
-                    <div className={`font-semibold text-sm line-clamp-1 ${isActive ? 'text-white' : 'text-slate-300'}`}>
-                      {pod.title}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+        <div 
+          className="glass-panel"
+          style={{
+            padding: '20px',
+            borderRadius: '20px',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            backgroundColor: 'rgba(15, 23, 42, 0.85)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '14px'
+          }}
+        >
+          <h3 style={{ fontSize: '0.85rem', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'flex', alignItems: 'center', gap: '8px', margin: 0, borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '10px' }}>
+            <BookOpen size={16} color="#c084fc" />
+            Podcast Library ({podcasts.length})
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {podcasts.map(pod => {
+              const isActive = pod.id === activePodcast?.id;
+              return (
+                <button
+                  key={pod.id}
+                  onClick={() => {
+                    setActivePodcastId(pod.id);
+                    handleResetPlayback();
+                  }}
+                  className="glow-hover"
+                  style={{
+                    width: '100%',
+                    textAlign: 'left',
+                    padding: '14px',
+                    borderRadius: '14px',
+                    border: isActive ? '1px solid rgba(168, 85, 247, 0.6)' : '1px solid rgba(255, 255, 255, 0.08)',
+                    backgroundColor: isActive ? 'rgba(168, 85, 247, 0.18)' : 'rgba(2, 6, 23, 0.6)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '6px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    boxShadow: isActive ? '0 4px 14px rgba(168, 85, 247, 0.25)' : 'none'
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span 
+                      style={{
+                        backgroundColor: isActive ? 'rgba(168, 85, 247, 0.25)' : 'rgba(255, 255, 255, 0.08)',
+                        color: isActive ? '#e9d5ff' : '#cbd5e1',
+                        padding: '2px 8px',
+                        borderRadius: '6px',
+                        fontSize: '0.68rem',
+                        fontWeight: 800
+                      }}
+                    >
+                      {pod.topic.split('&')[0]}
+                    </span>
+                    <span style={{ fontSize: '0.72rem', color: '#94a3b8', fontFamily: 'monospace' }}>
+                      {pod.dialogueTurns.length} Turns
+                    </span>
+                  </div>
+                  <div style={{ fontWeight: 700, fontSize: '0.85rem', color: isActive ? '#ffffff' : '#e2e8f0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {pod.title}
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
 
         {/* Center: Live Podcast Player & Interactive Dialogue Stream (6 cols) */}
-        <div className="lg:col-span-6 space-y-4">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {activePodcast ? (
-            <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-2xl text-slate-200 space-y-6">
+            <div 
+              className="glass-panel"
+              style={{
+                padding: '28px',
+                borderRadius: '24px',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                backgroundColor: 'rgba(15, 23, 42, 0.92)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '20px',
+                boxShadow: '0 12px 40px rgba(0, 0, 0, 0.3)'
+              }}
+            >
               
               {/* Podcast Title and Hosts Bar */}
-              <div className="border-b border-slate-800 pb-5 space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-purple-400 uppercase tracking-wide">
+              <div style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '18px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#c084fc', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                     {activePodcast.topic}
                   </span>
-                  <span className="text-xs text-slate-400 font-mono flex items-center gap-1">
-                    <Clock className="w-3.5 h-3.5" /> ~{Math.round(activePodcast.totalDurationSeconds / 60)} Mins
+                  <span style={{ fontSize: '0.78rem', color: '#94a3b8', fontFamily: 'monospace', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <Clock size={13} color="#38bdf8" /> ~{Math.round(activePodcast.totalDurationSeconds / 60)} Mins
                   </span>
                 </div>
-                <h2 className="text-xl font-bold text-white tracking-tight">
+                <h2 style={{ fontSize: '1.35rem', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.01em', margin: 0 }}>
                   {activePodcast.title}
                 </h2>
 
                 {/* Hosts Avatars */}
-                <div className="flex items-center gap-4 pt-1">
-                  <div className="flex items-center gap-2 bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800 text-xs">
-                    <span className="text-lg">{activePodcast.host1.avatar}</span>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', paddingTop: '4px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: 'rgba(2, 6, 23, 0.8)', padding: '8px 14px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                    <span style={{ fontSize: '1.4rem' }}>{activePodcast.host1.avatar}</span>
                     <div>
-                      <div className="font-bold text-slate-200">{activePodcast.host1.name}</div>
-                      <div className="text-[10px] text-slate-400">{activePodcast.host1.role}</div>
+                      <div style={{ fontWeight: 800, color: '#c7d2fe', fontSize: '0.82rem' }}>{activePodcast.host1.name}</div>
+                      <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>{activePodcast.host1.role}</div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800 text-xs">
-                    <span className="text-lg">{activePodcast.host2.avatar}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: 'rgba(2, 6, 23, 0.8)', padding: '8px 14px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                    <span style={{ fontSize: '1.4rem' }}>{activePodcast.host2.avatar}</span>
                     <div>
-                      <div className="font-bold text-slate-200">{activePodcast.host2.name}</div>
-                      <div className="text-[10px] text-slate-400">{activePodcast.host2.role}</div>
+                      <div style={{ fontWeight: 800, color: '#fbcfe8', fontSize: '0.82rem' }}>{activePodcast.host2.name}</div>
+                      <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>{activePodcast.host2.role}</div>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Master Audio Playback Controls */}
-              <div className="bg-slate-950/80 border border-purple-500/20 rounded-xl p-4 flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
+              <div 
+                style={{
+                  backgroundColor: 'rgba(2, 6, 23, 0.75)',
+                  border: '1px solid rgba(168, 85, 247, 0.3)',
+                  borderRadius: '16px',
+                  padding: '14px 20px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  gap: '14px'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <button
                     onClick={handleTogglePlay}
-                    className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white flex items-center justify-center shadow-lg shadow-purple-500/30 transition-all hover:scale-105"
+                    className="glow-hover"
+                    style={{
+                      width: '46px',
+                      height: '46px',
+                      borderRadius: '50%',
+                      border: 'none',
+                      background: 'linear-gradient(135deg, #a855f7 0%, #ec4899 100%)',
+                      color: '#ffffff',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 16px rgba(168, 85, 247, 0.4)'
+                    }}
                   >
-                    {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
+                    {isPlaying ? <Pause size={20} /> : <Play size={20} style={{ marginLeft: '2px' }} />}
                   </button>
                   <button
                     onClick={handleResetPlayback}
-                    className="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white rounded-xl text-xs transition-all"
+                    style={{
+                      padding: '8px',
+                      borderRadius: '10px',
+                      backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      color: '#94a3b8',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center'
+                    }}
                     title="Restart from Beginning"
                   >
-                    <RotateCcw className="w-4 h-4" />
+                    <RotateCcw size={16} />
                   </button>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-slate-400">Speed:</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>Speed:</span>
                   {[1.0, 1.25, 1.5, 2.0].map(speed => (
                     <button
                       key={speed}
                       onClick={() => setPlaybackSpeed(speed)}
-                      className={`px-2 py-1 rounded-lg text-xs font-mono font-bold border transition-all ${
-                        playbackSpeed === speed
-                          ? 'bg-purple-600 border-purple-400 text-white'
-                          : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-slate-200'
-                      }`}
+                      style={{
+                        padding: '4px 8px',
+                        borderRadius: '8px',
+                        fontSize: '0.75rem',
+                        fontFamily: 'monospace',
+                        fontWeight: 700,
+                        border: playbackSpeed === speed ? '1px solid #c084fc' : '1px solid rgba(255, 255, 255, 0.08)',
+                        backgroundColor: playbackSpeed === speed ? 'rgba(168, 85, 247, 0.3)' : 'rgba(255, 255, 255, 0.05)',
+                        color: playbackSpeed === speed ? '#ffffff' : '#94a3b8',
+                        cursor: 'pointer'
+                      }}
                     >
                       {speed}x
                     </button>
                   ))}
                   <button
                     onClick={() => setIsMuted(!isMuted)}
-                    className="p-2 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl border border-slate-800 ml-1"
+                    style={{
+                      padding: '6px 10px',
+                      borderRadius: '8px',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                      color: isMuted ? '#f43f5e' : '#38bdf8',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      marginLeft: '4px'
+                    }}
                   >
-                    {isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4 text-cyan-400" />}
+                    {isMuted ? <VolumeX size={15} /> : <Volume2 size={15} />}
                   </button>
                 </div>
               </div>
 
               {/* Dialogue Transcript Stream */}
-              <div className="space-y-4 max-h-[420px] overflow-y-auto pr-2">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', maxHeight: '460px', overflowY: 'auto', paddingRight: '4px' }}>
                 {activePodcast.dialogueTurns.map((turn, tIdx) => {
                   const isCurrent = tIdx === activeTurnIndex && isPlaying;
                   const isHost1 = turn.speaker === 'host1';
@@ -329,26 +473,33 @@ export const AiPodcastStudioView: React.FC = () => {
                         setActiveTurnIndex(tIdx);
                         if (isPlaying) playTurn(tIdx);
                       }}
-                      className={`p-4 rounded-2xl border transition-all cursor-pointer flex gap-3.5 ${
-                        isCurrent
-                          ? 'bg-gradient-to-r from-purple-950/70 via-indigo-950/50 to-slate-900 border-purple-400 shadow-xl shadow-purple-950/50 scale-[1.01]'
-                          : 'bg-slate-950/50 border-slate-800/80 hover:border-slate-700'
-                      }`}
+                      className="glow-hover"
+                      style={{
+                        padding: '16px',
+                        borderRadius: '16px',
+                        border: isCurrent ? '1px solid #c084fc' : '1px solid rgba(255, 255, 255, 0.08)',
+                        backgroundColor: isCurrent ? 'rgba(168, 85, 247, 0.18)' : 'rgba(2, 6, 23, 0.6)',
+                        display: 'flex',
+                        gap: '14px',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                        boxShadow: isCurrent ? '0 4px 18px rgba(168, 85, 247, 0.25)' : 'none'
+                      }}
                     >
-                      <div className="text-2xl shrink-0 mt-0.5">{currentHost.avatar}</div>
-                      <div className="space-y-1.5 flex-1 text-xs">
-                        <div className="flex items-center justify-between">
-                          <span className={`font-bold ${isHost1 ? 'text-indigo-300' : 'text-pink-300'}`}>
+                      <div style={{ fontSize: '1.6rem', flexShrink: 0, marginTop: '2px' }}>{currentHost.avatar}</div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flex: 1 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span style={{ fontWeight: 800, fontSize: '0.82rem', color: isHost1 ? '#a5b4fc' : '#f472b6' }}>
                             {currentHost.name}
                           </span>
-                          <span className="text-[10px] text-slate-500 font-mono">Turn {tIdx + 1}</span>
+                          <span style={{ fontSize: '0.68rem', color: '#64748b', fontFamily: 'monospace' }}>Turn {tIdx + 1}</span>
                         </div>
-                        <p className="text-slate-200 text-sm leading-relaxed font-sans">
+                        <p style={{ margin: 0, fontSize: '0.88rem', color: '#f1f5f9', lineHeight: 1.55 }}>
                           {turn.text}
                         </p>
-                        <div className="flex flex-wrap gap-1.5 pt-1">
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', paddingTop: '4px' }}>
                           {turn.keyConcepts.map((k, i) => (
-                            <span key={i} className="text-[10px] px-2 py-0.5 rounded-md bg-slate-900 text-slate-400 border border-slate-800">
+                            <span key={i} style={{ fontSize: '0.68rem', padding: '2px 8px', borderRadius: '6px', backgroundColor: 'rgba(255, 255, 255, 0.08)', color: '#94a3b8' }}>
                               {k}
                             </span>
                           ))}
@@ -361,76 +512,171 @@ export const AiPodcastStudioView: React.FC = () => {
 
             </div>
           ) : (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center text-slate-400">
+            <div 
+              className="glass-panel"
+              style={{ padding: '48px', borderRadius: '24px', textAlign: 'center', color: '#64748b' }}
+            >
               No podcast loaded. Synthesize one from the top button!
             </div>
           )}
         </div>
 
         {/* Right Side: Key Takeaways & Exam Points (3 cols) */}
-        <div className="lg:col-span-3 space-y-4">
-          <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
-            <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2 border-b border-slate-800 pb-3">
-              <ListOrdered className="w-4 h-4 text-pink-400" />
-              Podcast Takeaways
-            </h3>
-            {activePodcast ? (
-              <div className="space-y-2.5 text-xs text-slate-300">
-                {activePodcast.summaryKeyTakeaways.map((point, idx) => (
-                  <div key={idx} className="p-3 bg-slate-950/70 border border-slate-800 rounded-xl flex gap-2">
-                    <span className="text-purple-400 font-bold font-mono">{idx + 1}.</span>
-                    <span className="leading-relaxed">{point}</span>
-                  </div>
-                ))}
-              </div>
-            ) : null}
-          </div>
+        <div 
+          className="glass-panel"
+          style={{
+            padding: '20px',
+            borderRadius: '20px',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            backgroundColor: 'rgba(15, 23, 42, 0.85)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '14px'
+          }}
+        >
+          <h3 style={{ fontSize: '0.85rem', fontWeight: 800, color: '#f8fafc', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'flex', alignItems: 'center', gap: '8px', margin: 0, borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '10px' }}>
+            <ListOrdered size={16} color="#ec4899" />
+            Podcast Takeaways
+          </h3>
+          {activePodcast && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.82rem' }}>
+              {activePodcast.summaryKeyTakeaways.map((point, idx) => (
+                <div key={idx} style={{ padding: '12px', backgroundColor: 'rgba(2, 6, 23, 0.7)', border: '1px solid rgba(255, 255, 255, 0.08)', borderRadius: '12px', display: 'flex', gap: '8px' }}>
+                  <span style={{ color: '#c084fc', fontWeight: 800, fontFamily: 'monospace' }}>{idx + 1}.</span>
+                  <span style={{ color: '#cbd5e1', lineHeight: 1.5 }}>{point}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
       </div>
 
       {/* Modal: Synthesize New Podcast */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <Mic className="w-5 h-5 text-purple-400" />
-              Synthesize 2-Host AI Podcast
-            </h3>
-            <form onSubmit={handleGeneratePodcast} className="space-y-3 text-xs">
+        <div 
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 9999,
+            backgroundColor: 'rgba(2, 6, 23, 0.85)',
+            backdropFilter: 'blur(10px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px'
+          }}
+        >
+          <div 
+            className="glass-panel"
+            style={{
+              backgroundColor: '#0f172a',
+              border: '1px solid rgba(168, 85, 247, 0.4)',
+              borderRadius: '24px',
+              maxWidth: '540px',
+              width: '100%',
+              padding: '24px',
+              boxShadow: '0 25px 60px rgba(0, 0, 0, 0.8)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '18px'
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '12px' }}>
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#ffffff', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
+                <Mic size={20} color="#c084fc" />
+                Synthesize 2-Host AI Podcast
+              </h3>
+              <button
+                onClick={() => setShowCreateModal(false)}
+                style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: '4px' }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleGeneratePodcast} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div>
-                <label className="text-slate-400 font-semibold block mb-1">Target Topic or Chapter</label>
+                <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '6px' }}>
+                  Target Topic or Chapter
+                </label>
                 <input
                   type="text"
                   required
                   value={topicInput}
                   onChange={e => setTopicInput(e.target.value)}
                   placeholder="e.g. Graph Dijkstra Algorithm / Fundamental Rights"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 text-xs focus:outline-none focus:border-purple-500"
+                  style={{
+                    width: '100%',
+                    backgroundColor: 'rgba(2, 6, 23, 0.9)',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    borderRadius: '12px',
+                    padding: '10px 14px',
+                    color: '#f8fafc',
+                    fontSize: '0.85rem',
+                    fontWeight: 600,
+                    outline: 'none',
+                    boxSizing: 'border-box'
+                  }}
                 />
               </div>
+
               <div>
-                <label className="text-slate-400 font-semibold block mb-1">Source Notes Text (Optional)</label>
+                <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '6px' }}>
+                  Source Notes Text (Optional)
+                </label>
                 <textarea
                   rows={4}
                   value={notesInput}
                   onChange={e => setNotesInput(e.target.value)}
                   placeholder="Paste class notes or key equations for host discussion..."
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 text-xs focus:outline-none focus:border-purple-500"
+                  style={{
+                    width: '100%',
+                    backgroundColor: 'rgba(2, 6, 23, 0.9)',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    borderRadius: '12px',
+                    padding: '10px 14px',
+                    color: '#f8fafc',
+                    fontSize: '0.85rem',
+                    outline: 'none',
+                    boxSizing: 'border-box'
+                  }}
                 />
               </div>
-              <div className="flex justify-end gap-2 pt-2">
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', paddingTop: '10px' }}>
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-xs"
+                  style={{
+                    padding: '10px 18px',
+                    borderRadius: '10px',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                    color: '#cbd5e1',
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                    cursor: 'pointer'
+                  }}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSynthesizing}
-                  className="px-5 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl text-xs font-semibold shadow-md disabled:opacity-50"
+                  className="glow-hover"
+                  style={{
+                    padding: '10px 22px',
+                    borderRadius: '10px',
+                    border: 'none',
+                    background: 'linear-gradient(135deg, #a855f7 0%, #ec4899 100%)',
+                    color: '#ffffff',
+                    fontSize: '0.8rem',
+                    fontWeight: 800,
+                    cursor: isSynthesizing ? 'not-allowed' : 'pointer',
+                    opacity: isSynthesizing ? 0.6 : 1,
+                    boxShadow: '0 4px 14px rgba(168, 85, 247, 0.35)'
+                  }}
                 >
                   {isSynthesizing ? 'Synthesizing Dialogue...' : 'Create & Play'}
                 </button>
@@ -442,4 +688,5 @@ export const AiPodcastStudioView: React.FC = () => {
     </div>
   );
 };
+
 export default AiPodcastStudioView;

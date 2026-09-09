@@ -8,7 +8,9 @@ import {
   ChevronRight,
   Plus,
   BookOpen,
-  Volume2
+  Volume2,
+  X,
+  RefreshCw
 } from 'lucide-react';
 import {
   SlideDeck,
@@ -58,7 +60,23 @@ export const AiSlideGeneratorView: React.FC<AiSlideGeneratorViewProps> = ({ onAd
   };
 
   const activeDeck = decks.find(d => d.id === activeDeckId) || decks[0];
-  const currentSlide = activeDeck?.slides[currentSlideIndex] || activeDeck?.slides[0];
+  const currentSlide = activeDeck?.slides[currentSlideIndex];
+
+  const handleNextSlide = () => {
+    if (activeDeck && currentSlideIndex < activeDeck.slides.length - 1) {
+      setCurrentSlideIndex(prev => prev + 1);
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      setIsPlayingVoiceover(false);
+    }
+  };
+
+  const handlePrevSlide = () => {
+    if (currentSlideIndex > 0) {
+      setCurrentSlideIndex(prev => prev - 1);
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      setIsPlayingVoiceover(false);
+    }
+  };
 
   const handlePlayVoiceover = () => {
     if (!currentSlide || !('speechSynthesis' in window)) return;
@@ -71,25 +89,13 @@ export const AiSlideGeneratorView: React.FC<AiSlideGeneratorViewProps> = ({ onAd
       const utterance = new SpeechSynthesisUtterance(currentSlide.voiceoverNarration);
       utterance.rate = 1.0;
       utterance.pitch = 1.05;
+
+      utterance.onstart = () => setIsPlayingVoiceover(true);
       utterance.onend = () => setIsPlayingVoiceover(false);
       utterance.onerror = () => setIsPlayingVoiceover(false);
-      setIsPlayingVoiceover(true);
+
       window.speechSynthesis.speak(utterance);
     }
-  };
-
-  const handleNextSlide = () => {
-    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-    setIsPlayingVoiceover(false);
-    if (activeDeck && currentSlideIndex < activeDeck.slides.length - 1) {
-      setCurrentSlideIndex(prev => prev + 1);
-    }
-  };
-
-  const handlePrevSlide = () => {
-    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-    setIsPlayingVoiceover(false);
-    setCurrentSlideIndex(prev => Math.max(0, prev - 1));
   };
 
   const handleGenerateDeck = async (e: React.FormEvent) => {
@@ -113,10 +119,12 @@ export const AiSlideGeneratorView: React.FC<AiSlideGeneratorViewProps> = ({ onAd
         setActiveDeckId(data.data.id);
         setCurrentSlideIndex(0);
         setShowCreateModal(false);
-        onAddXp?.(30, 'Generated AI Slide Deck');
+        setTopicInput('');
+        setSubjectInput('');
+        onAddXp?.(30, 'Generated AI Animated Slide Deck');
       }
     } catch (err) {
-      console.error('Failed to generate slides', err);
+      console.error('Failed to generate deck', err);
     } finally {
       setIsGenerating(false);
     }
@@ -124,157 +132,248 @@ export const AiSlideGeneratorView: React.FC<AiSlideGeneratorViewProps> = ({ onAd
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-pink-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-slate-400 text-sm font-medium">Synthesizing AI Slide Presentation Generator...</p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px' }}>
+          <RefreshCw size={36} color="#ec4899" className="animate-spin" />
+          <p style={{ color: '#94a3b8', fontSize: '0.9rem', fontWeight: 600 }}>Synthesizing AI Slide Presentation Generator...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', maxWidth: '1280px', margin: '0 auto', width: '100%', paddingBottom: '40px' }}>
       {/* Top Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-2xl p-6 shadow-2xl">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-pink-600 via-rose-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-pink-500/20">
-            <Presentation className="w-6 h-6" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-white tracking-tight">AI Animated Slide & Visual Generator</h1>
-              <span className="px-2.5 py-0.5 text-xs font-semibold bg-gradient-to-r from-pink-500/20 to-rose-500/20 text-pink-300 border border-pink-500/30 rounded-full flex items-center gap-1">
-                <Sparkles className="w-3 h-3" /> Auto Slide Synthesizer
-              </span>
+      <div 
+        className="glass-panel"
+        style={{
+          padding: '28px 32px',
+          background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.18) 0%, rgba(244, 63, 94, 0.18) 50%, rgba(15, 23, 42, 0.95) 100%)',
+          position: 'relative',
+          overflow: 'hidden',
+          border: '1px solid rgba(236, 72, 153, 0.35)',
+          borderRadius: '24px',
+          boxShadow: '0 0 35px rgba(236, 72, 153, 0.15)'
+        }}
+      >
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
+            <div 
+              style={{
+                width: '54px',
+                height: '54px',
+                borderRadius: '16px',
+                background: 'linear-gradient(135deg, #ec4899 0%, #f43f5e 50%, #6366f1 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 8px 24px rgba(236, 72, 153, 0.35)',
+                flexShrink: 0
+              }}
+            >
+              <Presentation size={28} color="#ffffff" />
             </div>
-            <p className="text-sm text-slate-400">
-              Transform lecture notes into visual presentation slides with synchronized AI audio narration walkthroughs.
-            </p>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '6px' }}>
+                <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em', margin: 0 }}>
+                  AI Animated Slide &amp; Visual Generator
+                </h1>
+                <span 
+                  style={{
+                    backgroundColor: 'rgba(236, 72, 153, 0.2)',
+                    color: '#fbcfe8',
+                    border: '1px solid rgba(236, 72, 153, 0.4)',
+                    padding: '3px 10px',
+                    borderRadius: '9999px',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px'
+                  }}
+                >
+                  <Sparkles size={12} color="#f472b6" /> Auto Slide Synthesizer
+                </span>
+              </div>
+              <p style={{ fontSize: '0.9rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
+                Transform lecture notes into visual presentation slides with synchronized AI audio narration walkthroughs.
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setShowCreateModal(true)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 text-white rounded-xl font-semibold text-sm transition-all shadow-lg shadow-pink-500/25"
-          >
-            <Plus className="w-4 h-4" />
-            Synthesize Slide Deck
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="glow-hover"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '11px 22px',
+                borderRadius: '14px',
+                border: 'none',
+                background: 'linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)',
+                color: '#ffffff',
+                fontWeight: 800,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                boxShadow: '0 6px 20px rgba(236, 72, 153, 0.35)'
+              }}
+            >
+              <Plus size={16} />
+              Synthesize Slide Deck
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(280px, 320px) 1fr', gap: '24px', alignItems: 'start' }}>
         
         {/* Left Side: Deck Library (3 cols) */}
-        <div className="lg:col-span-3 space-y-4">
-          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3">
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider px-2 flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-pink-400" />
-              Presentation Decks ({decks.length})
-            </h3>
-            <div className="space-y-2">
-              {decks.map(deck => {
-                const isActive = deck.id === activeDeck?.id;
-                return (
-                  <button
-                    key={deck.id}
-                    onClick={() => {
-                      setActiveDeckId(deck.id);
-                      setCurrentSlideIndex(0);
-                      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-                      setIsPlayingVoiceover(false);
-                    }}
-                    className={`w-full text-left p-3 rounded-xl transition-all border flex flex-col gap-1 ${
-                      isActive
-                        ? 'bg-gradient-to-r from-pink-950/60 to-slate-900 border-pink-500/50 shadow-md shadow-pink-950/50'
-                        : 'bg-slate-950/40 border-slate-800/60 hover:bg-slate-800/40 text-slate-400'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                        isActive ? 'bg-pink-500/20 text-pink-300' : 'bg-slate-800 text-slate-400'
-                      }`}>
-                        {deck.subject}
-                      </span>
-                      <span className="text-[11px] text-slate-500 font-mono">
-                        {deck.slides.length} Slides
-                      </span>
-                    </div>
-                    <div className={`font-semibold text-sm line-clamp-1 ${isActive ? 'text-white' : 'text-slate-300'}`}>
-                      {deck.topic}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+        <div 
+          className="glass-panel"
+          style={{
+            padding: '20px',
+            borderRadius: '20px',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            backgroundColor: 'rgba(15, 23, 42, 0.85)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '14px'
+          }}
+        >
+          <h3 style={{ fontSize: '0.85rem', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'flex', alignItems: 'center', gap: '8px', margin: 0, borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '10px' }}>
+            <BookOpen size={16} color="#f472b6" />
+            Presentation Decks ({decks.length})
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            {decks.map(deck => {
+              const isActive = deck.id === activeDeck?.id;
+              return (
+                <button
+                  key={deck.id}
+                  onClick={() => {
+                    setActiveDeckId(deck.id);
+                    setCurrentSlideIndex(0);
+                    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+                    setIsPlayingVoiceover(false);
+                  }}
+                  className="glow-hover"
+                  style={{
+                    width: '100%',
+                    textAlign: 'left',
+                    padding: '14px',
+                    borderRadius: '14px',
+                    border: isActive ? '1px solid rgba(236, 72, 153, 0.6)' : '1px solid rgba(255, 255, 255, 0.08)',
+                    backgroundColor: isActive ? 'rgba(236, 72, 153, 0.18)' : 'rgba(2, 6, 23, 0.6)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '6px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    boxShadow: isActive ? '0 4px 14px rgba(236, 72, 153, 0.25)' : 'none'
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span 
+                      style={{
+                        backgroundColor: isActive ? 'rgba(236, 72, 153, 0.25)' : 'rgba(255, 255, 255, 0.08)',
+                        color: isActive ? '#fbcfe8' : '#cbd5e1',
+                        padding: '2px 8px',
+                        borderRadius: '6px',
+                        fontSize: '0.68rem',
+                        fontWeight: 800
+                      }}
+                    >
+                      {deck.subject}
+                    </span>
+                    <span style={{ fontSize: '0.72rem', color: '#94a3b8', fontFamily: 'monospace' }}>
+                      {deck.slides.length} Slides
+                    </span>
+                  </div>
+                  <div style={{ fontWeight: 700, fontSize: '0.85rem', color: isActive ? '#ffffff' : '#e2e8f0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {deck.topic}
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
 
         {/* Center: Slide Presentation Theater (9 cols) */}
-        <div className="lg:col-span-9 space-y-4">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {activeDeck && currentSlide ? (
-            <div className="space-y-4">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               
               {/* 16:9 Presentation Stage */}
-              <div className="relative bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950/60 border-2 border-slate-800 rounded-3xl p-8 sm:p-12 shadow-2xl min-h-[460px] flex flex-col justify-between overflow-hidden">
-                
-                {/* Background Accent Glow */}
-                <div className="absolute top-0 right-0 w-80 h-80 bg-pink-500/10 rounded-full blur-3xl pointer-events-none" />
-
+              <div 
+                className="glass-panel"
+                style={{
+                  position: 'relative',
+                  background: 'linear-gradient(135deg, rgba(2, 6, 23, 0.95) 0%, rgba(15, 23, 42, 0.95) 50%, rgba(30, 27, 75, 0.5) 100%)',
+                  border: '1.5px solid rgba(236, 72, 153, 0.35)',
+                  borderRadius: '24px',
+                  padding: '32px',
+                  boxShadow: '0 16px 45px rgba(0, 0, 0, 0.4)',
+                  minHeight: '440px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  overflow: 'hidden'
+                }}
+              >
                 {/* Slide Header */}
-                <div className="space-y-2 border-b border-slate-800/80 pb-4 relative z-10">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono font-bold text-pink-400 uppercase tracking-widest">
-                      {activeDeck.subject} • Slide {currentSlide.slideNumber} of {activeDeck.slides.length}
+                <div style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.75rem', fontFamily: 'monospace', fontWeight: 800, color: '#f472b6', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                      {activeDeck.subject} &bull; Slide {currentSlide.slideNumber} of {activeDeck.slides.length}
                     </span>
-                    <span className="text-xs text-slate-500 font-mono">16:9 Presentation Mode</span>
+                    <span style={{ fontSize: '0.72rem', color: '#64748b', fontFamily: 'monospace' }}>16:9 Presentation View</span>
                   </div>
-                  <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                  <h2 style={{ fontSize: '1.6rem', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.02em', margin: 0 }}>
                     {currentSlide.title}
                   </h2>
                   {currentSlide.subtitle && (
-                    <p className="text-sm text-slate-400 font-medium">
+                    <p style={{ fontSize: '0.88rem', color: '#94a3b8', margin: 0, fontWeight: 500 }}>
                       {currentSlide.subtitle}
                     </p>
                   )}
                 </div>
 
                 {/* Slide Elements Body */}
-                <div className="space-y-4 my-6 relative z-10">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', margin: '24px 0' }}>
                   {currentSlide.elements.map((el, i) => {
                     if (el.type === 'HEADING') {
                       return (
-                        <h4 key={i} className="text-base font-bold text-cyan-300 border-l-4 border-cyan-400 pl-3">
+                        <h4 key={i} style={{ fontSize: '1rem', fontWeight: 800, color: '#38bdf8', borderLeft: '4px solid #38bdf8', paddingLeft: '12px', margin: 0 }}>
                           {el.content}
                         </h4>
                       );
                     }
                     if (el.type === 'BULLET') {
                       return (
-                        <div key={i} className="flex items-start gap-3 text-sm text-slate-200">
-                          <span className="w-2 h-2 rounded-full bg-pink-400 mt-2 shrink-0" />
-                          <span className="leading-relaxed">{el.content}</span>
+                        <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', fontSize: '0.88rem', color: '#e2e8f0', lineHeight: 1.5 }}>
+                          <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#ec4899', marginTop: '6px', flexShrink: 0 }} />
+                          <span>{el.content}</span>
                         </div>
                       );
                     }
                     if (el.type === 'FORMULA') {
                       return (
-                        <div key={i} className="bg-slate-950/90 border border-pink-500/30 p-3.5 rounded-xl text-xs font-mono text-pink-300 shadow-md">
+                        <div key={i} style={{ backgroundColor: 'rgba(2, 6, 23, 0.9)', border: '1px solid rgba(236, 72, 153, 0.3)', padding: '12px 16px', borderRadius: '12px', fontSize: '0.82rem', fontFamily: 'monospace', color: '#fbcfe8' }}>
                           📐 {el.content}
                         </div>
                       );
                     }
                     if (el.type === 'CODE_BLOCK') {
                       return (
-                        <div key={i} className="bg-slate-950 border border-slate-800 p-3.5 rounded-xl text-xs font-mono text-emerald-300 whitespace-pre-wrap">
+                        <div key={i} style={{ backgroundColor: 'rgba(2, 6, 23, 0.95)', border: '1px solid rgba(255, 255, 255, 0.1)', padding: '12px 16px', borderRadius: '12px', fontSize: '0.8rem', fontFamily: 'monospace', color: '#34d399', whiteSpace: 'pre-wrap' }}>
                           {el.content}
                         </div>
                       );
                     }
                     return (
-                      <div key={i} className="bg-gradient-to-r from-indigo-950/60 to-purple-950/60 border border-indigo-500/30 p-3.5 rounded-xl text-xs text-indigo-200">
+                      <div key={i} style={{ background: 'linear-gradient(135deg, rgba(30, 27, 75, 0.6) 0%, rgba(15, 23, 42, 0.6) 100%)', border: '1px solid rgba(99, 102, 241, 0.3)', padding: '12px 16px', borderRadius: '12px', fontSize: '0.82rem', color: '#c7d2fe' }}>
                         💡 {el.content}
                       </div>
                     );
@@ -282,42 +381,88 @@ export const AiSlideGeneratorView: React.FC<AiSlideGeneratorViewProps> = ({ onAd
                 </div>
 
                 {/* Voiceover Script Subtitle Strip */}
-                <div className="bg-slate-950/90 border border-slate-800 rounded-2xl p-4 flex items-center justify-between gap-4 relative z-10">
-                  <div className="flex items-center gap-3">
+                <div 
+                  style={{
+                    backgroundColor: 'rgba(2, 6, 23, 0.85)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    borderRadius: '16px',
+                    padding: '14px 18px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '16px',
+                    flexWrap: 'wrap'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: '220px' }}>
                     <button
                       onClick={handlePlayVoiceover}
-                      className="w-10 h-10 rounded-xl bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 text-white flex items-center justify-center shadow-lg shadow-pink-500/20"
+                      className="glow-hover"
+                      style={{
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '12px',
+                        border: 'none',
+                        background: 'linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)',
+                        color: '#ffffff',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 14px rgba(236, 72, 153, 0.35)',
+                        flexShrink: 0
+                      }}
                     >
-                      {isPlayingVoiceover ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
+                      {isPlayingVoiceover ? <Pause size={16} /> : <Play size={16} style={{ marginLeft: '2px' }} />}
                     </button>
                     <div>
-                      <div className="text-[10px] text-pink-400 font-bold uppercase flex items-center gap-1">
-                        <Volume2 className="w-3 h-3" /> AI Voiceover Narration
+                      <div style={{ fontSize: '0.68rem', color: '#f472b6', fontWeight: 800, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <Volume2 size={12} /> AI Voiceover Narration
                       </div>
-                      <p className="text-xs text-slate-300 italic line-clamp-1">
-                        "{currentSlide.voiceoverNarration}"
+                      <p style={{ fontSize: '0.78rem', color: '#cbd5e1', fontStyle: 'italic', margin: '2px 0 0 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '380px' }}>
+                        &ldquo;{currentSlide.voiceoverNarration}&rdquo;
                       </p>
                     </div>
                   </div>
 
-                  {/* Navigation Buttons */}
-                  <div className="flex items-center gap-2">
+                  {/* Slide Prev/Next Buttons */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <button
                       disabled={currentSlideIndex === 0}
                       onClick={handlePrevSlide}
-                      className="p-2 bg-slate-900 hover:bg-slate-800 disabled:opacity-40 text-slate-300 rounded-xl border border-slate-800"
+                      style={{
+                        padding: '8px',
+                        backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        borderRadius: '10px',
+                        color: '#f8fafc',
+                        cursor: currentSlideIndex === 0 ? 'not-allowed' : 'pointer',
+                        opacity: currentSlideIndex === 0 ? 0.4 : 1,
+                        display: 'flex',
+                        alignItems: 'center'
+                      }}
                     >
-                      <ChevronLeft className="w-4 h-4" />
+                      <ChevronLeft size={16} />
                     </button>
-                    <span className="text-xs font-mono font-bold text-slate-400 px-2">
+                    <span style={{ fontSize: '0.78rem', fontFamily: 'monospace', fontWeight: 700, color: '#94a3b8', padding: '0 4px' }}>
                       {currentSlideIndex + 1} / {activeDeck.slides.length}
                     </span>
                     <button
                       disabled={currentSlideIndex === activeDeck.slides.length - 1}
                       onClick={handleNextSlide}
-                      className="p-2 bg-slate-900 hover:bg-slate-800 disabled:opacity-40 text-slate-300 rounded-xl border border-slate-800"
+                      style={{
+                        padding: '8px',
+                        backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        borderRadius: '10px',
+                        color: '#f8fafc',
+                        cursor: currentSlideIndex === activeDeck.slides.length - 1 ? 'not-allowed' : 'pointer',
+                        opacity: currentSlideIndex === activeDeck.slides.length - 1 ? 0.4 : 1,
+                        display: 'flex',
+                        alignItems: 'center'
+                      }}
                     >
-                      <ChevronRight className="w-4 h-4" />
+                      <ChevronRight size={16} />
                     </button>
                   </div>
                 </div>
@@ -325,7 +470,10 @@ export const AiSlideGeneratorView: React.FC<AiSlideGeneratorViewProps> = ({ onAd
               </div>
             </div>
           ) : (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center text-slate-400">
+            <div 
+              className="glass-panel"
+              style={{ padding: '48px', borderRadius: '24px', textAlign: 'center', color: '#64748b' }}
+            >
               No slide deck selected. Create one with the top button!
             </div>
           )}
@@ -335,47 +483,131 @@ export const AiSlideGeneratorView: React.FC<AiSlideGeneratorViewProps> = ({ onAd
 
       {/* Modal: Generate Deck */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <Presentation className="w-5 h-5 text-pink-400" />
-              Synthesize AI Slide Deck
-            </h3>
-            <form onSubmit={handleGenerateDeck} className="space-y-3 text-xs">
+        <div 
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 9999,
+            backgroundColor: 'rgba(2, 6, 23, 0.85)',
+            backdropFilter: 'blur(10px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px'
+          }}
+        >
+          <div 
+            className="glass-panel"
+            style={{
+              backgroundColor: '#0f172a',
+              border: '1px solid rgba(236, 72, 153, 0.4)',
+              borderRadius: '24px',
+              maxWidth: '500px',
+              width: '100%',
+              padding: '24px',
+              boxShadow: '0 25px 60px rgba(0, 0, 0, 0.8)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '18px'
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '12px' }}>
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#ffffff', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
+                <Presentation size={20} color="#f472b6" />
+                Synthesize AI Slide Deck
+              </h3>
+              <button
+                onClick={() => setShowCreateModal(false)}
+                style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: '4px' }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleGenerateDeck} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div>
-                <label className="text-slate-400 font-semibold block mb-1">Presentation Topic</label>
+                <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '6px' }}>
+                  Presentation Topic
+                </label>
                 <input
                   type="text"
                   required
                   value={topicInput}
                   onChange={e => setTopicInput(e.target.value)}
                   placeholder="e.g. Graph Algorithms / Fundamental Rights"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 text-xs focus:outline-none focus:border-pink-500"
+                  style={{
+                    width: '100%',
+                    backgroundColor: 'rgba(2, 6, 23, 0.9)',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    borderRadius: '12px',
+                    padding: '10px 14px',
+                    color: '#f8fafc',
+                    fontSize: '0.85rem',
+                    fontWeight: 600,
+                    outline: 'none',
+                    boxSizing: 'border-box'
+                  }}
                 />
               </div>
+
               <div>
-                <label className="text-slate-400 font-semibold block mb-1">Subject</label>
+                <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '6px' }}>
+                  Subject
+                </label>
                 <input
                   type="text"
                   required
                   value={subjectInput}
                   onChange={e => setSubjectInput(e.target.value)}
                   placeholder="e.g. Computer Science / Polity"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 text-xs focus:outline-none focus:border-pink-500"
+                  style={{
+                    width: '100%',
+                    backgroundColor: 'rgba(2, 6, 23, 0.9)',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    borderRadius: '12px',
+                    padding: '10px 14px',
+                    color: '#f8fafc',
+                    fontSize: '0.85rem',
+                    fontWeight: 600,
+                    outline: 'none',
+                    boxSizing: 'border-box'
+                  }}
                 />
               </div>
-              <div className="flex justify-end gap-2 pt-2">
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', paddingTop: '10px' }}>
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-xs"
+                  style={{
+                    padding: '10px 18px',
+                    borderRadius: '10px',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                    color: '#cbd5e1',
+                    fontSize: '0.8rem',
+                    fontWeight: 600,
+                    cursor: 'pointer'
+                  }}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isGenerating}
-                  className="px-5 py-2 bg-gradient-to-r from-pink-600 to-rose-600 text-white rounded-xl text-xs font-semibold shadow-md disabled:opacity-50"
+                  className="glow-hover"
+                  style={{
+                    padding: '10px 22px',
+                    borderRadius: '10px',
+                    border: 'none',
+                    background: 'linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)',
+                    color: '#ffffff',
+                    fontSize: '0.8rem',
+                    fontWeight: 800,
+                    cursor: isGenerating ? 'not-allowed' : 'pointer',
+                    opacity: isGenerating ? 0.6 : 1,
+                    boxShadow: '0 4px 14px rgba(236, 72, 153, 0.35)'
+                  }}
                 >
                   {isGenerating ? 'Synthesizing Decks...' : 'Generate Deck'}
                 </button>
@@ -387,4 +619,5 @@ export const AiSlideGeneratorView: React.FC<AiSlideGeneratorViewProps> = ({ onAd
     </div>
   );
 };
+
 export default AiSlideGeneratorView;
