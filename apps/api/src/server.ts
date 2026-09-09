@@ -146,6 +146,7 @@ app.use('/api/document-annotator', documentAnnotatorRouter);
 app.use('/api/custom-paper', customPaperRouter);
 app.use('/api/focus-garden', focusGardenRouter);
 app.use('/api/ai-podcast', aiPodcastRouter);
+app.use('/api/podcast', aiPodcastRouter);
 app.use('/api/code-sandbox', codeSandboxRouter);
 app.use('/api/rank-predictor', rankPredictorRouter);
 app.use('/api/virtual-campus', virtualCampusRouter);

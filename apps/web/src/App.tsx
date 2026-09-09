@@ -2458,6 +2458,7 @@ function DashboardContent() {
           latency: apiHealth?.latency
         }}
         onRefreshHealth={checkHealth}
+        onNavigateView={(v) => setActiveView(v as any)}
       />
 
       {/* Floating Persistent Real-Time Focus Audio Player Widget */}
