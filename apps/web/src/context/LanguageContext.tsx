@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import { SupportedLanguage } from '@studentlife/shared';
 
 export const TRANSLATIONS: Record<SupportedLanguage, Record<string, string>> = {

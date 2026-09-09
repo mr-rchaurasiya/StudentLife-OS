@@ -3,12 +3,13 @@ import {
   Waves,
   Sparkles,
   Activity,
-  Compass
+  Compass,
+  Radio
 } from 'lucide-react';
 import { GravitationalWaveEvent } from '@studentlife/shared';
 
 interface Props {
-  onAddXp?: (amount: number) => void;
+  onAddXp?: (amount: number, reason?: string) => void;
 }
 
 const PRESET_EVENTS = [
@@ -61,66 +62,107 @@ export const GravitationalWaveLabView: React.FC<Props> = ({ onAddXp }) => {
       if (res.ok) {
         const data: GravitationalWaveEvent = await res.json();
         setEventData(data);
-        if (onAddXp) onAddXp(75);
+        if (onAddXp) onAddXp(60, 'Simulated Gravitational Wave Inspiral & Ringdown');
       }
     } catch {
-      // Fallback
+      // Local fallback calculation
+      const m1 = primaryMass;
+      const m2 = secondaryMass;
+      const chirpMass = Math.round((Math.pow(m1 * m2, 0.6) / Math.pow(m1 + m2, 0.2)) * 10) / 10;
+      const totalM = m1 + m2;
+      const radiated = Math.round(totalM * 0.048 * 10) / 10;
+      setEventData({
+        id: `gw-${Date.now()}`,
+        eventName: `GW-${Math.round(totalM)}M-Simulated`,
+        primaryMassSolar: m1,
+        secondaryMassSolar: m2,
+        chirpMassSolar: chirpMass,
+        luminosityDistanceMpc: luminosityDist,
+        peakGravitationalPowerWatts: 3.6e49,
+        remnantBlackHoleMassSolar: Math.round((totalM - radiated) * 10) / 10,
+        energyRadiatedSolarMasses: radiated,
+        detectorNetwork: ['LIGO Hanford (H1)', 'LIGO Livingston (L1)', 'Virgo (V1)'],
+        strainWaveform: eventData.strainWaveform
+      });
+      if (onAddXp) onAddXp(60, 'Simulated Gravitational Wave Inspiral & Ringdown');
     } finally {
       setIsLoading(false);
     }
   };
 
-  // SVG Waveform Plot Coordinates
-  const svgWidth = 600;
-  const svgHeight = 200;
-  const padding = 35;
-  const minTime = -40;
-  const maxTime = 15;
-  const minStrain = -1.5;
-  const maxStrain = 1.5;
-
-  const getX = (t: number) => padding + ((t - minTime) / (maxTime - minTime)) * (svgWidth - 2 * padding);
-  const getY = (s: number) => svgHeight - padding - ((s - minStrain) / (maxStrain - minStrain)) * (svgHeight - 2 * padding);
-
-  const pathPoints = eventData.strainWaveform
-    .map((pt, idx) => `${idx === 0 ? 'M' : 'L'} ${getX(pt.timeMs)} ${getY(pt.strainH10Minus21)}`)
-    .join(' ');
-
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', maxWidth: '1280px', margin: '0 auto', width: '100%' }}>
       {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-violet-950/70 via-slate-900 to-indigo-950/80 border border-violet-500/30 p-6 shadow-2xl">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/30 text-violet-400 text-xs font-semibold uppercase tracking-wider">
-              <Waves className="w-3.5 h-3.5" />
-              Phase 96 • Gravitational Wave Interferometry & Black Hole Merger Ringdown
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight flex items-center gap-3">
-              LIGO/Virgo Spacetime Strain Laboratory
-              <span className="text-xs px-2.5 py-1 rounded-lg bg-violet-500/20 text-violet-300 border border-violet-500/40">
-                General Relativity Sim
-              </span>
-            </h1>
-            <p className="text-sm text-slate-300 max-w-2xl">
-              Model quadupolar spacetime perturbations $h(t)$, calculate Chirp Mass $\mathcal&#123;M&#125; = (m_1 m_2)^&#123;3/5&#125; / (m_1+m_2)^&#123;1/5&#125;$, and extract quasinormal ringdown waveforms from binary black hole collisions.
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleSimulate}
-              disabled={isLoading}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-500 to-indigo-600 hover:from-violet-400 hover:to-indigo-500 text-white font-medium shadow-lg shadow-violet-500/25 transition-all text-sm disabled:opacity-50"
+      <div 
+        className="glass-panel"
+        style={{
+          padding: '28px 32px',
+          background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.2) 0%, rgba(30, 27, 75, 0.85) 50%, rgba(15, 23, 42, 0.95) 100%)',
+          borderRadius: '20px',
+          border: '1px solid rgba(139, 92, 246, 0.35)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '20px'
+        }}
+      >
+        <div style={{ maxWidth: '700px' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+            <span 
+              className="badge" 
+              style={{ 
+                backgroundColor: 'rgba(139, 92, 246, 0.25)', 
+                color: '#c084fc', 
+                border: '1px solid rgba(139, 92, 246, 0.4)',
+                padding: '4px 12px',
+                borderRadius: '9999px',
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
             >
-              <Sparkles className="w-4 h-4" />
-              {isLoading ? 'Computing Strain...' : 'Simulate Merger Chirp'}
-            </button>
+              <Waves size={14} color="#c084fc" />
+              PHASE 96 &bull; RELATIVISTIC ASTROPHYSICS
+            </span>
           </div>
+          <h2 style={{ fontSize: '1.8rem', fontWeight: 900, color: '#ffffff', marginBottom: '8px' }}>
+            Gravitational Wave Interferometry & <span style={{ background: 'linear-gradient(135deg, #a78bfa, #c084fc, #e879f9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Black Hole Ringdown</span>
+          </h2>
+          <p style={{ fontSize: '0.85rem', color: '#cbd5e1', lineHeight: 1.5 }}>
+            Synthesize General Relativity quadrupole radiation strain h(t), solve binary chirp masses, and explore LIGO/Virgo quasinormal ringdown modes.
+          </p>
         </div>
+
+        <button
+          onClick={handleSimulate}
+          disabled={isLoading}
+          className="glow-hover"
+          style={{
+            padding: '12px 24px',
+            borderRadius: '14px',
+            border: 'none',
+            background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)',
+            color: '#ffffff',
+            fontSize: '0.9rem',
+            fontWeight: 800,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            boxShadow: '0 0 20px rgba(124, 58, 237, 0.4)'
+          }}
+        >
+          <Sparkles size={16} color="#ffffff" />
+          {isLoading ? 'Synthesizing...' : 'Run Merger Simulation'}
+        </button>
       </div>
 
-      {/* Preset Pickers */}
-      <div className="flex flex-wrap gap-2">
+      {/* Preset Buttons */}
+      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+        <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>Astrophysical Presets:</span>
         {PRESET_EVENTS.map((preset, idx) => (
           <button
             key={idx}
@@ -129,11 +171,17 @@ export const GravitationalWaveLabView: React.FC<Props> = ({ onAddXp }) => {
               setSecondaryMass(preset.m2);
               setLuminosityDist(preset.dist);
             }}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
-              primaryMass === preset.m1 && secondaryMass === preset.m2
-                ? 'bg-violet-500/20 border-violet-500/50 text-violet-300'
-                : 'bg-slate-900/60 border-slate-800 text-slate-400 hover:border-slate-700'
-            }`}
+            className="glow-hover"
+            style={{
+              padding: '6px 14px',
+              borderRadius: '10px',
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              border: primaryMass === preset.m1 && secondaryMass === preset.m2 ? '1px solid rgba(139, 92, 246, 0.8)' : '1px solid rgba(255, 255, 255, 0.08)',
+              backgroundColor: primaryMass === preset.m1 && secondaryMass === preset.m2 ? 'rgba(124, 58, 237, 0.3)' : 'rgba(15, 23, 42, 0.6)',
+              color: primaryMass === preset.m1 && secondaryMass === preset.m2 ? '#e9d5ff' : '#94a3b8'
+            }}
           >
             {preset.name}
           </button>
@@ -141,136 +189,174 @@ export const GravitationalWaveLabView: React.FC<Props> = ({ onAddXp }) => {
       </div>
 
       {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Binary Mass Controls */}
-        <div className="lg:col-span-4 space-y-4">
-          <div className="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-5 space-y-4">
-            <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
-              <Compass className="w-4 h-4 text-violet-400" />
-              Binary Progenitor Masses (M_☉)
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '20px' }}>
+        {/* Controls Column */}
+        <div 
+          className="glass-panel"
+          style={{
+            padding: '24px',
+            borderRadius: '18px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '18px',
+            background: 'var(--bg-card)'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Compass size={18} color="#a78bfa" />
+            <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#ffffff' }}>
+              Binary Progenitor Masses & Distance
             </h3>
+          </div>
 
-            <div className="space-y-4 text-xs">
-              <div>
-                <div className="flex justify-between text-slate-400 mb-1">
-                  <span>Primary Mass (m₁)</span>
-                  <span className="text-violet-300 font-mono font-bold">{primaryMass} M_☉</span>
-                </div>
-                <input
-                  type="range"
-                  min={1.0}
-                  max={100.0}
-                  step={0.5}
-                  value={primaryMass}
-                  onChange={(e) => setPrimaryMass(parseFloat(e.target.value))}
-                  className="w-full accent-violet-500 cursor-pointer"
-                />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '6px' }}>
+                <span>Primary Mass (m₁)</span>
+                <span style={{ color: '#c084fc', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>{primaryMass} M☉</span>
               </div>
+              <input
+                type="range"
+                min={1.0}
+                max={100.0}
+                step={0.5}
+                value={primaryMass}
+                onChange={(e) => setPrimaryMass(parseFloat(e.target.value))}
+                style={{ width: '100%', accentColor: '#8b5cf6' }}
+              />
+            </div>
 
-              <div>
-                <div className="flex justify-between text-slate-400 mb-1">
-                  <span>Secondary Mass (m₂)</span>
-                  <span className="text-indigo-300 font-mono font-bold">{secondaryMass} M_☉</span>
-                </div>
-                <input
-                  type="range"
-                  min={1.0}
-                  max={100.0}
-                  step={0.5}
-                  value={secondaryMass}
-                  onChange={(e) => setSecondaryMass(parseFloat(e.target.value))}
-                  className="w-full accent-indigo-500 cursor-pointer"
-                />
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '6px' }}>
+                <span>Secondary Mass (m₂)</span>
+                <span style={{ color: '#818cf8', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>{secondaryMass} M☉</span>
               </div>
+              <input
+                type="range"
+                min={1.0}
+                max={100.0}
+                step={0.5}
+                value={secondaryMass}
+                onChange={(e) => setSecondaryMass(parseFloat(e.target.value))}
+                style={{ width: '100%', accentColor: '#6366f1' }}
+              />
+            </div>
 
-              <div>
-                <div className="flex justify-between text-slate-400 mb-1">
-                  <span>Luminosity Distance</span>
-                  <span className="text-pink-300 font-mono font-bold">{luminosityDist} Mpc</span>
-                </div>
-                <input
-                  type="range"
-                  min={20}
-                  max={6000}
-                  step={20}
-                  value={luminosityDist}
-                  onChange={(e) => setLuminosityDist(parseInt(e.target.value))}
-                  className="w-full accent-pink-500 cursor-pointer"
-                />
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '6px' }}>
+                <span>Luminosity Distance (d_L)</span>
+                <span style={{ color: '#38bdf8', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>{luminosityDist} Mpc</span>
               </div>
+              <input
+                type="range"
+                min={10}
+                max={6000}
+                step={10}
+                value={luminosityDist}
+                onChange={(e) => setLuminosityDist(parseInt(e.target.value))}
+                style={{ width: '100%', accentColor: '#06b6d4' }}
+              />
             </div>
           </div>
 
-          {/* Chirp Mass Gauge */}
-          <div className="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-5 space-y-3">
-            <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
-              <Activity className="w-4 h-4 text-emerald-400" />
-              Astrophysical Chirp Mass (ℳ)
-            </h3>
-
-            <div className="p-3.5 rounded-xl bg-violet-950/20 border border-violet-500/30 text-center space-y-1">
-              <div className="text-2xl font-black text-white">
-                {eventData.chirpMassSolar} <span className="text-xs text-violet-400">M_☉</span>
-              </div>
-              <div className="text-[11px] text-slate-400">
-                Radiated Energy: <span className="text-emerald-400 font-bold">{eventData.energyRadiatedSolarMasses} M_☉ c²</span>
-              </div>
+          <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>Active Multi-Messenger Detectors:</span>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+              {eventData.detectorNetwork.map((det, idx) => (
+                <span 
+                  key={idx}
+                  style={{
+                    padding: '4px 10px',
+                    borderRadius: '8px',
+                    backgroundColor: 'rgba(124, 58, 237, 0.15)',
+                    border: '1px solid rgba(139, 92, 246, 0.3)',
+                    color: '#ddd6fe',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
+                >
+                  <Radio size={12} color="#a78bfa" />
+                  {det}
+                </span>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Right Column: Strain Waveform SVG & Spectrogram */}
-        <div className="lg:col-span-8 space-y-4">
-          <div className="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-5 space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
-                <Waves className="w-4 h-4 text-violet-400" />
-                Differential Spacetime Strain Waveform h(t) [× 10⁻²¹]
-              </h3>
-              <span className="text-xs text-violet-400 font-mono">Peak Power: 3.6 × 10⁴⁹ W</span>
+        {/* Telemetry Output Column */}
+        <div 
+          className="glass-panel"
+          style={{
+            padding: '24px',
+            borderRadius: '18px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '18px',
+            background: 'var(--bg-card)'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Activity size={18} color="#34d399" />
+            <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#ffffff' }}>
+              Relativistic Astrophysical Output Metrics
+            </h3>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
+            <div style={{ padding: '12px', borderRadius: '12px', backgroundColor: 'rgba(9, 13, 22, 0.75)', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+              <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>Chirp Mass (ℳ)</div>
+              <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#c084fc', fontFamily: 'var(--font-mono)' }}>
+                {eventData.chirpMassSolar} <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>M☉</span>
+              </div>
             </div>
 
-            <div className="bg-slate-950 rounded-xl p-3 border border-slate-800/80 overflow-x-auto">
-              <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} className="w-full h-44">
-                {/* Zero Strain Baseline */}
-                <line x1={padding} y1={getY(0)} x2={svgWidth - padding} y2={getY(0)} stroke="#334155" strokeDasharray="3 3" />
-                <line x1={getX(0)} y1={padding} x2={getX(0)} y2={svgHeight - padding} stroke="#6366f1" strokeDasharray="2 2" />
+            <div style={{ padding: '12px', borderRadius: '12px', backgroundColor: 'rgba(9, 13, 22, 0.75)', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+              <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>Remnant BH Mass</div>
+              <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#38bdf8', fontFamily: 'var(--font-mono)' }}>
+                {eventData.remnantBlackHoleMassSolar} <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>M☉</span>
+              </div>
+            </div>
 
-                {/* Strain Waveform Path */}
-                <path d={pathPoints} fill="none" stroke="#a855f7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+            <div style={{ padding: '12px', borderRadius: '12px', backgroundColor: 'rgba(9, 13, 22, 0.75)', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+              <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>Radiated GW Energy</div>
+              <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#fbbf24', fontFamily: 'var(--font-mono)' }}>
+                {eventData.energyRadiatedSolarMasses} <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>M☉c²</span>
+              </div>
+            </div>
 
-                {/* Data Points */}
-                {eventData.strainWaveform.map((pt, idx) => (
-                  <circle
-                    key={idx}
-                    cx={getX(pt.timeMs)}
-                    cy={getY(pt.strainH10Minus21)}
-                    r="3"
-                    fill="#c084fc"
-                  />
-                ))}
-
-                {/* Labels */}
-                <text x={padding} y={svgHeight - 10} fill="#64748b" fontSize="10">Inspiral (-40ms)</text>
-                <text x={getX(0) - 15} y={padding + 12} fill="#e879f9" fontSize="10" fontWeight="bold">Merger (t=0)</text>
-                <text x={svgWidth - padding - 75} y={svgHeight - 10} fill="#64748b" fontSize="10">Ringdown (+15ms)</text>
-              </svg>
+            <div style={{ padding: '12px', borderRadius: '12px', backgroundColor: 'rgba(9, 13, 22, 0.75)', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+              <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>Peak GW Power</div>
+              <div style={{ fontSize: '1.1rem', fontWeight: 900, color: '#f43f5e', fontFamily: 'var(--font-mono)' }}>
+                3.6×10⁴⁹ <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>W</span>
+              </div>
             </div>
           </div>
 
-          {/* Remnant Properties */}
-          <div className="grid grid-cols-3 gap-3">
-            <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-3 text-center">
-              <div className="text-xs text-slate-400 mb-1">Remnant Black Hole</div>
-              <div className="text-xl font-bold text-violet-300">{eventData.remnantBlackHoleMassSolar} M_☉</div>
-            </div>
-            <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-3 text-center">
-              <div className="text-xs text-slate-400 mb-1">Peak Luminosity</div>
-              <div className="text-xl font-bold text-amber-300">5.3 × 10³ erg/s</div>
-            </div>
-            <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-3 text-center">
-              <div className="text-xs text-slate-400 mb-1">Detector Triad</div>
-              <div className="text-xl font-bold text-emerald-300">H1 + L1 + V1</div>
+          {/* Waveform Visualization Bars */}
+          <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '14px' }}>
+            <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600, display: 'block', marginBottom: '8px' }}>
+              Inspiral-Merger-Ringdown Strain h(t) Profile:
+            </span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '60px', padding: '0 8px', backgroundColor: 'rgba(9, 13, 22, 0.9)', borderRadius: '10px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+              {eventData.strainWaveform.map((pt, idx) => {
+                const height = Math.min(50, Math.max(8, Math.abs(pt.strainH10Minus21) * 35));
+                return (
+                  <div key={idx} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
+                    <div 
+                      style={{ 
+                        width: '8px', 
+                        height: `${height}px`, 
+                        borderRadius: '4px', 
+                        backgroundColor: pt.timeMs === 0 ? '#f43f5e' : pt.timeMs < 0 ? '#a78bfa' : '#38bdf8' 
+                      }} 
+                    />
+                    <span style={{ fontSize: '9px', color: '#64748b', fontFamily: 'var(--font-mono)' }}>{pt.timeMs}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

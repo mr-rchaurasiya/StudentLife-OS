@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
 import {
-  Compass,
-  Sparkles,
   RotateCw,
-  CheckCircle2
+  Sparkles,
+  Bot,
+  CheckCircle2,
+  Cpu
 } from 'lucide-react';
 import { RoboticTrajectoryPlan } from '@studentlife/shared';
 
 interface Props {
-  onAddXp?: (amount: number) => void;
+  onAddXp?: (amount: number, reason?: string) => void;
 }
 
 export const RoboticsKinematicsView: React.FC<Props> = ({ onAddXp }) => {
   const [targetX, setTargetX] = useState(0.45);
   const [targetY, setTargetY] = useState(0.20);
   const [targetZ, setTargetZ] = useState(0.35);
-  const [pitchDeg, setPitchDeg] = useState(45);
+  const [targetPitch, setTargetPitch] = useState(45);
   const [isLoading, setIsLoading] = useState(false);
 
   const [plan, setPlan] = useState<RoboticTrajectoryPlan>({
@@ -32,10 +33,15 @@ export const RoboticsKinematicsView: React.FC<Props> = ({ onAddXp }) => {
     isReachabilityFeasible: true,
     singularityDistanceMetric: 0.084,
     executionTimeSec: 1.5,
-    trajectoryWaypoints: []
+    trajectoryWaypoints: [
+      { timeStepSec: 0.0, jointAngles: [0, 0, 0, 0, 0, 0] },
+      { timeStepSec: 0.5, jointAngles: [7.2, 14.5, -7.6, 6.6, 27.0, 9.0] },
+      { timeStepSec: 1.0, jointAngles: [16.8, 33.9, -17.8, 15.4, 63.0, 21.0] },
+      { timeStepSec: 1.5, jointAngles: [24.0, 48.5, -25.5, 22.0, 90.0, 30.0] }
+    ]
   });
 
-  const handleSolve = async () => {
+  const handleCompute = async () => {
     setIsLoading(true);
     try {
       const res = await fetch('/api/robotics-kinematics/compute', {
@@ -45,177 +51,236 @@ export const RoboticsKinematicsView: React.FC<Props> = ({ onAddXp }) => {
           targetX,
           targetY,
           targetZ,
-          targetPitchDeg: pitchDeg
+          targetPitchDeg: targetPitch
         })
       });
       if (res.ok) {
         const data: RoboticTrajectoryPlan = await res.json();
         setPlan(data);
-        if (onAddXp) onAddXp(70);
+        if (onAddXp) onAddXp(60, 'Computed 6-DOF Inverse Kinematic Trajectory');
       }
     } catch {
-      // Fallback
+      // Local fallback
+      const theta1 = Math.round(Math.atan2(targetY, targetX) * (180 / Math.PI) * 10) / 10;
+      setPlan((prev) => ({
+        ...prev,
+        targetCoordinates: { x: targetX, y: targetY, z: targetZ, rollDeg: 0, pitchDeg: targetPitch, yawDeg: 30 },
+        joints: prev.joints.map((j, idx) => idx === 0 ? { ...j, currentAngleDeg: theta1 } : j)
+      }));
+      if (onAddXp) onAddXp(60, 'Computed 6-DOF Inverse Kinematic Trajectory');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', maxWidth: '1280px', margin: '0 auto', width: '100%' }}>
       {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-teal-950/70 via-slate-900 to-cyan-950/80 border border-teal-500/30 p-6 shadow-2xl">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 text-xs font-semibold uppercase tracking-wider">
-              <Compass className="w-3.5 h-3.5" />
-              Phase 97 • Autonomous Robotic Arm Inverse Kinematics & 6-DOF ROS Trajectory Planner
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight flex items-center gap-3">
-              6-DOF Robotic Kinematics & Jacobian Studio
-              <span className="text-xs px-2.5 py-1 rounded-lg bg-teal-500/20 text-teal-300 border border-teal-500/40">
-                ROS 2 IK-Fast
-              </span>
-            </h1>
-            <p className="text-sm text-slate-300 max-w-2xl">
-              Solve Denavit-Hartenberg (DH) joint matrices, calculate Jacobian inverse velocity trajectories, and avoid kinematic singularities for autonomous industrial manipulators.
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleSolve}
-              disabled={isLoading}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-400 hover:to-cyan-500 text-white font-medium shadow-lg shadow-teal-500/25 transition-all text-sm disabled:opacity-50"
+      <div 
+        className="glass-panel"
+        style={{
+          padding: '28px 32px',
+          background: 'linear-gradient(135deg, rgba(13, 148, 136, 0.2) 0%, rgba(30, 27, 75, 0.85) 50%, rgba(15, 23, 42, 0.95) 100%)',
+          borderRadius: '20px',
+          border: '1px solid rgba(20, 184, 166, 0.35)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '20px'
+        }}
+      >
+        <div style={{ maxWidth: '700px' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+            <span 
+              className="badge" 
+              style={{ 
+                backgroundColor: 'rgba(20, 184, 166, 0.25)', 
+                color: '#2dd4bf', 
+                border: '1px solid rgba(20, 184, 166, 0.4)',
+                padding: '4px 12px',
+                borderRadius: '9999px',
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
             >
-              <Sparkles className="w-4 h-4" />
-              {isLoading ? 'Solving Kinematics...' : 'Solve Inverse Kinematics'}
-            </button>
+              <RotateCw size={14} color="#2dd4bf" />
+              PHASE 97 &bull; MECHATRONICS & KINEMATICS
+            </span>
           </div>
+          <h2 style={{ fontSize: '1.8rem', fontWeight: 900, color: '#ffffff', marginBottom: '8px' }}>
+            Autonomous 6-DOF Robotic Arm <span style={{ background: 'linear-gradient(135deg, #2dd4bf, #06b6d4, #38bdf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Inverse Kinematics</span>
+          </h2>
+          <p style={{ fontSize: '0.85rem', color: '#cbd5e1', lineHeight: 1.5 }}>
+            Formulate Denavit-Hartenberg (DH) parameter matrices, resolve singularity condition numbers, and compute damped least-squares joint angles.
+          </p>
         </div>
+
+        <button
+          onClick={handleCompute}
+          disabled={isLoading}
+          className="glow-hover"
+          style={{
+            padding: '12px 24px',
+            borderRadius: '14px',
+            border: 'none',
+            background: 'linear-gradient(135deg, #0d9488 0%, #0891b2 100%)',
+            color: '#ffffff',
+            fontSize: '0.9rem',
+            fontWeight: 800,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            boxShadow: '0 0 20px rgba(13, 148, 136, 0.4)'
+          }}
+        >
+          <Sparkles size={16} color="#ffffff" />
+          {isLoading ? 'Computing...' : 'Solve Kinematics'}
+        </button>
       </div>
 
       {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: End-Effector Target Inputs */}
-        <div className="lg:col-span-5 space-y-4">
-          <div className="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-5 space-y-4">
-            <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
-              <Compass className="w-4 h-4 text-teal-400" />
-              Target End-Effector Coordinates
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '20px' }}>
+        {/* Left Column: Target Coordinates */}
+        <div 
+          className="glass-panel"
+          style={{
+            padding: '24px',
+            borderRadius: '18px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '18px',
+            background: 'var(--bg-card)'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Bot size={18} color="#2dd4bf" />
+            <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#ffffff' }}>
+              Target End-Effector Pose (Cartesian Workspace)
             </h3>
-
-            <div className="space-y-4 text-xs">
-              <div>
-                <div className="flex justify-between text-slate-400 mb-1">
-                  <span>Target X (Forward Reach)</span>
-                  <span className="text-teal-300 font-mono font-bold">{targetX} m</span>
-                </div>
-                <input
-                  type="range"
-                  min={0.1}
-                  max={0.85}
-                  step={0.01}
-                  value={targetX}
-                  onChange={(e) => setTargetX(parseFloat(e.target.value))}
-                  className="w-full accent-teal-500 cursor-pointer"
-                />
-              </div>
-
-              <div>
-                <div className="flex justify-between text-slate-400 mb-1">
-                  <span>Target Y (Lateral Reach)</span>
-                  <span className="text-cyan-300 font-mono font-bold">{targetY} m</span>
-                </div>
-                <input
-                  type="range"
-                  min={-0.6}
-                  max={0.6}
-                  step={0.01}
-                  value={targetY}
-                  onChange={(e) => setTargetY(parseFloat(e.target.value))}
-                  className="w-full accent-cyan-500 cursor-pointer"
-                />
-              </div>
-
-              <div>
-                <div className="flex justify-between text-slate-400 mb-1">
-                  <span>Target Z (Elevation Reach)</span>
-                  <span className="text-indigo-300 font-mono font-bold">{targetZ} m</span>
-                </div>
-                <input
-                  type="range"
-                  min={0.05}
-                  max={0.75}
-                  step={0.01}
-                  value={targetZ}
-                  onChange={(e) => setTargetZ(parseFloat(e.target.value))}
-                  className="w-full accent-indigo-500 cursor-pointer"
-                />
-              </div>
-
-              <div>
-                <div className="flex justify-between text-slate-400 mb-1">
-                  <span>Tool Pitch Angle</span>
-                  <span className="text-amber-300 font-mono font-bold">{pitchDeg}°</span>
-                </div>
-                <input
-                  type="range"
-                  min={-90}
-                  max={90}
-                  step={1}
-                  value={pitchDeg}
-                  onChange={(e) => setPitchDeg(parseInt(e.target.value))}
-                  className="w-full accent-amber-500 cursor-pointer"
-                />
-              </div>
-            </div>
           </div>
 
-          <div className="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-4 flex items-center justify-between text-xs">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              <span className="text-slate-300 font-semibold">Singularity Metric:</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '6px' }}>
+                <span>Target X Position</span>
+                <span style={{ color: '#2dd4bf', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>{targetX.toFixed(2)} m</span>
+              </div>
+              <input
+                type="range"
+                min={0.10}
+                max={0.85}
+                step={0.01}
+                value={targetX}
+                onChange={(e) => setTargetX(parseFloat(e.target.value))}
+                style={{ width: '100%', accentColor: '#14b8a6' }}
+              />
             </div>
-            <span className="text-emerald-400 font-mono font-bold">{plan.singularityDistanceMetric} (Safe)</span>
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '6px' }}>
+                <span>Target Y Position</span>
+                <span style={{ color: '#06b6d4', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>{targetY.toFixed(2)} m</span>
+              </div>
+              <input
+                type="range"
+                min={-0.60}
+                max={0.60}
+                step={0.01}
+                value={targetY}
+                onChange={(e) => setTargetY(parseFloat(e.target.value))}
+                style={{ width: '100%', accentColor: '#06b6d4' }}
+              />
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '6px' }}>
+                <span>Target Z Position</span>
+                <span style={{ color: '#38bdf8', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>{targetZ.toFixed(2)} m</span>
+              </div>
+              <input
+                type="range"
+                min={0.05}
+                max={0.80}
+                step={0.01}
+                value={targetZ}
+                onChange={(e) => setTargetZ(parseFloat(e.target.value))}
+                style={{ width: '100%', accentColor: '#38bdf8' }}
+              />
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '6px' }}>
+                <span>Pitch Orientation</span>
+                <span style={{ color: '#a78bfa', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>{targetPitch}°</span>
+              </div>
+              <input
+                type="range"
+                min={-90}
+                max={90}
+                step={1}
+                value={targetPitch}
+                onChange={(e) => setTargetPitch(parseInt(e.target.value))}
+                style={{ width: '100%', accentColor: '#a855f7' }}
+              />
+            </div>
           </div>
         </div>
 
-        {/* Right Column: 6-Axis Joint Solution Table */}
-        <div className="lg:col-span-7 space-y-4">
-          <div className="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-5 space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
-                <RotateCw className="w-4 h-4 text-teal-400" />
-                Computed 6-DOF Joint Angles & Torques
+        {/* Right Column: Solved Joint Angles */}
+        <div 
+          className="glass-panel"
+          style={{
+            padding: '24px',
+            borderRadius: '18px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            background: 'var(--bg-card)'
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Cpu size={18} color="#38bdf8" />
+              <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#ffffff' }}>
+                6-DOF Solved Joint Angle Vector (θ)
               </h3>
-              <span className="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                Feasible Trajectory
-              </span>
             </div>
+            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#34d399', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <CheckCircle2 size={13} color="#34d399" /> Feasible
+            </span>
+          </div>
 
-            <div className="space-y-2.5">
-              {plan.joints.map((joint) => (
-                <div
-                  key={joint.jointNumber}
-                  className="p-3 rounded-xl bg-slate-950/70 border border-slate-800 flex items-center justify-between text-xs"
-                >
-                  <div className="space-y-0.5">
-                    <div className="font-bold text-white">{joint.jointName}</div>
-                    <div className="text-[10px] text-slate-500">
-                      Limits: [{joint.minLimitDeg}°, {joint.maxLimitDeg}°]
-                    </div>
-                  </div>
-
-                  <div className="text-right space-y-0.5">
-                    <div className="font-mono font-bold text-teal-300 text-sm">
-                      {joint.currentAngleDeg}°
-                    </div>
-                    <div className="text-[10px] text-slate-400">
-                      Torque: {joint.torqueNm} Nm
-                    </div>
-                  </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
+            {plan.joints.map((joint) => (
+              <div 
+                key={joint.jointNumber}
+                style={{
+                  padding: '12px',
+                  borderRadius: '12px',
+                  backgroundColor: 'rgba(9, 13, 22, 0.75)',
+                  border: '1px solid rgba(255, 255, 255, 0.06)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '4px'
+                }}
+              >
+                <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>{joint.jointName}</div>
+                <div style={{ fontSize: '1.2rem', fontWeight: 900, color: '#2dd4bf', fontFamily: 'var(--font-mono)' }}>
+                  {joint.currentAngleDeg}°
                 </div>
-              ))}
-            </div>
+                <div style={{ fontSize: '0.65rem', color: '#64748b' }}>Torque: {joint.torqueNm} Nm</div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '12px', display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#94a3b8' }}>
+            <span>Singularity Distance Metric: <strong style={{ color: '#34d399' }}>{plan.singularityDistanceMetric}</strong></span>
+            <span>Execution Duration: <strong style={{ color: '#38bdf8' }}>{plan.executionTimeSec}s</strong></span>
           </div>
         </div>
       </div>

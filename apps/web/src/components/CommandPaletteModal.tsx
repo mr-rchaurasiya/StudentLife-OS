@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   Search, X, Compass, Zap, Brain, Atom, Dna, 
-  TrendingUp, Award, Bot, Sparkles, ArrowRight, CornerDownLeft, Command
+  TrendingUp, Award, Bot, Sparkles, ArrowRight, CornerDownLeft
 } from 'lucide-react';
-import { useLanguage } from '../context/LanguageContext';
 
 export interface PhaseMeta {
   id: string;
@@ -149,7 +148,6 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
   onSelectPhase,
   currentPhaseId = 'dashboard',
 }) => {
-  const { t } = useLanguage();
   const [query, setQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedIndex, setSelectedIndex] = useState(0);

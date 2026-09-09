@@ -1,24 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   TrendingUp,
   Sparkles,
   DollarSign,
-  Activity,
-  CheckCircle2
+  Activity
 } from 'lucide-react';
 import { OrderBookSnapshot } from '@studentlife/shared';
 
 interface Props {
-  onAddXp?: (amount: number) => void;
+  onAddXp?: (amount: number, reason?: string) => void;
 }
 
 export const HftOrderBookView: React.FC<Props> = ({ onAddXp }) => {
-  const [tradeSide, setTradeSide] = useState<'BUY' | 'SELL'>('BUY');
-  const [tradeQty, setTradeQty] = useState(10);
-  const [orderType, setOrderType] = useState<'LIMIT' | 'MARKET'>('MARKET');
-  const [lastFillMsg, setLastFillMsg] = useState<string | null>(null);
+  const [side, setSide] = useState<'BUY' | 'SELL'>('BUY');
+  const [orderType, setOrderType] = useState<'LIMIT' | 'MARKET'>('LIMIT');
+  const [price, setPrice] = useState(2840.50);
+  const [quantity, setQuantity] = useState(50);
+  const [statusMsg, setStatusMsg] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [snapshot, setSnapshot] = useState<OrderBookSnapshot>({
+  const [snapshot] = useState<OrderBookSnapshot>({
     id: 'hft-snap-01',
     symbol: 'STUDENT_COIN / USD',
     lastTradePriceUsd: 2840.50,
@@ -43,224 +44,285 @@ export const HftOrderBookView: React.FC<Props> = ({ onAddXp }) => {
     matchingEngineLatencyMicros: 4.2
   });
 
-  const fetchSnapshot = async () => {
-    try {
-      const res = await fetch('/api/hft-orderbook/snapshot');
-      if (res.ok) {
-        const data: OrderBookSnapshot = await res.json();
-        setSnapshot(data);
-      }
-    } catch {
-      // Fallback
-    }
-  };
-
-  useEffect(() => {
-    fetchSnapshot();
-  }, []);
-
   const handleExecuteTrade = async () => {
+    setIsLoading(true);
     try {
       const res = await fetch('/api/hft-orderbook/trade', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          side: tradeSide,
-          priceUsd: snapshot.lastTradePriceUsd,
-          quantityLots: tradeQty,
-          orderType
+          side,
+          orderType,
+          priceUsd: price,
+          quantityLots: quantity
         })
       });
       if (res.ok) {
         const data = await res.json();
-        setLastFillMsg(`Filled ${tradeQty} lots of ${tradeSide} @ $${data.fillPrice} in ${data.latencyMicros}µs (Order: ${data.orderId})`);
-        if (onAddXp) onAddXp(65);
+        setStatusMsg(`Order Filled at $${data.fillPrice} (Latency: ${data.latencyMicros}µs)`);
+        if (onAddXp) onAddXp(60, 'Executed High-Frequency Limit Order');
       }
     } catch {
-      // Fallback
+      setStatusMsg(`Order Placed Locally (Simulated fill at $${price})`);
+      if (onAddXp) onAddXp(60, 'Executed High-Frequency Limit Order');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', maxWidth: '1280px', margin: '0 auto', width: '100%' }}>
       {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-950/70 via-slate-900 to-teal-950/80 border border-emerald-500/30 p-6 shadow-2xl">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold uppercase tracking-wider">
-              <TrendingUp className="w-3.5 h-3.5" />
-              Phase 99 • High-Frequency Algorithmic Order Book (L2/L3) & Limit Matching Engine
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight flex items-center gap-3">
-              Sub-Microsecond L2/L3 Order Depth Matching Engine
-              <span className="text-xs px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                Price-Time FIFO
-              </span>
-            </h1>
-            <p className="text-sm text-slate-300 max-w-2xl">
-              Simulate ultra-low latency quantitative trading, inspect Level-2 market depth ladders, and backtest automated limit order routing with sub-5 microsecond execution latencies.
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={fetchSnapshot}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-medium shadow-lg shadow-emerald-500/25 transition-all text-sm"
+      <div 
+        className="glass-panel"
+        style={{
+          padding: '28px 32px',
+          background: 'linear-gradient(135deg, rgba(5, 150, 105, 0.2) 0%, rgba(30, 27, 75, 0.85) 50%, rgba(15, 23, 42, 0.95) 100%)',
+          borderRadius: '20px',
+          border: '1px solid rgba(16, 185, 129, 0.35)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '20px'
+        }}
+      >
+        <div style={{ maxWidth: '700px' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+            <span 
+              className="badge" 
+              style={{ 
+                backgroundColor: 'rgba(16, 185, 129, 0.25)', 
+                color: '#34d399', 
+                border: '1px solid rgba(16, 185, 129, 0.4)',
+                padding: '4px 12px',
+                borderRadius: '9999px',
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
             >
-              <Sparkles className="w-4 h-4" />
-              Refresh L2 Book
-            </button>
+              <TrendingUp size={14} color="#34d399" />
+              PHASE 99 &bull; QUANTITATIVE FINTECH & MICROSTRUCTURE
+            </span>
+          </div>
+          <h2 style={{ fontSize: '1.8rem', fontWeight: 900, color: '#ffffff', marginBottom: '8px' }}>
+            High-Frequency Algorithmic <span style={{ background: 'linear-gradient(135deg, #34d399, #059669, #0284c7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Order Book (L2/L3)</span>
+          </h2>
+          <p style={{ fontSize: '0.85rem', color: '#cbd5e1', lineHeight: 1.5 }}>
+            Sub-microsecond Price-Time FIFO matching engine, dynamic bid/ask depth ladders, VWAP execution, and slippage telemetry.
+          </p>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', backgroundColor: 'rgba(9, 13, 22, 0.8)', padding: '12px 18px', borderRadius: '14px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+          <div>
+            <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>Last Trade Price</div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 900, color: '#34d399', fontFamily: 'var(--font-mono)' }}>
+              ${snapshot.lastTradePriceUsd.toFixed(2)}
+            </div>
           </div>
         </div>
       </div>
 
-      {lastFillMsg && (
-        <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/50 text-emerald-300 text-xs flex items-center justify-between">
-          <span className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-            {lastFillMsg}
-          </span>
-          <button onClick={() => setLastFillMsg(null)} className="text-slate-400 hover:text-white text-xs">
-            Dismiss
-          </button>
-        </div>
-      )}
-
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Order Execution Terminal */}
-        <div className="lg:col-span-4 space-y-4">
-          <div className="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-5 space-y-4">
-            <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
-              <DollarSign className="w-4 h-4 text-emerald-400" />
-              Trade Entry Terminal
+      {/* Main Grid: L2 Depth & Order Placement */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: '20px' }}>
+        {/* Left: L2 Depth Ladder */}
+        <div 
+          className="glass-panel"
+          style={{
+            padding: '24px',
+            borderRadius: '18px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            background: 'var(--bg-card)'
+          }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#ffffff', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Activity size={18} color="#06b6d4" />
+              Level-2 Market Depth Order Ladder
             </h3>
-
-            <div className="space-y-4 text-xs">
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  onClick={() => setTradeSide('BUY')}
-                  className={`py-2 rounded-lg font-bold transition-all ${
-                    tradeSide === 'BUY'
-                      ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
-                      : 'bg-slate-950 text-slate-400 border border-slate-800'
-                  }`}
-                >
-                  BUY
-                </button>
-                <button
-                  onClick={() => setTradeSide('SELL')}
-                  className={`py-2 rounded-lg font-bold transition-all ${
-                    tradeSide === 'SELL'
-                      ? 'bg-rose-500 text-white shadow-md shadow-rose-500/20'
-                      : 'bg-slate-950 text-slate-400 border border-slate-800'
-                  }`}
-                >
-                  SELL
-                </button>
-              </div>
-
-              <div>
-                <label className="block text-slate-400 mb-1">Order Execution Type</label>
-                <select
-                  value={orderType}
-                  onChange={(e) => setOrderType(e.target.value as any)}
-                  className="w-full bg-slate-950 border border-slate-700/80 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-emerald-500"
-                >
-                  <option value="MARKET">Immediate Market Order (Taker)</option>
-                  <option value="LIMIT">Resting Limit Order (Maker)</option>
-                </select>
-              </div>
-
-              <div>
-                <div className="flex justify-between text-slate-400 mb-1">
-                  <span>Order Quantity</span>
-                  <span className="text-white font-mono font-bold">{tradeQty} Lots</span>
-                </div>
-                <input
-                  type="range"
-                  min={1}
-                  max={100}
-                  value={tradeQty}
-                  onChange={(e) => setTradeQty(parseInt(e.target.value))}
-                  className="w-full accent-emerald-500 cursor-pointer"
-                />
-              </div>
-
-              <button
-                onClick={handleExecuteTrade}
-                className={`w-full py-2.5 rounded-xl font-bold text-xs shadow-lg transition-all ${
-                  tradeSide === 'BUY'
-                    ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white'
-                    : 'bg-gradient-to-r from-rose-500 to-pink-600 text-white'
-                }`}
-              >
-                Send {tradeSide} Order ({tradeQty} Lots)
-              </button>
-            </div>
+            <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontFamily: 'var(--font-mono)' }}>
+              Spread: {snapshot.spreadBps} bps
+            </span>
           </div>
 
-          <div className="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-4 flex items-center justify-between text-xs">
-            <div className="flex items-center gap-2">
-              <Activity className="w-4 h-4 text-teal-400" />
-              <span className="text-slate-300 font-semibold">Engine Latency:</span>
-            </div>
-            <span className="text-teal-400 font-mono font-bold text-sm">{snapshot.matchingEngineLatencyMicros} µs</span>
+          {/* Asks (Red) */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <span style={{ fontSize: '0.7rem', color: '#f43f5e', fontWeight: 700 }}>ASKS (SELLERS)</span>
+            {snapshot.askLadder.slice(0, 3).reverse().map((ask, idx) => (
+              <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 10px', backgroundColor: 'rgba(244, 63, 94, 0.08)', borderRadius: '6px', fontSize: '0.75rem', fontFamily: 'var(--font-mono)' }}>
+                <span style={{ color: '#fb7185' }}>${ask.priceUsd.toFixed(2)}</span>
+                <span style={{ color: '#cbd5e1' }}>{ask.aggregateQuantity} Lots</span>
+                <span style={{ color: '#64748b' }}>({ask.orderCount} orders)</span>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ height: '1px', backgroundColor: 'rgba(255, 255, 255, 0.1)', margin: '4px 0' }} />
+
+          {/* Bids (Green) */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <span style={{ fontSize: '0.7rem', color: '#10b981', fontWeight: 700 }}>BIDS (BUYERS)</span>
+            {snapshot.bidLadder.slice(0, 3).map((bid, idx) => (
+              <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 10px', backgroundColor: 'rgba(16, 185, 129, 0.08)', borderRadius: '6px', fontSize: '0.75rem', fontFamily: 'var(--font-mono)' }}>
+                <span style={{ color: '#34d399' }}>${bid.priceUsd.toFixed(2)}</span>
+                <span style={{ color: '#cbd5e1' }}>{bid.aggregateQuantity} Lots</span>
+                <span style={{ color: '#64748b' }}>({bid.orderCount} orders)</span>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* Right Column: Visual L2 Depth Book */}
-        <div className="lg:col-span-8 space-y-4">
-          <div className="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-5 space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-slate-200 flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 text-emerald-400" />
-                Live L2 Depth Ladder ({snapshot.symbol})
-              </h3>
-              <span className="text-xs font-mono text-slate-400">
-                Spread: <span className="text-emerald-400 font-bold">{snapshot.spreadBps} bps</span>
-              </span>
+        {/* Right: Trade Execution Form */}
+        <div 
+          className="glass-panel"
+          style={{
+            padding: '24px',
+            borderRadius: '18px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            background: 'var(--bg-card)'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <DollarSign size={18} color="#34d399" />
+            <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#ffffff' }}>
+              Direct DMA / HFT Order Ticket
+            </h3>
+          </div>
+
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
+              onClick={() => setSide('BUY')}
+              style={{
+                flex: 1,
+                padding: '10px',
+                borderRadius: '10px',
+                border: 'none',
+                backgroundColor: side === 'BUY' ? 'rgba(16, 185, 129, 0.3)' : 'rgba(15, 23, 42, 0.6)',
+                color: side === 'BUY' ? '#34d399' : '#94a3b8',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: side === 'BUY' ? '#10b981' : 'rgba(255, 255, 255, 0.08)'
+              }}
+            >
+              BUY (BID)
+            </button>
+            <button
+              onClick={() => setSide('SELL')}
+              style={{
+                flex: 1,
+                padding: '10px',
+                borderRadius: '10px',
+                border: 'none',
+                backgroundColor: side === 'SELL' ? 'rgba(244, 63, 94, 0.3)' : 'rgba(15, 23, 42, 0.6)',
+                color: side === 'SELL' ? '#fb7185' : '#94a3b8',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: side === 'SELL' ? '#f43f5e' : 'rgba(255, 255, 255, 0.08)'
+              }}
+            >
+              SELL (ASK)
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
+              onClick={() => setOrderType('LIMIT')}
+              style={{
+                flex: 1,
+                padding: '6px 12px',
+                borderRadius: '8px',
+                backgroundColor: orderType === 'LIMIT' ? 'rgba(99, 102, 241, 0.3)' : 'rgba(15, 23, 42, 0.6)',
+                color: orderType === 'LIMIT' ? '#a5b4fc' : '#94a3b8',
+                fontWeight: 600,
+                fontSize: '0.75rem',
+                cursor: 'pointer',
+                border: orderType === 'LIMIT' ? '1px solid #6366f1' : '1px solid rgba(255, 255, 255, 0.08)'
+              }}
+            >
+              LIMIT ORDER
+            </button>
+            <button
+              onClick={() => setOrderType('MARKET')}
+              style={{
+                flex: 1,
+                padding: '6px 12px',
+                borderRadius: '8px',
+                backgroundColor: orderType === 'MARKET' ? 'rgba(99, 102, 241, 0.3)' : 'rgba(15, 23, 42, 0.6)',
+                color: orderType === 'MARKET' ? '#a5b4fc' : '#94a3b8',
+                fontWeight: 600,
+                fontSize: '0.75rem',
+                cursor: 'pointer',
+                border: orderType === 'MARKET' ? '1px solid #6366f1' : '1px solid rgba(255, 255, 255, 0.08)'
+              }}
+            >
+              MARKET ORDER
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div>
+              <label style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'block', marginBottom: '4px' }}>Limit Price ($)</label>
+              <input
+                type="number"
+                step="0.1"
+                value={price}
+                onChange={(e) => setPrice(parseFloat(e.target.value))}
+                style={{ width: '100%', padding: '10px 12px', borderRadius: '10px', backgroundColor: 'rgba(9, 13, 22, 0.8)', border: '1px solid rgba(255, 255, 255, 0.08)', color: '#ffffff', outline: 'none', fontFamily: 'var(--font-mono)' }}
+              />
             </div>
 
-            {/* Asks (Sellers) */}
-            <div className="space-y-1 text-xs">
-              <div className="text-[10px] text-rose-400 font-bold uppercase tracking-wider mb-1">
-                Asks (Sellers)
-              </div>
-              {snapshot.askLadder.slice(0, 3).reverse().map((level, idx) => (
-                <div
-                  key={idx}
-                  className="p-2 rounded-lg bg-rose-950/20 border border-rose-500/20 flex items-center justify-between font-mono"
-                >
-                  <span className="text-rose-400 font-bold">${level.priceUsd.toFixed(2)}</span>
-                  <span className="text-slate-300">{level.aggregateQuantity} lots</span>
-                  <span className="text-slate-500 text-[10px]">{level.orderCount} ords</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Mid Market Price */}
-            <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-center font-mono">
-              <span className="text-xs text-slate-400 mr-2">Mid-Market Price:</span>
-              <span className="text-lg font-black text-white">${snapshot.lastTradePriceUsd.toFixed(2)}</span>
-            </div>
-
-            {/* Bids (Buyers) */}
-            <div className="space-y-1 text-xs">
-              <div className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider mb-1">
-                Bids (Buyers)
-              </div>
-              {snapshot.bidLadder.slice(0, 3).map((level, idx) => (
-                <div
-                  key={idx}
-                  className="p-2 rounded-lg bg-emerald-950/20 border border-emerald-500/20 flex items-center justify-between font-mono"
-                >
-                  <span className="text-emerald-400 font-bold">${level.priceUsd.toFixed(2)}</span>
-                  <span className="text-slate-300">{level.aggregateQuantity} lots</span>
-                  <span className="text-slate-500 text-[10px]">{level.orderCount} ords</span>
-                </div>
-              ))}
+            <div>
+              <label style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'block', marginBottom: '4px' }}>Quantity (Lots)</label>
+              <input
+                type="number"
+                value={quantity}
+                onChange={(e) => setQuantity(parseInt(e.target.value))}
+                style={{ width: '100%', padding: '10px 12px', borderRadius: '10px', backgroundColor: 'rgba(9, 13, 22, 0.8)', border: '1px solid rgba(255, 255, 255, 0.08)', color: '#ffffff', outline: 'none', fontFamily: 'var(--font-mono)' }}
+              />
             </div>
           </div>
+
+          <button
+            onClick={handleExecuteTrade}
+            disabled={isLoading}
+            className="glow-hover"
+            style={{
+              padding: '12px',
+              borderRadius: '12px',
+              border: 'none',
+              background: side === 'BUY' ? 'linear-gradient(135deg, #059669, #10b981)' : 'linear-gradient(135deg, #e11d48, #f43f5e)',
+              color: '#ffffff',
+              fontSize: '0.9rem',
+              fontWeight: 800,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px'
+            }}
+          >
+            <Sparkles size={16} color="#ffffff" />
+            {isLoading ? 'Executing...' : `Transmit ${side} Limit Order`}
+          </button>
+
+          {statusMsg && (
+            <div style={{ padding: '8px 12px', borderRadius: '8px', backgroundColor: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.3)', color: '#34d399', fontSize: '0.75rem', textAlign: 'center' }}>
+              {statusMsg}
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -31,7 +31,6 @@ import {
   Globe,
   Presentation,
   ShoppingBag,
-  Activity,
   Landmark,
   Wallet,
   Cpu,
@@ -60,11 +59,8 @@ import {
   Vote,
   Key,
   Scissors,
-  DollarSign,
   Leaf,
   Orbit,
-  Search,
-  ChevronDown,
 } from 'lucide-react';
 
 import { LucideIcon } from 'lucide-react';
