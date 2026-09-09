@@ -13,7 +13,8 @@ import {
   Mic,
   ZoomIn,
   ZoomOut,
-  RotateCcw
+  RotateCcw,
+  Activity
 } from 'lucide-react';
 
 interface ConceptGraphViewProps {
@@ -176,136 +177,465 @@ export const ConceptGraphView: React.FC<ConceptGraphViewProps> = ({
     }
   };
 
+  const masteredCount = graphData.nodes.filter((n) => n.mastery === 'MASTERED').length;
+  const revisingCount = graphData.nodes.filter((n) => n.mastery === 'REVISING').length;
+  const unexploredCount = graphData.nodes.filter((n) => n.mastery === 'UNEXPLORED').length;
+
   return (
-    <div className="space-y-6 animate-fadeIn pb-16">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', paddingBottom: '60px' }}>
       {/* Top Banner */}
-      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-slate-800 p-8 shadow-2xl">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-3 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-400 border border-indigo-500/30">
-              <Brain className="w-3.5 h-3.5 text-indigo-400 animate-pulse" />
-              Phase 32 • 3D Mind Maps & Concept Knowledge Graph
+      <div
+        style={{
+          position: 'relative',
+          borderRadius: '24px',
+          overflow: 'hidden',
+          background: 'linear-gradient(135deg, rgba(30, 27, 75, 0.8) 0%, rgba(15, 23, 42, 0.95) 50%, rgba(49, 46, 129, 0.6) 100%)',
+          border: '1px solid rgba(99, 102, 241, 0.25)',
+          padding: '28px 32px',
+          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
+          backdropFilter: 'blur(16px)'
+        }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            top: '-50px',
+            right: '-50px',
+            width: '320px',
+            height: '320px',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, rgba(0, 0, 0, 0) 70%)',
+            pointerEvents: 'none'
+          }}
+        />
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '20px', position: 'relative', zIndex: 1 }}>
+          <div style={{ maxWidth: '720px' }}>
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '4px 12px',
+                borderRadius: '9999px',
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                backgroundColor: 'rgba(99, 102, 241, 0.15)',
+                color: '#a5b4fc',
+                border: '1px solid rgba(99, 102, 241, 0.35)',
+                marginBottom: '12px'
+              }}
+            >
+              <Brain size={14} color="#818cf8" style={{ animation: 'pulse 2s infinite' }} />
+              Phase 32 &bull; 3D Mind Maps & Concept Knowledge Graph
             </div>
-            <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight">
+            <h1 style={{ fontSize: '2rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em', margin: '0 0 8px 0' }}>
               Interactive Knowledge Graph 🕸️
             </h1>
-            <p className="text-sm md:text-base text-slate-300 leading-relaxed">
-              Visualize how complex topics connect through prerequisites, exam weightages, and
-              mastery levels. Click any node for instant formulas, takeaways, and active recall bridges.
+            <p style={{ fontSize: '0.92rem', color: '#94a3b8', lineHeight: 1.5, margin: 0 }}>
+              Visualize how complex topics connect through prerequisites, exam weightages, and mastery levels. Click any node for instant formulas, takeaways, and active recall bridges.
             </p>
           </div>
 
           {/* Subject Switcher Pills */}
-          <div className="flex flex-wrap items-center gap-2">
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              backgroundColor: 'rgba(15, 23, 42, 0.8)',
+              padding: '6px',
+              borderRadius: '16px',
+              border: '1px solid rgba(255, 255, 255, 0.1)'
+            }}
+          >
             <button
               onClick={() => setSelectedSubject('dsa')}
-              className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition ${
-                selectedSubject === 'dsa'
-                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30'
-                  : 'bg-slate-800 text-slate-400 hover:text-white'
-              }`}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '10px 18px',
+                borderRadius: '12px',
+                fontSize: '0.82rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                border: selectedSubject === 'dsa' ? '1px solid #818cf8' : '1px solid transparent',
+                backgroundColor: selectedSubject === 'dsa' ? 'rgba(99, 102, 241, 0.25)' : 'transparent',
+                color: selectedSubject === 'dsa' ? '#ffffff' : '#94a3b8',
+                boxShadow: selectedSubject === 'dsa' ? '0 4px 16px rgba(99, 102, 241, 0.3)' : 'none'
+              }}
             >
-              Algorithms & DSA
+              💻 Algorithms & DSA
             </button>
             <button
               onClick={() => setSelectedSubject('physics')}
-              className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition ${
-                selectedSubject === 'physics'
-                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30'
-                  : 'bg-slate-800 text-slate-400 hover:text-white'
-              }`}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '10px 18px',
+                borderRadius: '12px',
+                fontSize: '0.82rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                border: selectedSubject === 'physics' ? '1px solid #818cf8' : '1px solid transparent',
+                backgroundColor: selectedSubject === 'physics' ? 'rgba(99, 102, 241, 0.25)' : 'transparent',
+                color: selectedSubject === 'physics' ? '#ffffff' : '#94a3b8',
+                boxShadow: selectedSubject === 'physics' ? '0 4px 16px rgba(99, 102, 241, 0.3)' : 'none'
+              }}
             >
-              Calculus & Physics
+              ⚡ Calculus & Physics
             </button>
           </div>
         </div>
 
         {/* Mastery Overview Strip */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 pt-6 border-t border-slate-800/80">
-          <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
-            <span className="text-[11px] text-slate-400 uppercase font-semibold">Total Nodes</span>
-            <div className="text-xl font-bold text-white mt-0.5">{graphData.nodes.length} Concepts</div>
-          </div>
-          <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
-            <span className="text-[11px] text-slate-400 uppercase font-semibold">Mastered</span>
-            <div className="text-xl font-bold text-emerald-400 mt-0.5">
-              {graphData.nodes.filter((n) => n.mastery === 'MASTERED').length} Topics
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '14px',
+            marginTop: '24px',
+            paddingTop: '20px',
+            borderTop: '1px solid rgba(255, 255, 255, 0.08)'
+          }}
+        >
+          <div
+            style={{
+              padding: '14px 18px',
+              borderRadius: '16px',
+              backgroundColor: 'rgba(15, 23, 42, 0.6)',
+              border: '1px solid rgba(99, 102, 241, 0.2)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '14px'
+            }}
+          >
+            <div
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '12px',
+                backgroundColor: 'rgba(99, 102, 241, 0.15)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <Brain size={20} color="#818cf8" />
+            </div>
+            <div>
+              <span style={{ fontSize: '0.72rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>
+                Total Nodes
+              </span>
+              <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ffffff' }}>
+                {graphData.nodes.length} Concepts
+              </div>
             </div>
           </div>
-          <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
-            <span className="text-[11px] text-slate-400 uppercase font-semibold">Under Revision</span>
-            <div className="text-xl font-bold text-amber-400 mt-0.5">
-              {graphData.nodes.filter((n) => n.mastery === 'REVISING').length} Topics
+
+          <div
+            style={{
+              padding: '14px 18px',
+              borderRadius: '16px',
+              backgroundColor: 'rgba(15, 23, 42, 0.6)',
+              border: '1px solid rgba(16, 185, 129, 0.25)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '14px'
+            }}
+          >
+            <div
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '12px',
+                backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <CheckCircle2 size={20} color="#10b981" />
+            </div>
+            <div>
+              <span style={{ fontSize: '0.72rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>
+                Mastered
+              </span>
+              <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#10b981' }}>
+                {masteredCount} Topics
+              </div>
             </div>
           </div>
-          <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800">
-            <span className="text-[11px] text-slate-400 uppercase font-semibold">Domain Mastery</span>
-            <div className="text-xl font-bold text-indigo-300 mt-0.5">{graphData.overallMasteryPercent}%</div>
+
+          <div
+            style={{
+              padding: '14px 18px',
+              borderRadius: '16px',
+              backgroundColor: 'rgba(15, 23, 42, 0.6)',
+              border: '1px solid rgba(245, 158, 11, 0.25)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '14px'
+            }}
+          >
+            <div
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '12px',
+                backgroundColor: 'rgba(245, 158, 11, 0.15)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <RotateCcw size={20} color="#f59e0b" />
+            </div>
+            <div>
+              <span style={{ fontSize: '0.72rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>
+                Under Revision
+              </span>
+              <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#f59e0b' }}>
+                {revisingCount} Topics
+              </div>
+            </div>
+          </div>
+
+          <div
+            style={{
+              padding: '14px 18px',
+              borderRadius: '16px',
+              backgroundColor: 'rgba(15, 23, 42, 0.6)',
+              border: '1px solid rgba(139, 92, 246, 0.25)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '14px'
+            }}
+          >
+            <div
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '12px',
+                backgroundColor: 'rgba(139, 92, 246, 0.15)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <Activity size={20} color="#a855f7" />
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '0.72rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.05em' }}>
+                  Domain Mastery
+                </span>
+                <span style={{ fontSize: '0.82rem', fontWeight: 800, color: '#a855f7' }}>
+                  {graphData.overallMasteryPercent}%
+                </span>
+              </div>
+              <div
+                style={{
+                  width: '100%',
+                  height: '6px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  borderRadius: '9999px',
+                  marginTop: '6px',
+                  overflow: 'hidden'
+                }}
+              >
+                <div
+                  style={{
+                    width: `${graphData.overallMasteryPercent}%`,
+                    height: '100%',
+                    background: 'linear-gradient(90deg, #6366f1 0%, #10b981 100%)',
+                    borderRadius: '9999px'
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Graph Stage & Inspector Sidebar */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '24px' }}>
         {/* Left Column: Interactive Graph Canvas */}
-        <div className="lg:col-span-2 bg-slate-900/90 border border-slate-800 rounded-3xl p-6 shadow-2xl relative overflow-hidden flex flex-col h-[620px]">
-          {/* Controls Overlay */}
-          <div className="flex items-center justify-between pb-4 border-b border-slate-800 z-10">
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-slate-400 font-medium">Filter Mastery:</span>
-              <div className="flex gap-1.5">
-                {(['ALL', 'MASTERED', 'REVISING', 'UNEXPLORED'] as const).map((lvl) => (
-                  <button
-                    key={lvl}
-                    onClick={() => setMasteryFilter(lvl)}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition ${
-                      masteryFilter === lvl
-                        ? 'bg-indigo-600 text-white'
-                        : 'bg-slate-800 text-slate-400 hover:text-white'
-                    }`}
-                  >
-                    {lvl}
-                  </button>
-                ))}
+        <div
+          style={{
+            gridColumn: 'span 2',
+            backgroundColor: 'rgba(15, 23, 42, 0.85)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            borderRadius: '24px',
+            padding: '20px 24px',
+            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
+            display: 'flex',
+            flexDirection: 'column',
+            height: '660px',
+            backdropFilter: 'blur(16px)'
+          }}
+        >
+          {/* Controls Toolbar */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingBottom: '14px',
+              borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+              zIndex: 10
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ fontSize: '0.78rem', color: '#94a3b8', fontWeight: 700 }}>Filter Mastery:</span>
+              <div style={{ display: 'flex', gap: '6px' }}>
+                {(['ALL', 'MASTERED', 'REVISING', 'UNEXPLORED'] as const).map((lvl) => {
+                  const isActive = masteryFilter === lvl;
+                  let color = '#818cf8';
+                  let activeBg = 'rgba(99, 102, 241, 0.25)';
+                  let activeBorder = '1px solid #818cf8';
+                  let label: string = lvl;
+                  if (lvl === 'ALL') label = 'ALL (' + graphData.nodes.length + ')';
+                  if (lvl === 'MASTERED') {
+                    color = '#10b981';
+                    activeBg = 'rgba(16, 185, 129, 0.25)';
+                    activeBorder = '1px solid #10b981';
+                    label = `MASTERED (${masteredCount})`;
+                  }
+                  if (lvl === 'REVISING') {
+                    color = '#f59e0b';
+                    activeBg = 'rgba(245, 158, 11, 0.25)';
+                    activeBorder = '1px solid #f59e0b';
+                    label = `REVISING (${revisingCount})`;
+                  }
+                  if (lvl === 'UNEXPLORED') {
+                    color = '#a855f7';
+                    activeBg = 'rgba(168, 85, 247, 0.25)';
+                    activeBorder = '1px solid #a855f7';
+                    label = `UNEXPLORED (${unexploredCount})`;
+                  }
+
+                  return (
+                    <button
+                      key={lvl}
+                      onClick={() => setMasteryFilter(lvl)}
+                      style={{
+                        padding: '6px 12px',
+                        borderRadius: '10px',
+                        fontSize: '0.72rem',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        border: isActive ? activeBorder : '1px solid rgba(255, 255, 255, 0.08)',
+                        backgroundColor: isActive ? activeBg : 'rgba(2, 6, 23, 0.6)',
+                        color: isActive ? color : '#94a3b8'
+                      }}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
             {/* Zoom Controls */}
-            <div className="flex items-center gap-2">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 600, marginRight: '4px' }}>
+                {Math.round(zoomLevel * 100)}%
+              </span>
               <button
-                onClick={() => setZoomLevel((z) => Math.min(1.5, z + 0.1))}
-                className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition"
+                onClick={() => setZoomLevel((z) => Math.min(1.6, z + 0.1))}
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '10px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  color: '#cbd5e1',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s'
+                }}
                 title="Zoom In"
               >
-                <ZoomIn className="w-4 h-4" />
+                <ZoomIn size={15} />
               </button>
               <button
-                onClick={() => setZoomLevel((z) => Math.max(0.7, z - 0.1))}
-                className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition"
+                onClick={() => setZoomLevel((z) => Math.max(0.6, z - 0.1))}
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '10px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  color: '#cbd5e1',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s'
+                }}
                 title="Zoom Out"
               >
-                <ZoomOut className="w-4 h-4" />
+                <ZoomOut size={15} />
               </button>
               <button
                 onClick={() => setZoomLevel(1)}
-                className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition"
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '10px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  color: '#cbd5e1',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s'
+                }}
                 title="Reset Zoom"
               >
-                <RotateCcw className="w-4 h-4" />
+                <RotateCcw size={15} />
               </button>
             </div>
           </div>
 
           {/* SVG Canvas Area */}
-          <div className="flex-1 relative overflow-hidden bg-slate-950/60 rounded-2xl mt-4 border border-slate-800/80 flex items-center justify-center">
+          <div
+            style={{
+              flex: 1,
+              position: 'relative',
+              overflow: 'hidden',
+              backgroundColor: '#020617',
+              backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(30, 41, 59, 0.5) 0%, rgba(2, 6, 23, 0.98) 100%)',
+              borderRadius: '18px',
+              marginTop: '16px',
+              border: '1px solid rgba(255, 255, 255, 0.06)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
             <svg
-              className="w-full h-full cursor-grab active:cursor-grabbing"
+              style={{
+                width: '100%',
+                height: '100%',
+                cursor: 'grab',
+                transform: `scale(${zoomLevel})`,
+                transition: 'transform 0.2s ease-out'
+              }}
               viewBox="0 0 850 450"
-              style={{ transform: `scale(${zoomLevel})`, transition: 'transform 0.2s ease-out' }}
             >
               {/* Defs for Gradients & Markers */}
               <defs>
+                {/* Arrow Marker */}
                 <marker
                   id="arrow"
                   viewBox="0 0 10 10"
@@ -315,9 +645,18 @@ export const ConceptGraphView: React.FC<ConceptGraphViewProps> = ({
                   markerHeight="6"
                   orient="auto-start-reverse"
                 >
-                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#6366f1" opacity="0.6" />
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#6366f1" opacity="0.8" />
                 </marker>
+
+                {/* Subtle Grid Pattern */}
+                <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255, 255, 255, 0.03)" strokeWidth="1" />
+                  <circle cx="0" cy="0" r="1.5" fill="rgba(99, 102, 241, 0.12)" />
+                </pattern>
               </defs>
+
+              {/* Grid Background */}
+              <rect width="100%" height="100%" fill="url(#grid)" />
 
               {/* Connecting Edges */}
               {graphData.edges.map((edge) => {
@@ -333,22 +672,35 @@ export const ConceptGraphView: React.FC<ConceptGraphViewProps> = ({
                       x2={target.x}
                       y2={target.y}
                       stroke="#4f46e5"
-                      strokeWidth="2"
-                      strokeDasharray={edge.type === 'APPLICATION' ? '4 4' : 'none'}
-                      opacity="0.5"
+                      strokeWidth="2.5"
+                      strokeDasharray={edge.type === 'APPLICATION' ? '5 5' : 'none'}
+                      opacity="0.65"
                       markerEnd="url(#arrow)"
                     />
                     {edge.label && (
-                      <text
-                        x={(source.x + target.x) / 2}
-                        y={(source.y + target.y) / 2 - 6}
-                        fill="#94a3b8"
-                        fontSize="9"
-                        textAnchor="middle"
-                        fontFamily="monospace"
-                      >
-                        {edge.label}
-                      </text>
+                      <g>
+                        <rect
+                          x={(source.x + target.x) / 2 - (edge.label.length * 3.5 + 8)}
+                          y={(source.y + target.y) / 2 - 17}
+                          width={edge.label.length * 7 + 16}
+                          height="18"
+                          rx="9"
+                          fill="rgba(15, 23, 42, 0.85)"
+                          stroke="rgba(99, 102, 241, 0.3)"
+                          strokeWidth="1"
+                        />
+                        <text
+                          x={(source.x + target.x) / 2}
+                          y={(source.y + target.y) / 2 - 5}
+                          fill="#c7d2fe"
+                          fontSize="9.5"
+                          fontWeight="600"
+                          textAnchor="middle"
+                          fontFamily="monospace"
+                        >
+                          {edge.label}
+                        </text>
+                      </g>
                     )}
                   </g>
                 );
@@ -363,16 +715,26 @@ export const ConceptGraphView: React.FC<ConceptGraphViewProps> = ({
                   <g
                     key={node.id}
                     onClick={() => setSelectedNode(node)}
-                    className="cursor-pointer group"
+                    style={{ cursor: 'pointer' }}
                   >
+                    {/* Pulsing Outer Halo for Selected Node */}
+                    {isSelected && (
+                      <circle
+                        cx={node.x}
+                        cy={node.y}
+                        r={34}
+                        fill={nodeColor}
+                        opacity="0.18"
+                      />
+                    )}
+
                     {/* Outer Glow Ring */}
                     <circle
                       cx={node.x}
                       cy={node.y}
-                      r={isSelected ? 28 : 22}
+                      r={isSelected ? 26 : 21}
                       fill={nodeColor}
-                      opacity={isSelected ? 0.35 : 0.15}
-                      className="transition-all duration-300 group-hover:scale-125"
+                      opacity={isSelected ? 0.45 : 0.2}
                     />
 
                     {/* Central Core */}
@@ -380,21 +742,23 @@ export const ConceptGraphView: React.FC<ConceptGraphViewProps> = ({
                       cx={node.x}
                       cy={node.y}
                       r={isSelected ? 16 : 13}
-                      fill="#0f172a"
+                      fill="#0b1120"
                       stroke={nodeColor}
-                      strokeWidth={isSelected ? 3 : 2}
-                      className="transition-all duration-300"
+                      strokeWidth={isSelected ? 3.5 : 2}
                     />
 
-                    {/* Label Badge */}
+                    {/* Label Badge Container */}
                     <text
                       x={node.x}
                       y={node.y + 36}
-                      fill={isSelected ? '#ffffff' : '#cbd5e1'}
+                      fill={isSelected ? '#ffffff' : '#e2e8f0'}
                       fontSize="11"
-                      fontWeight="bold"
+                      fontWeight={isSelected ? '800' : '700'}
                       textAnchor="middle"
-                      className="select-none transition-colors"
+                      style={{
+                        userSelect: 'none',
+                        textShadow: '0 2px 8px rgba(0, 0, 0, 0.8)'
+                      }}
                     >
                       {node.label}
                     </text>
@@ -402,121 +766,295 @@ export const ConceptGraphView: React.FC<ConceptGraphViewProps> = ({
                     {/* Weightage Subtitle */}
                     <text
                       x={node.x}
-                      y={node.y + 48}
-                      fill="#64748b"
+                      y={node.y + 49}
+                      fill="#94a3b8"
                       fontSize="9"
+                      fontWeight="500"
                       textAnchor="middle"
                       fontFamily="monospace"
-                      className="select-none"
+                      style={{ userSelect: 'none' }}
                     >
-                      {node.weightagePercent}% Weight • {node.pyqCount} PYQs
+                      {node.weightagePercent}% Weight &bull; {node.pyqCount} PYQs
                     </text>
                   </g>
                 );
               })}
             </svg>
+
+            {/* Bottom Tip Overlay */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: '12px',
+                right: '16px',
+                padding: '4px 12px',
+                borderRadius: '8px',
+                backgroundColor: 'rgba(15, 23, 42, 0.75)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                fontSize: '0.72rem',
+                color: '#94a3b8',
+                pointerEvents: 'none'
+              }}
+            >
+              💡 Click any node to inspect blueprint & start drills
+            </div>
           </div>
         </div>
 
         {/* Right Column: Node Inspector & Practice Launcher */}
-        <div className="lg:col-span-1 bg-slate-900/90 border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col justify-between h-[620px] overflow-y-auto">
+        <div
+          style={{
+            backgroundColor: 'rgba(15, 23, 42, 0.85)',
+            border: '1px solid rgba(99, 102, 241, 0.25)',
+            borderRadius: '24px',
+            padding: '24px',
+            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            height: '660px',
+            backdropFilter: 'blur(16px)',
+            overflowY: 'auto'
+          }}
+        >
           {selectedNode ? (
-            <div className="space-y-4">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {/* Header */}
-              <div className="pb-3 border-b border-slate-800">
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-500/10 text-indigo-400 border border-indigo-500/30">
+              <div style={{ paddingBottom: '14px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <span
+                    style={{
+                      padding: '3px 10px',
+                      borderRadius: '9999px',
+                      fontSize: '0.7rem',
+                      fontWeight: 800,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                      backgroundColor: 'rgba(99, 102, 241, 0.15)',
+                      color: '#a5b4fc',
+                      border: '1px solid rgba(99, 102, 241, 0.35)'
+                    }}
+                  >
                     {selectedNode.category}
                   </span>
-                  <span className="text-xs text-slate-400 font-mono">
+                  <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontFamily: 'monospace', fontWeight: 600 }}>
                     {selectedNode.pyqCount} Solved PYQs
                   </span>
                 </div>
-                <h3 className="text-lg font-bold text-white">{selectedNode.label}</h3>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ffffff', margin: 0 }}>
+                  {selectedNode.label}
+                </h3>
               </div>
 
               {/* Mastery Level Toggle */}
-              <div className="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-2">
-                <span className="text-[11px] font-semibold text-slate-400 uppercase">Mastery State:</span>
-                <div className="grid grid-cols-3 gap-1.5">
-                  {(['MASTERED', 'REVISING', 'UNEXPLORED'] as const).map((m) => (
-                    <button
-                      key={m}
-                      onClick={() => handleUpdateMastery(selectedNode.id, m)}
-                      className={`py-1.5 rounded-xl text-[10px] font-bold uppercase transition ${
-                        selectedNode.mastery === m
-                          ? m === 'MASTERED'
-                            ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
-                            : m === 'REVISING'
-                            ? 'bg-amber-600 text-white shadow-md shadow-amber-600/30'
-                            : 'bg-purple-600 text-white shadow-md shadow-purple-600/30'
-                          : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
-                      }`}
-                    >
-                      {m}
-                    </button>
-                  ))}
+              <div
+                style={{
+                  padding: '14px',
+                  borderRadius: '16px',
+                  backgroundColor: 'rgba(2, 6, 23, 0.7)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px'
+                }}
+              >
+                <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Mastery State:
+                </span>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px' }}>
+                  {(['MASTERED', 'REVISING', 'UNEXPLORED'] as const).map((m) => {
+                    const isSelected = selectedNode.mastery === m;
+                    let activeBg = '#10b981';
+                    let label = 'MASTERED';
+                    if (m === 'REVISING') {
+                      activeBg = '#f59e0b';
+                      label = 'REVISING';
+                    }
+                    if (m === 'UNEXPLORED') {
+                      activeBg = '#8b5cf6';
+                      label = 'UNEXPLORED';
+                    }
+
+                    return (
+                      <button
+                        key={m}
+                        onClick={() => handleUpdateMastery(selectedNode.id, m)}
+                        style={{
+                          padding: '8px 4px',
+                          borderRadius: '10px',
+                          fontSize: '0.7rem',
+                          fontWeight: 800,
+                          textTransform: 'uppercase',
+                          cursor: 'pointer',
+                          transition: 'all 0.15s',
+                          border: isSelected ? 'none' : '1px solid rgba(255, 255, 255, 0.08)',
+                          backgroundColor: isSelected ? activeBg : 'rgba(15, 23, 42, 0.8)',
+                          color: isSelected ? '#ffffff' : '#94a3b8',
+                          boxShadow: isSelected ? `0 4px 12px ${activeBg}40` : 'none'
+                        }}
+                      >
+                        {label}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
               {/* Formula & Derivation Box */}
               {selectedNode.formulaSummary && (
-                <div className="p-3.5 rounded-2xl bg-indigo-950/30 border border-indigo-500/30 space-y-1.5">
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-300">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <div
+                  style={{
+                    padding: '14px',
+                    borderRadius: '16px',
+                    backgroundColor: 'rgba(49, 46, 129, 0.25)',
+                    border: '1px solid rgba(99, 102, 241, 0.35)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '6px'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.78rem', fontWeight: 700, color: '#c7d2fe' }}>
+                    <Sparkles size={14} color="#fbbf24" />
                     Key Mathematical / Code Blueprint
                   </div>
-                  <code className="text-xs text-indigo-200 font-mono block leading-relaxed break-words">
+                  <code
+                    style={{
+                      fontSize: '0.8rem',
+                      color: '#e0e7ff',
+                      fontFamily: 'monospace',
+                      backgroundColor: 'rgba(15, 23, 42, 0.6)',
+                      padding: '8px 10px',
+                      borderRadius: '8px',
+                      display: 'block',
+                      lineHeight: 1.5,
+                      wordBreak: 'break-word',
+                      border: '1px solid rgba(99, 102, 241, 0.2)'
+                    }}
+                  >
                     {selectedNode.formulaSummary}
                   </code>
                 </div>
               )}
 
               {/* Key Takeaways Bullets */}
-              <div className="space-y-1.5">
-                <span className="text-[11px] font-bold text-slate-400 uppercase">Core Exam Mechanisms:</span>
-                <ul className="space-y-1.5 text-xs text-slate-300">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Core Exam Mechanisms:
+                </span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   {selectedNode.keyTakeaways.map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                    <div
+                      key={idx}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: '8px',
+                        padding: '8px 12px',
+                        borderRadius: '10px',
+                        backgroundColor: 'rgba(2, 6, 23, 0.5)',
+                        border: '1px solid rgba(255, 255, 255, 0.05)',
+                        fontSize: '0.8rem',
+                        color: '#cbd5e1'
+                      }}
+                    >
+                      <CheckCircle2 size={15} color="#10b981" style={{ flexShrink: 0, marginTop: '2px' }} />
                       <span>{item}</span>
-                    </li>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
             </div>
           ) : (
-            <div className="h-full flex flex-col items-center justify-center text-center p-6 text-slate-400">
-              <Brain className="w-12 h-12 text-slate-600 mb-3 animate-pulse" />
-              <p className="text-sm font-semibold text-slate-300">Select any concept node in the graph</p>
-              <p className="text-xs mt-1">View formula breakdowns, exam frequency, and revision drills.</p>
+            <div
+              style={{
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                textAlign: 'center',
+                padding: '24px',
+                color: '#94a3b8'
+              }}
+            >
+              <Brain size={48} color="#475569" style={{ marginBottom: '12px' }} />
+              <p style={{ fontSize: '0.95rem', fontWeight: 700, color: '#ffffff', margin: '0 0 4px 0' }}>
+                Select any concept node
+              </p>
+              <p style={{ fontSize: '0.8rem', margin: 0, color: '#64748b' }}>
+                Click on the graph nodes to inspect formula breakdowns, exam weightage, and revision drills.
+              </p>
             </div>
           )}
 
           {/* Action Footer Bridges */}
           {selectedNode && (
-            <div className="pt-4 border-t border-slate-800 space-y-2 mt-4">
+            <div style={{ paddingTop: '16px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '12px' }}>
               <button
                 onClick={() => {
                   onAddXp?.(20, `Completed Flashcard Drill: ${selectedNode.label}`);
                   onNavigateView?.('AI_STUDY');
                 }}
-                className="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/30 flex items-center justify-center gap-2 transition"
+                style={{
+                  width: '100%',
+                  padding: '12px',
+                  borderRadius: '14px',
+                  background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
+                  color: '#ffffff',
+                  fontWeight: 800,
+                  fontSize: '0.85rem',
+                  border: 'none',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  boxShadow: '0 6px 20px rgba(99, 102, 241, 0.35)',
+                  transition: 'all 0.2s'
+                }}
               >
-                <Zap className="w-4 h-4" /> Practice Flashcards (+20 XP)
+                <Zap size={16} /> Practice Flashcards (+20 XP)
               </button>
-              <div className="grid grid-cols-2 gap-2">
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                 <button
                   onClick={() => onNavigateView?.('NOTES')}
-                  className="py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-medium text-xs flex items-center justify-center gap-1.5 border border-slate-700 transition"
+                  style={{
+                    padding: '10px',
+                    borderRadius: '12px',
+                    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    color: '#e2e8f0',
+                    fontWeight: 700,
+                    fontSize: '0.78rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px',
+                    transition: 'all 0.15s'
+                  }}
                 >
-                  <FileText className="w-3.5 h-3.5" /> Open Notes
+                  <FileText size={14} /> Open Notes
                 </button>
                 <button
                   onClick={() => onNavigateView?.('VOICE_TUTOR')}
-                  className="py-2 rounded-xl bg-purple-950/60 hover:bg-purple-900/60 text-purple-300 hover:text-purple-100 font-medium text-xs flex items-center justify-center gap-1.5 border border-purple-500/30 transition"
+                  style={{
+                    padding: '10px',
+                    borderRadius: '12px',
+                    backgroundColor: 'rgba(168, 85, 247, 0.15)',
+                    border: '1px solid rgba(168, 85, 247, 0.35)',
+                    color: '#e9d5ff',
+                    fontWeight: 700,
+                    fontSize: '0.78rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px',
+                    transition: 'all 0.15s'
+                  }}
                 >
-                  <Mic className="w-3.5 h-3.5 text-purple-400" /> Voice Drill
+                  <Mic size={14} color="#c084fc" /> Voice Drill
                 </button>
               </div>
             </div>
