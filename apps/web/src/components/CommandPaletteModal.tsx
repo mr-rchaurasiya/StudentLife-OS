@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { 
   Search, X, Compass, Zap, Brain, Atom, Dna, 
-  TrendingUp, Award, Bot, Sparkles, ArrowRight, CornerDownLeft
+  TrendingUp, Award, Bot, Sparkles, ArrowRight, CornerDownLeft, Command
 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export interface PhaseMeta {
   id: string;
@@ -98,40 +99,40 @@ export const ALL_100_PHASES_META: PhaseMeta[] = [
   { id: 'climate-model', name: 'Phase 69: Global General Circulation Climate System', category: 'Physics & Space', description: 'Albedo feedback loops, greenhouse forcing, oceanic heat sinks' },
   { id: 'exoskeleton', name: 'Phase 70: Biomechanical Exoskeleton Torque Optimizer', category: 'Robotics & IoT', description: 'Hill muscle model, joint torque assistance, metabolic reduction' },
 
-  // 71-80 Grand Frontier Systems
-  { id: 'dark-matter', name: 'Phase 71: Dark Matter Halo & Gravitational Lensing', category: 'Physics & Space', description: 'NFW profile, Einstein rings, and galaxy rotation curves' },
-  { id: 'synthetic-organism', name: 'Phase 72: Minimal Genome & Cellular Metabolic Flux', category: 'Bio & Health', description: 'FBA flux balance analysis and stoichiometric ATP yields' },
-  { id: 'quantum-annealing', name: 'Phase 73: D-Wave Ising Model & QUBO Combinatorial Solver', category: 'Physics & Space', description: 'Transverse field quantum tunneling and TSP energy landscapes' },
-  { id: 'brain-tumor-ai', name: 'Phase 74: AI Brain MRI Tumor Segmentation & Neuro-Radiology', category: 'AI & Neuro', description: 'U-Net semantic dice scores and 3D slice voxel rendering' },
-  { id: 'carbon-capture', name: 'Phase 75: Direct Air Capture & MOF Thermodynamic Sorbent', category: 'Physics & Space', description: 'Langmuir adsorption isotherms and thermal swing regeneration' },
-  { id: 'neural-radiance', name: 'Phase 76: NeRF Volumetric 3D Scene Reconstruction', category: 'AI & Neuro', description: 'Positional encoding, ray marching, and photometric loss' },
-  { id: 'cellular-automata', name: 'Phase 77: Complex Self-Organizing Wolfram Rule Systems', category: 'AI & Neuro', description: 'Class 4 computation universality and entropy gradients' },
-  { id: 'microfluidics', name: 'Phase 78: Lab-on-a-Chip Droplet & Poiseuille Flow', category: 'Bio & Health', description: 'Capillary numbers, Dean vortices, and laminar diffusion' },
-  { id: 'nuclear-fission', name: 'Phase 79: Fast Breeder Reactor & Delayed Neutron Kinetics', category: 'Physics & Space', description: 'Point reactor kinetics and reactivity temperature coefficient' },
-  { id: 'multimodal-rag', name: 'Phase 80: Multimodal Knowledge Graph & Vector Hybrid Search', category: 'AI & Neuro', description: 'Hierarchical HNSW vector search and cross-attention fusion' },
+  // 71-80 Quantum, Security & AI Systems
+  { id: 'quantum-annealing', name: 'Phase 71: D-Wave Style Quantum Annealing Ising Solver', category: 'Physics & Space', description: 'QUBO quadratic unconstrained binary optimization for TSP' },
+  { id: 'federated-learning', name: 'Phase 72: Privacy-Preserving Federated Learning Mesh', category: 'AI & Neuro', description: 'FedAvg aggregation, differential privacy epsilon noise injection' },
+  { id: 'neuromorphic-snn', name: 'Phase 73: Spiking Neural Network Spike-Timing Plasticity', category: 'AI & Neuro', description: 'LIF neuron membrane potential dynamics and STDP synaptic weights' },
+  { id: 'quantum-qkd', name: 'Phase 74: BB84 Quantum Key Distribution Protocol Sim', category: 'Physics & Space', description: 'Photon polarization basis reconciliation and eavesdropping bit error' },
+  { id: 'paper-referee', name: 'Phase 75: Multi-Agent Peer Review & Citation Referee', category: 'Academics & Career', description: 'Autonomous reviewer critique synthesis and rebuttal engine' },
+  { id: 'crispr-editor', name: 'Phase 76: Cas12/Cas13 Multi-Locus Transcriptome Modulator', category: 'Bio & Health', description: 'RNA-guided base editing, off-target energy landscapes' },
+  { id: 'venture-safe', name: 'Phase 77: Student Startup Cap Table & SAFE Syndicate Vault', category: 'Finance & Web3', description: 'Pro-rata dilution, post-money SAFE conversion, term-sheet builder' },
+  { id: 'fusion-tokamak', name: 'Phase 78: Plasma Equilibrium & Real-Time Magnetics Solver', category: 'Physics & Space', description: 'Poloidal magnetic flux, q-profile safety factor, divertor heat flux' },
+  { id: 'bci-speller', name: 'Phase 79: P300 Oddball Brain-Computer Interface Speller', category: 'AI & Neuro', description: 'EEG ERP event-related potential averaging and real-time classification' },
+  { id: 'legal-analyzer', name: 'Phase 80: Multi-Jurisdictional Legal Precedent Analyzer', category: 'Academics & Career', description: 'IRAC legal brief synthesis, statutory interpretation tree' },
 
-  // 81-90 Singularity, Neuro-Bio & Enterprise Web3
-  { id: 'neuromorphic-snn', name: 'Phase 81: Neuromorphic Spiking Neural Network (SNN)', category: 'AI & Neuro', description: 'Leaky Integrate-and-Fire (LIF) and STDP synaptic plasticity' },
-  { id: 'qkd-network', name: 'Phase 82: Quantum Key Distribution (BB84 & E91 Protocol)', category: 'Physics & Space', description: 'Single-photon polarization, quantum bit error rate (QBER)' },
-  { id: 'paper-referee', name: 'Phase 83: Autonomous Peer-Review & Socratic Paper Referee', category: 'Academics & Career', description: 'Methodological rigor scoring and statistical fallacy detection' },
-  { id: 'crispr-designer', name: 'Phase 84: Prime Editing & CRISPR-Cas12 Off-Target Engine', category: 'Bio & Health', description: 'PegRNA reverse transcriptase templates and nickase efficiency' },
-  { id: 'venture-safe', name: 'Phase 85: Student Startup SAFE Note & Cap Table Simulator', category: 'Finance & Web3', description: 'Post-money SAFE, valuation caps, and pro-rata investor dilution' },
-  { id: 'synthetic-neural-net', name: 'Phase 86: Neuromorphic Spike Timing Plasticity Matrix', category: 'AI & Neuro', description: 'Hardware-level millivolt membrane potentials and spike rasters' },
-  { id: 'quantum-telemetry', name: 'Phase 87: Quantum Entanglement Telemetry & Bell State Verifier', category: 'Physics & Space', description: 'CHSH inequality violation ($S > 2$) and eavesdropper detection' },
-  { id: 'meta-referee', name: 'Phase 88: Socratic Peer-Review & Reproducibility Assessor', category: 'Academics & Career', description: 'Reproducibility checklists and p-hacking statistical audits' },
-  { id: 'prime-editing', name: 'Phase 89: Next-Gen Prime Editing & Base Substitution Designer', category: 'Bio & Health', description: 'Adenine/Cytosine base editors and precision genomic repairs' },
-  { id: 'startup-cap-table', name: 'Phase 90: Cap Table Waterfall & Dilution Sensitivity Model', category: 'Finance & Web3', description: 'Series A/B convertible rounds and liquidation preference math' },
+  // 81-90 Frontier Science & Quantum Universe
+  { id: 'exoplanet-photometry', name: 'Phase 81: Kepler/TESS Transit Light Curve Photometry', category: 'Physics & Space', description: 'Exoplanet radius estimation, limb darkening, and transit period fold' },
+  { id: 'carbon-market', name: 'Phase 82: Verified Peer-to-Peer Campus Carbon Credit Market', category: 'Finance & Web3', description: 'Decentralized carbon credits, automated proof-of-transit validation' },
+  { id: 'gravitational-waves', name: 'Phase 83: LIGO Matched-Filter Gravitational Wave Detector', category: 'Physics & Space', description: 'Chirp mass calculation, signal-to-noise ratio matched filtering' },
+  { id: 'robotics-kinematics', name: 'Phase 84: 6-DOF Robotic Arm Inverse Kinematics & Trajectory', category: 'Robotics & IoT', description: 'Denavit-Hartenberg parameters, Jacobian velocity kinematics' },
+  { id: 'epigenetic-clock', name: 'Phase 85: Horvath Multi-Tissue DNA Methylation Aging Clock', category: 'Bio & Health', description: 'CpG island methylation beta-value regression and biological age' },
+  { id: 'hft-orderbook', name: 'Phase 86: Nanosecond L3 Order Book Matching Engine', category: 'Finance & Web3', description: 'Price-time priority matching, FPGA FIFO queue latency emulation' },
+  { id: 'astrodynamics', name: 'Phase 87: Interplanetary Hohmann Transfer & Gravitational Slingshot', category: 'Physics & Space', description: 'Patched conics approximation, delta-v budget, planetary ephemeris' },
+  { id: 'chemical-retro', name: 'Phase 88: Retrosynthetic Disconnection & Reaction Tree Explorer', category: 'Bio & Health', description: 'Synthons, functional group interconversions, forward synthesis' },
+  { id: 'scholar-tracker', name: 'Phase 89: Global Academic Citation Graph & Impact Visualizer', category: 'Academics & Career', description: 'PageRank academic centrality, h-index projections, co-authorship maps' },
+  { id: 'study-guild-dao', name: 'Phase 90: Decentralized Autonomous Study Guild & Quadratic Voting', category: 'Finance & Web3', description: 'Sybil-resistant quadratic voting, treasury disbursement, study bounties' },
 
-  // 91-100 Century Grandmaster Horizon
-  { id: 'fusion-tokamak', name: 'Phase 91: Magnetic Tokamak Plasma & Lawson Criterion', category: 'Physics & Space', description: 'Triple product $n T \tau_E$, beta limit, and toroidal equilibrium' },
-  { id: 'bci-speller', name: 'Phase 92: P300 BCI EEG Neuro-Speller & Cognitive Decoder', category: 'AI & Neuro', description: 'Oddball visual paradigm, signal averaging, and live typing' },
-  { id: 'legal-contracts', name: 'Phase 93: Autonomous Legal Contract Analyzer & Risk Auditor', category: 'Academics & Career', description: 'Indemnification loops, non-competes, and IP assignment clauses' },
-  { id: 'exoplanet-transit', name: 'Phase 94: Exoplanet Transit Photometry & Kepler Lightcurve', category: 'Physics & Space', description: 'Transit depth $(R_p/R_*)^2$, orbital period, and habitable zone' },
-  { id: 'carbon-market', name: 'Phase 95: Real-Time Carbon Offset Credit Marketplace', category: 'Finance & Web3', description: 'Verra/Gold Standard verified registry and liquidity book' },
-  { id: 'gravitational-waves', name: 'Phase 96: Gravitational Wave Interferometry & Ringdown', category: 'Physics & Space', description: 'LIGO/Virgo strain $h(t)$, Chirp Mass $\mathcal{M}$, Inspiral-Merger' },
-  { id: 'robotics-kinematics', name: 'Phase 97: Autonomous 6-DOF Robotic Arm Inverse Kinematics', category: 'Robotics & IoT', description: 'DH parameter matrices, Jacobian velocity solvers, trajectory planning' },
-  { id: 'epigenetic-clock', name: 'Phase 98: Epigenetic DNA Methylation & Longevity Clock', category: 'Bio & Health', description: 'Horvath multi-tissue biological clock and CpG beta-value regression' },
-  { id: 'hft-orderbook', name: 'Phase 99: High-Frequency Algorithmic Order Book (L2/L3)', category: 'Finance & Web3', description: 'Sub-microsecond Price-Time FIFO matching engine & depth ladders' },
+  // 91-100 Grandmaster Century Suite
+  { id: 'knowledge-olympiad', name: 'Phase 91: Global Student Olympiad & Real-Time ELO Battles', category: 'Academics & Career', description: 'Multiplayer competitive academic olympiad with live Elo matchmaking' },
+  { id: 'kernel-profiler', name: 'Phase 92: SIMD & AVX-512 Vectorization Kernel Profiler', category: 'AI & Neuro', description: 'Roofline memory-compute model, cache miss penalty analysis' },
+  { id: 'faculty-advisory', name: 'Phase 93: Academic Faculty Advisory & Office Hours Portal', category: 'Academics & Career', description: 'Research mentorship scheduling, thesis committee review queues' },
+  { id: 'tutor-bounty', name: 'Phase 94: Real-Time Academic Problem Bounty & Micro-Escrow', category: 'Finance & Web3', description: 'Proof-of-solution verification with instant micro-payouts' },
+  { id: 'study-swarm', name: 'Phase 95: Multi-Agent Autonomous Academic Swarm Coordinator', category: 'AI & Neuro', description: 'Collaborative autonomous LLM agents tackling complex problems' },
+  { id: 'campus-exchange', name: 'Phase 96: Smart Campus Resource Exchange & Lost-Found', category: 'Academics & Career', description: 'Verified peer item exchange, drafters, calculators and textbooks' },
+  { id: 'campus-incubator', name: 'Phase 97: Campus Startup Accelerator & Investor Demo Hub', category: 'Finance & Web3', description: 'Pitch decks, mentor advisory board, and equity-free angel grant pipeline' },
+  { id: 'campus-transit', name: 'Phase 98: Real-Time Campus Transit & Multi-Modal Routing', category: 'Robotics & IoT', description: 'Live bus telemetry, EV shuttle slots, and optimized campus walking paths' },
+  { id: 'mental-resilience', name: 'Phase 99: Student Mental Resilience & Biofeedback Sanctum', category: 'Bio & Health', description: 'Heart-rate variability coherence, guided breathing, mindfulness telemetry' },
   { id: 'century-grandmaster', name: 'Phase 100: Century Grandmaster Singularity Medallion', category: 'Academics & Career', description: '100-Module Master Transcript, Soulbound SHA-256 Passport & Medallion' },
 ];
 
@@ -139,34 +140,38 @@ interface CommandPaletteModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSelectPhase: (phaseId: string) => void;
-  currentPhaseId: string;
+  currentPhaseId?: string;
 }
 
 export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
   isOpen,
   onClose,
   onSelectPhase,
-  currentPhaseId,
+  currentPhaseId = 'dashboard',
 }) => {
+  const { t } = useLanguage();
   const [query, setQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const listContainerRef = useRef<HTMLDivElement>(null);
 
   const categories = ['All', 'AI & Neuro', 'Physics & Space', 'Bio & Health', 'Finance & Web3', 'Academics & Career', 'Robotics & IoT'];
 
   useEffect(() => {
     if (isOpen) {
-      setTimeout(() => inputRef.current?.focus(), 50);
+      setTimeout(() => inputRef.current?.focus(), 60);
       setSelectedIndex(0);
+      setQuery('');
     }
   }, [isOpen]);
 
   const filteredPhases = useMemo(() => {
     const q = query.toLowerCase().trim();
-    return ALL_100_PHASES_META.filter(phase => {
+    return ALL_100_PHASES_META.filter((phase) => {
       const matchesCategory = selectedCategory === 'All' || phase.category === selectedCategory;
-      const matchesQuery = !q || 
+      const matchesQuery =
+        !q ||
         phase.name.toLowerCase().includes(q) ||
         phase.id.toLowerCase().includes(q) ||
         phase.description.toLowerCase().includes(q) ||
@@ -181,10 +186,10 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
 
       if (e.key === 'ArrowDown') {
         e.preventDefault();
-        setSelectedIndex(prev => (prev + 1) % (filteredPhases.length || 1));
+        setSelectedIndex((prev) => (prev + 1) % (filteredPhases.length || 1));
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
-        setSelectedIndex(prev => (prev - 1 + filteredPhases.length) % (filteredPhases.length || 1));
+        setSelectedIndex((prev) => (prev - 1 + filteredPhases.length) % (filteredPhases.length || 1));
       } else if (e.key === 'Enter') {
         e.preventDefault();
         if (filteredPhases[selectedIndex]) {
@@ -201,85 +206,234 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, filteredPhases, selectedIndex, onSelectPhase, onClose]);
 
+  // Keep active item in view during keyboard navigation
+  useEffect(() => {
+    if (listContainerRef.current) {
+      const activeEl = listContainerRef.current.children[selectedIndex] as HTMLElement;
+      if (activeEl) {
+        activeEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+    }
+  }, [selectedIndex]);
+
   if (!isOpen) return null;
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case 'AI & Neuro': return <Brain className="w-3.5 h-3.5 text-purple-400" />;
-      case 'Physics & Space': return <Atom className="w-3.5 h-3.5 text-blue-400" />;
-      case 'Bio & Health': return <Dna className="w-3.5 h-3.5 text-emerald-400" />;
-      case 'Finance & Web3': return <TrendingUp className="w-3.5 h-3.5 text-amber-400" />;
-      case 'Robotics & IoT': return <Bot className="w-3.5 h-3.5 text-rose-400" />;
-      default: return <Award className="w-3.5 h-3.5 text-indigo-400" />;
+      case 'AI & Neuro': return <Brain size={16} color="#c084fc" />;
+      case 'Physics & Space': return <Atom size={16} color="#38bdf8" />;
+      case 'Bio & Health': return <Dna size={16} color="#34d399" />;
+      case 'Finance & Web3': return <TrendingUp size={16} color="#fbbf24" />;
+      case 'Robotics & IoT': return <Bot size={16} color="#f43f5e" />;
+      default: return <Award size={16} color="#818cf8" />;
+    }
+  };
+
+  const getCategoryBadgeColor = (category: string) => {
+    switch (category) {
+      case 'AI & Neuro': return { bg: 'rgba(192, 132, 252, 0.15)', text: '#c084fc', border: 'rgba(192, 132, 252, 0.3)' };
+      case 'Physics & Space': return { bg: 'rgba(56, 189, 248, 0.15)', text: '#38bdf8', border: 'rgba(56, 189, 248, 0.3)' };
+      case 'Bio & Health': return { bg: 'rgba(52, 211, 153, 0.15)', text: '#34d399', border: 'rgba(52, 211, 153, 0.3)' };
+      case 'Finance & Web3': return { bg: 'rgba(251, 191, 36, 0.15)', text: '#fbbf24', border: 'rgba(251, 191, 36, 0.3)' };
+      case 'Robotics & IoT': return { bg: 'rgba(244, 63, 94, 0.15)', text: '#f43f5e', border: 'rgba(244, 63, 94, 0.3)' };
+      default: return { bg: 'rgba(129, 140, 248, 0.15)', text: '#818cf8', border: 'rgba(129, 140, 248, 0.3)' };
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 px-4 bg-black/80 backdrop-blur-md animate-fade-in">
-      <div 
-        className="w-full max-w-3xl bg-slate-900/95 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[80vh] backdrop-blur-xl"
+    <div
+      onClick={onClose}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 1100,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '24px',
+        backgroundColor: 'rgba(4, 7, 18, 0.78)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        animation: 'fadeIn 0.2s ease-out'
+      }}
+    >
+      <div
         onClick={(e) => e.stopPropagation()}
+        style={{
+          width: '100%',
+          maxWidth: '720px',
+          maxHeight: '82vh',
+          backgroundColor: 'rgba(13, 19, 36, 0.96)',
+          border: '1px solid rgba(99, 102, 241, 0.28)',
+          borderRadius: '20px',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 40px rgba(99, 102, 241, 0.18)',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          animation: 'slideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1)'
+        }}
       >
         {/* Search Header */}
-        <div className="p-4 border-b border-slate-800 flex items-center gap-3 bg-slate-950/60">
-          <Search className="w-5 h-5 text-indigo-400 shrink-0" />
+        <div
+          style={{
+            padding: '16px 20px',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            backgroundColor: 'rgba(9, 14, 28, 0.7)'
+          }}
+        >
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '36px',
+            height: '36px',
+            borderRadius: '10px',
+            background: 'rgba(99, 102, 241, 0.15)',
+            border: '1px solid rgba(99, 102, 241, 0.3)',
+            flexShrink: 0
+          }}>
+            <Search size={18} color="#818cf8" />
+          </div>
+
           <input
             ref={inputRef}
             type="text"
-            placeholder="Type a command or search across all 100 phases... (e.g., 'quantum', 'robotics', 'epigenetic', 'hft')"
+            placeholder="Search across all 100 phases, tools & subjects... (e.g. 'quantum', 'robotics', 'hft')"
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
               setSelectedIndex(0);
             }}
-            className="w-full bg-transparent text-white placeholder-slate-400 text-base focus:outline-none"
+            style={{
+              flex: 1,
+              background: 'transparent',
+              border: 'none',
+              outline: 'none',
+              color: '#ffffff',
+              fontSize: '1.02rem',
+              fontWeight: 500,
+              fontFamily: 'inherit',
+              padding: '6px 0',
+              caretColor: '#818cf8'
+            }}
           />
+
           {query && (
-            <button 
+            <button
               onClick={() => setQuery('')}
-              className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+              style={{
+                background: 'rgba(255, 255, 255, 0.06)',
+                border: 'none',
+                borderRadius: '8px',
+                color: 'var(--text-muted)',
+                cursor: 'pointer',
+                padding: '5px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.15s ease'
+              }}
             >
-              <X className="w-4 h-4" />
+              <X size={15} />
             </button>
           )}
-          <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-slate-800 text-slate-400 text-xs font-mono">
-            <span>ESC</span>
+
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              padding: '4px 8px',
+              borderRadius: '6px',
+              backgroundColor: 'rgba(255, 255, 255, 0.07)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              color: 'var(--text-muted)',
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              fontFamily: 'monospace',
+              letterSpacing: '0.05em'
+            }}
+          >
+            ESC
           </div>
         </div>
 
-        {/* Category Pills */}
-        <div className="px-4 py-2 border-b border-slate-800/80 flex items-center gap-2 overflow-x-auto no-scrollbar bg-slate-900/50">
-          <Compass className="w-4 h-4 text-slate-400 shrink-0" />
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => {
-                setSelectedCategory(cat);
-                setSelectedIndex(0);
-              }}
-              className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
-                selectedCategory === cat
-                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20'
-                  : 'bg-slate-800/80 text-slate-400 hover:text-slate-200 hover:bg-slate-800'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+        {/* Category Pills Bar */}
+        <div
+          style={{
+            padding: '10px 16px',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            overflowX: 'auto',
+            backgroundColor: 'rgba(9, 14, 28, 0.4)',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none'
+          }}
+        >
+          <Compass size={15} color="var(--text-muted)" style={{ flexShrink: 0, marginRight: '4px' }} />
+          {categories.map((cat) => {
+            const isCatActive = selectedCategory === cat;
+            return (
+              <button
+                key={cat}
+                onClick={() => {
+                  setSelectedCategory(cat);
+                  setSelectedIndex(0);
+                }}
+                style={{
+                  padding: '5px 12px',
+                  borderRadius: 'var(--radius-full)',
+                  fontSize: '0.75rem',
+                  fontWeight: isCatActive ? 700 : 500,
+                  whiteSpace: 'nowrap',
+                  cursor: 'pointer',
+                  border: isCatActive ? '1px solid rgba(99, 102, 241, 0.6)' : '1px solid rgba(255, 255, 255, 0.07)',
+                  background: isCatActive ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'rgba(255, 255, 255, 0.04)',
+                  color: isCatActive ? '#ffffff' : 'var(--text-secondary)',
+                  boxShadow: isCatActive ? '0 0 12px rgba(99, 102, 241, 0.4)' : 'none',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                {cat}
+              </button>
+            );
+          })}
         </div>
 
         {/* Results List */}
-        <div className="flex-1 overflow-y-auto p-2 space-y-1 divide-y divide-slate-800/40">
+        <div
+          ref={listContainerRef}
+          style={{
+            flex: 1,
+            overflowY: 'auto',
+            padding: '10px 14px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '6px',
+            scrollbarWidth: 'thin',
+            scrollbarColor: 'rgba(255, 255, 255, 0.2) transparent'
+          }}
+        >
           {filteredPhases.length === 0 ? (
-            <div className="py-12 text-center text-slate-400">
-              <Sparkles className="w-8 h-8 mx-auto text-slate-600 mb-2" />
-              <p className="text-sm">No phases found matching "{query}"</p>
-              <p className="text-xs text-slate-500 mt-1">Try searching by topic, number, or category.</p>
+            <div style={{ padding: '48px 20px', textAlign: 'center', color: 'var(--text-muted)' }}>
+              <Sparkles size={32} style={{ margin: '0 auto 10px', color: 'var(--accent-primary)', opacity: 0.6 }} />
+              <p style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                No phases found matching "{query}"
+              </p>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+                Try searching by topic, module number, or selecting a different category.
+              </p>
             </div>
           ) : (
             filteredPhases.map((phase, idx) => {
               const isSelected = idx === selectedIndex;
               const isCurrent = phase.id === currentPhaseId;
+              const badgeStyle = getCategoryBadgeColor(phase.category);
 
               return (
                 <div
@@ -289,44 +443,112 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
                     onClose();
                   }}
                   onMouseEnter={() => setSelectedIndex(idx)}
-                  className={`px-3 py-2.5 rounded-xl cursor-pointer flex items-center justify-between gap-3 transition-all ${
-                    isSelected 
-                      ? 'bg-indigo-600/20 border border-indigo-500/40 text-white' 
-                      : 'hover:bg-slate-800/50 text-slate-300'
-                  }`}
+                  style={{
+                    padding: '10px 14px',
+                    borderRadius: '12px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: '12px',
+                    border: isSelected ? '1px solid rgba(99, 102, 241, 0.45)' : '1px solid transparent',
+                    background: isSelected
+                      ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.16) 0%, rgba(139, 92, 246, 0.08) 100%)'
+                      : 'rgba(255, 255, 255, 0.02)',
+                    boxShadow: isSelected ? '0 0 15px rgba(99, 102, 241, 0.18)' : 'none',
+                    transition: 'all 0.12s ease'
+                  }}
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className={`p-2 rounded-lg ${
-                      isSelected ? 'bg-indigo-500/30 text-indigo-300' : 'bg-slate-800 text-slate-400'
-                    }`}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
+                    <div
+                      style={{
+                        width: '34px',
+                        height: '34px',
+                        borderRadius: '9px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: isSelected ? 'rgba(99, 102, 241, 0.25)' : 'rgba(255, 255, 255, 0.05)',
+                        border: `1px solid ${isSelected ? 'rgba(99, 102, 241, 0.4)' : 'rgba(255, 255, 255, 0.08)'}`,
+                        flexShrink: 0
+                      }}
+                    >
                       {getCategoryIcon(phase.category)}
                     </div>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium text-sm text-white truncate">{phase.name}</span>
+
+                    <div style={{ minWidth: 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: '0.88rem', fontWeight: 700, color: isSelected ? '#ffffff' : 'var(--text-primary)' }}>
+                          {phase.name}
+                        </span>
+
                         {isCurrent && (
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                            Active
+                          <span
+                            style={{
+                              fontSize: '0.62rem',
+                              fontWeight: 800,
+                              padding: '2px 6px',
+                              borderRadius: '4px',
+                              background: 'rgba(16, 185, 129, 0.15)',
+                              border: '1px solid rgba(16, 185, 129, 0.3)',
+                              color: '#34d399'
+                            }}
+                          >
+                            ACTIVE
                           </span>
                         )}
-                        <span className="text-[11px] px-2 py-0.5 rounded-full bg-slate-800/80 text-slate-400 hidden sm:inline-block">
+
+                        <span
+                          style={{
+                            fontSize: '0.66rem',
+                            fontWeight: 600,
+                            padding: '2px 7px',
+                            borderRadius: 'var(--radius-full)',
+                            background: badgeStyle.bg,
+                            border: `1px solid ${badgeStyle.border}`,
+                            color: badgeStyle.text
+                          }}
+                        >
                           {phase.category}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-400 truncate mt-0.5">
+
+                      <p
+                        style={{
+                          fontSize: '0.75rem',
+                          color: 'var(--text-secondary)',
+                          margin: '3px 0 0 0',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }}
+                      >
                         {phase.description}
                       </p>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
                     {isSelected ? (
-                      <span className="flex items-center gap-1 text-xs text-indigo-400 font-mono">
+                      <span
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          fontSize: '0.72rem',
+                          fontWeight: 700,
+                          color: '#818cf8',
+                          fontFamily: 'monospace',
+                          background: 'rgba(99, 102, 241, 0.15)',
+                          padding: '3px 7px',
+                          borderRadius: '6px'
+                        }}
+                      >
                         <span>Select</span>
-                        <CornerDownLeft className="w-3.5 h-3.5" />
+                        <CornerDownLeft size={12} />
                       </span>
                     ) : (
-                      <ArrowRight className="w-4 h-4 text-slate-600" />
+                      <ArrowRight size={14} color="var(--text-muted)" opacity={0.6} />
                     )}
                   </div>
                 </div>
@@ -336,20 +558,38 @@ export const CommandPaletteModal: React.FC<CommandPaletteModalProps> = ({
         </div>
 
         {/* Footer info */}
-        <div className="p-3 border-t border-slate-800 bg-slate-950/80 flex items-center justify-between text-xs text-slate-400">
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1">
-              <kbd className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono">↑</kbd>
-              <kbd className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono">↓</kbd>
+        <div
+          style={{
+            padding: '12px 18px',
+            borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+            backgroundColor: 'rgba(9, 14, 28, 0.85)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            fontSize: '0.75rem',
+            color: 'var(--text-muted)'
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <kbd style={{ padding: '2px 5px', borderRadius: '4px', background: 'rgba(255, 255, 255, 0.08)', color: '#ffffff', fontFamily: 'monospace', fontSize: '0.7rem' }}>↑</kbd>
+              <kbd style={{ padding: '2px 5px', borderRadius: '4px', background: 'rgba(255, 255, 255, 0.08)', color: '#ffffff', fontFamily: 'monospace', fontSize: '0.7rem' }}>↓</kbd>
               <span>to navigate</span>
             </span>
-            <span className="flex items-center gap-1">
-              <kbd className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono">↵</kbd>
-              <span>to select</span>
+
+            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <kbd style={{ padding: '2px 6px', borderRadius: '4px', background: 'rgba(255, 255, 255, 0.08)', color: '#ffffff', fontFamily: 'monospace', fontSize: '0.7rem' }}>↵</kbd>
+              <span>to open</span>
+            </span>
+
+            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <kbd style={{ padding: '2px 6px', borderRadius: '4px', background: 'rgba(255, 255, 255, 0.08)', color: '#ffffff', fontFamily: 'monospace', fontSize: '0.7rem' }}>ESC</kbd>
+              <span>to close</span>
             </span>
           </div>
-          <div className="flex items-center gap-2 text-indigo-400 font-medium">
-            <Zap className="w-3.5 h-3.5" />
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#818cf8', fontWeight: 700 }}>
+            <Zap size={14} />
             <span>100 Modules Indexed</span>
           </div>
         </div>
