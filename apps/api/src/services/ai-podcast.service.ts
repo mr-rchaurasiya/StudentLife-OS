@@ -37,6 +37,7 @@ export class AiPodcastService {
         title: 'Quantum Wavefunctions & The Reality of Schrödinger\'s Cat',
         topic: 'Quantum Mechanics & Modern Physics',
         language: 'en-US',
+        mode: 'DEEP_DIVE',
         sourceType: 'TEXTBOOK_CHAPTER',
         totalDurationSeconds: 180,
         host1: this.host1,
@@ -86,10 +87,147 @@ export class AiPodcastService {
         createdAt: new Date().toISOString()
       },
       {
+        id: 'podcast-qa-biology-hinglish',
+        title: '❓ Viva & Exam Q&A Drill: Cell Biology & Genetics',
+        topic: 'Biology & Genetics (Viva / Question-Answer)',
+        language: 'hinglish',
+        mode: 'QA_INTERVIEW',
+        sourceType: 'NOTES',
+        totalDurationSeconds: 200,
+        host1: {
+          id: 'host-vikram',
+          name: 'Dr. Vikram Sir (Examiner)',
+          avatar: '👨‍🏫',
+          role: 'Viva Examiner & Question Host',
+          voiceGender: 'male',
+          personality: 'Direct, sharp, asks high-probability viva & competitive exam questions.'
+        },
+        host2: {
+          id: 'host-ananya',
+          name: 'Ananya Ma\'am (Answer Specialist)',
+          avatar: '👩‍🔬',
+          role: 'Concepts & Solution Strategist',
+          voiceGender: 'female',
+          personality: 'Crisp, structured step-by-step model answers with exam keywords.'
+        },
+        summaryKeyTakeaways: [
+          'Question 1: Mitosis produces 2 identical diploid cells, Meiosis produces 4 haploid gametes with crossing over.',
+          'Question 2: Okazaki fragments are synthesized on the lagging strand (5\' to 3\') and sealed by DNA Ligase.',
+          'Question 3: Mitochondria & Chloroplast have their own 70S ribosomes (Endosymbiotic theory).'
+        ],
+        dialogueTurns: [
+          {
+            id: 'turn-1',
+            speaker: 'host1',
+            text: 'Question 1: Ananya, viva me examiner sabse pehle puchte hain: Mitosis aur Meiosis ke beech ka fundamental difference kya hai?',
+            durationEstimateSeconds: 8,
+            keyConcepts: ['Question 1', 'Mitosis vs Meiosis']
+          },
+          {
+            id: 'turn-2',
+            speaker: 'host2',
+            text: 'Answer 1: Sir, Mitosis me ek cell 2 identical diploid daughter cells banata hai body growth ke liye. Jabki Meiosis me 4 genetically unique haploid gametes bante hain crossing-over ke karan! Exam tip: Prophase-1 ka Pachytene stage yaad rakhein jahan recombination hota hai.',
+            durationEstimateSeconds: 12,
+            keyConcepts: ['Model Answer', 'Pachytene Recombination']
+          },
+          {
+            id: 'turn-3',
+            speaker: 'host1',
+            text: 'Question 2: DNA Replication ke dauran Okazaki fragments kis strand par bante hain aur kyun?',
+            durationEstimateSeconds: 8,
+            keyConcepts: ['Question 2', 'Okazaki Fragments']
+          },
+          {
+            id: 'turn-4',
+            speaker: 'host2',
+            text: 'Answer 2: Okazaki fragments Lagging Strand par bante hain! Kyunki DNA Polymerase hamesha 5-prime to 3-prime direction me synthesize karta hai, isliye replication fork open hone par lagging strand discontinuous pieces me banta hai jise DNA Ligase seal karta hai.',
+            durationEstimateSeconds: 12,
+            keyConcepts: ['Model Answer', 'Lagging Strand & DNA Ligase']
+          },
+          {
+            id: 'turn-5',
+            speaker: 'host1',
+            text: 'Question 3: Endosymbiotic theory ke according mitochondria aur chloroplasts ke paas kaunsa ribosome hota hai?',
+            durationEstimateSeconds: 7,
+            keyConcepts: ['Question 3', 'Organelle Ribosomes']
+          },
+          {
+            id: 'turn-6',
+            speaker: 'host2',
+            text: 'Answer 3: Inke paas prokaryotic 70S ribosomes aur circular DNA hota hai, jo prove karta hai ki ye ancient bacterial symbionts the!',
+            durationEstimateSeconds: 9,
+            keyConcepts: ['Model Answer', '70S Ribosome & Circular DNA']
+          }
+        ],
+        createdAt: new Date(Date.now() - 3600000).toISOString()
+      },
+      {
+        id: 'podcast-reader-chemistry-hi',
+        title: '📖 अविरल व्याख्यान पाठ (Continuous Notes Reader): कार्बनिक रसायन एवं IUPAC नामकरण',
+        topic: 'Organic Chemistry (सीधा वाचन पाठ / As-Is Audio Lecture)',
+        language: 'hi-IN',
+        mode: 'CONTINUOUS_READER',
+        sourceType: 'NOTES',
+        totalDurationSeconds: 240,
+        host1: {
+          id: 'host-rajesh',
+          name: 'प्रो. राजेश शर्मा (Audio Narrator)',
+          avatar: '🎙️',
+          role: 'Continuous Lecture Narrator',
+          voiceGender: 'male',
+          personality: 'स्पष्ट, अविरल, बिना किसी रुकावट के नोट्स का सीधा धाराप्रवाह वाचन।'
+        },
+        host2: {
+          id: 'host-kavita',
+          name: 'डॉ. कविता वर्मा (Co-Narrator)',
+          avatar: '📖',
+          role: 'Section Narrator',
+          voiceGender: 'female',
+          personality: 'खंड-दर-खंड सारांश वाचन।'
+        },
+        summaryKeyTakeaways: [
+          'खंड 1: कार्बन की चतुःसंयोजकता एवं श्रृंखलन (Catenation) गुण।',
+          'खंड 2: संतृप्त एवं असंतृप्त हाइड्रोकार्बन का विभाजन।',
+          'खंड 3: IUPAC नामकरण में जनक श्रृंखला का चयन एवं क्रियात्मक समूह को प्राथमिकता।'
+        ],
+        dialogueTurns: [
+          {
+            id: 'turn-1',
+            speaker: 'host1',
+            text: 'अध्याय एक: कार्बनिक रसायन का परिचय। कार्बन परमाणु क्रमांक छह वाला एक अधातु है जिसकी संयोजकता चार होती है। अपने चतुःसंयोजी स्वभाव और श्रृंखलन के अद्वितीय गुण के कारण यह लाखों स्थिर सहसंयोजक यौगिकों का निर्माण करने में सक्षम है।',
+            durationEstimateSeconds: 12,
+            keyConcepts: ['खंड 1', 'कार्बन चतुःसंयोजकता']
+          },
+          {
+            id: 'turn-2',
+            speaker: 'host1',
+            text: 'अध्याय दो: हाइड्रोकार्बन का वर्गीकरण। वे कार्बनिक यौगिक जो केवल कार्बन और हाइड्रोजन से बने होते हैं, हाइड्रोकार्बन कहलाते हैं। इन्हें दो मुख्य श्रेणियों में विभाजित किया जाता है: प्रथम, संतृप्त हाइड्रोकार्बन जिनमें केवल एकल आबंध उपस्थित होते हैं तथा जिनका सामान्य सूत्र C n H 2n+2 है। द्वितीय, असंतृप्त हाइड्रोकार्बन जिनमें द्वि-आबंध अथवा त्रि-आबंध होते हैं।',
+            durationEstimateSeconds: 14,
+            keyConcepts: ['खंड 2', 'हाइड्रोकार्बन वर्गीकरण']
+          },
+          {
+            id: 'turn-3',
+            speaker: 'host1',
+            text: 'अध्याय तीन: आईयूपीएसी (IUPAC) नामकरण प्रणाली के मुख्य नियम। नियम एक: सदैव कार्बन परमाणुओं की सबसे लम्बी अविच्छिन्न श्रृंखला का चयन करें जिसे जनक श्रृंखला कहा जाता है। नियम दो: कार्बन श्रृंखला का क्रमांकन उस सिरे से करें जहां से मुख्य क्रियात्मक समूह को न्यूनतम संख्या प्राप्त हो सके।',
+            durationEstimateSeconds: 14,
+            keyConcepts: ['खंड 3', 'IUPAC नामकरण नियम']
+          },
+          {
+            id: 'turn-4',
+            speaker: 'host1',
+            text: 'अध्याय चार: महत्वपूर्ण समावयवता (Isomerism)। जब दो या दो से अधिक यौगिकों का अणुसूत्र समान हो परंतु उनकी संरचना अथवा त्रिविम विन्यास भिन्न हो, तो उन्हें समावयवी कहा जाता है। परीक्षा हेतु श्रृंखला समावयवता और स्थिति समावयवता पर विशेष ध्यान दें।',
+            durationEstimateSeconds: 13,
+            keyConcepts: ['खंड 4', 'समावयवता के प्रकार']
+          }
+        ],
+        createdAt: new Date(Date.now() - 5400000).toISOString()
+      },
+      {
         id: 'podcast-polity-hinglish',
         title: 'संविधान की प्रस्तावना और मौलिक अधिकार (Preamble & Fundamental Rights)',
         topic: 'Indian Polity & UPSC GS-II',
         language: 'hinglish',
+        mode: 'DEEP_DIVE',
         sourceType: 'SYLLABUS',
         totalDurationSeconds: 210,
         host1: {
@@ -138,18 +276,19 @@ export class AiPodcastService {
           {
             id: 'turn-4',
             speaker: 'host2',
-            text: 'Aur Article 32 jo Writs (Habeas Corpus, Mandamus, Prohibition, Certiorari, Quo-Warranto) deta hai, use Dr. Ambedkar ne Constitution ka Heart and Soul kaha tha.',
+            text: 'Aur Fundamental Rights me Article 21 (Right to Life) aur Article 32 (Writs) sabse zyada frequently tested areas hain. Inke landmark judgments ko hamesha revised rakhein.',
             durationEstimateSeconds: 9,
-            keyConcepts: ['Article 32', '5 Constitutional Writs']
+            keyConcepts: ['Article 21 & Article 32', 'Constitutional Writs']
           }
         ],
-        createdAt: new Date(Date.now() - 3600000).toISOString()
+        createdAt: new Date(Date.now() - 7200000).toISOString()
       },
       {
-        id: 'podcast-physics-hindi',
+        id: 'podcast-laws-of-motion-hi',
         title: 'न्यूटन के गति के नियम और संवेग संरक्षण (Laws of Motion)',
         topic: 'Physics & Mechanics (भौतिक विज्ञान)',
         language: 'hi-IN',
+        mode: 'DEEP_DIVE',
         sourceType: 'TEXTBOOK_CHAPTER',
         totalDurationSeconds: 190,
         host1: {
@@ -196,13 +335,14 @@ export class AiPodcastService {
             keyConcepts: ['संवेग संरक्षण', 'F_ext = 0']
           }
         ],
-        createdAt: new Date(Date.now() - 7200000).toISOString()
+        createdAt: new Date(Date.now() - 9000000).toISOString()
       },
       {
         id: 'podcast-neural-networks-es',
         title: 'Redes Neuronales Artificiales y Aprendizaje Profundo',
         topic: 'Inteligencia Artificial y Deep Learning',
         language: 'es-ES',
+        mode: 'DEEP_DIVE',
         sourceType: 'TEXTBOOK_CHAPTER',
         totalDurationSeconds: 170,
         host1: {
@@ -249,6 +389,7 @@ export class AiPodcastService {
         title: 'Thermodynamique et Entropie de l\'Univers',
         topic: 'Physique & Thermodynamique',
         language: 'fr-FR',
+        mode: 'DEEP_DIVE',
         sourceType: 'TEXTBOOK_CHAPTER',
         totalDurationSeconds: 160,
         host1: {
@@ -308,125 +449,233 @@ export class AiPodcastService {
   public generatePodcast(dto: GeneratePodcastDto): AiPodcast {
     const topic = dto.topic || 'General Core Study Topic';
     const lang = dto.language || 'en-US';
+    const mode = dto.mode || 'DEEP_DIVE';
     const id = `podcast-${Date.now()}`;
 
-    let turns: PodcastDialogueTurn[];
-    let takeaways: string[];
-    let title: string;
+    let turns: PodcastDialogueTurn[] = [];
+    let takeaways: string[] = [];
+    let title = '';
 
-    if (lang === 'hinglish') {
-      title = `AI Masterclass Podcast: ${topic} (Hinglish)`;
-      turns = [
-        {
-          id: 'turn-1',
+    if (mode === 'QA_INTERVIEW') {
+      if (lang === 'hi-IN') {
+        title = `❓ प्रश्नोत्तर (Q&A) अभ्यास सत्र: ${topic}`;
+        turns = [
+          {
+            id: 'turn-1',
+            speaker: 'host1',
+            text: `प्रश्न 1: ${topic} का सबसे बुनियादी सिद्धांत क्या है और यह परीक्षाओं में क्यों पूछा जाता है?`,
+            durationEstimateSeconds: 7,
+            keyConcepts: ['प्रश्न 1', 'मूल अवधारणा']
+          },
+          {
+            id: 'turn-2',
+            speaker: 'host2',
+            text: `उत्तर: ${topic} का मुख्य आधार इसके क्रियात्मक नियमों पर निर्भर करता है। परीक्षा में सदैव इसके सूत्र और प्राथमिक मान्यताओं (Assumptions) को स्पष्ट रूप से लिखें।`,
+            durationEstimateSeconds: 10,
+            keyConcepts: ['आदर्श उत्तर', 'परीक्षा सूत्र']
+          },
+          {
+            id: 'turn-3',
+            speaker: 'host1',
+            text: `प्रश्न 2: इस विषय से संबंधित संख्यात्मक प्रश्नों (Numericals) को हल करते समय सबसे सामान्य त्रुटि क्या होती है?`,
+            durationEstimateSeconds: 7,
+            keyConcepts: ['प्रश्न 2', 'संख्यात्मक त्रुटियां']
+          },
+          {
+            id: 'turn-4',
+            speaker: 'host2',
+            text: `उत्तर: विद्यार्थी प्रायः मात्रकों (SI Units) का रूपांतरण भूल जाते हैं। अतः गणना प्रारंभ करने से पहले सभी मानों को मानक मात्रकों में बदलें।`,
+            durationEstimateSeconds: 9,
+            keyConcepts: ['आदर्श उत्तर', 'मात्रक सावधानी']
+          }
+        ];
+        takeaways = [
+          `प्रश्न 1: ${topic} के सैद्धांतिक आधार और मान्यताओं को कंठस्थ रखें।`,
+          'प्रश्न 2: संख्यात्मक प्रश्नों में SI मात्रकों और सीमांत शर्तों का विशेष ध्यान रखें।'
+        ];
+      } else if (lang === 'hinglish') {
+        title = `❓ Exam & Viva Q&A Drill: ${topic}`;
+        turns = [
+          {
+            id: 'turn-1',
+            speaker: 'host1',
+            text: `Question 1: ${topic} se related sabse high-weightage viva question kya ban sakta hai?`,
+            durationEstimateSeconds: 7,
+            keyConcepts: ['Question 1', 'High Weightage Core']
+          },
+          {
+            id: 'turn-2',
+            speaker: 'host2',
+            text: `Answer 1: Examiner aksar ${topic} ke working principles aur primary governing equations puchte hain. Answer dete waqt first-principles se derive karke explain karein.`,
+            durationEstimateSeconds: 10,
+            keyConcepts: ['Model Answer', 'Governing Equations']
+          },
+          {
+            id: 'turn-3',
+            speaker: 'host1',
+            text: `Question 2: Exam me full marks score karne ke liye diagram ya equations me kya highlight karna chahiye?`,
+            durationEstimateSeconds: 7,
+            keyConcepts: ['Question 2', 'Answer Presentation']
+          },
+          {
+            id: 'turn-4',
+            speaker: 'host2',
+            text: `Answer 2: Always labeled diagrams banayein, key formulas ko box me band karein aur boundary conditions ko clearly mention karein!`,
+            durationEstimateSeconds: 9,
+            keyConcepts: ['Model Answer', 'Diagram Presentation']
+          }
+        ];
+        takeaways = [
+          `Q&A 1: ${topic} ke primary governing equations ko derivation ke sath tayyar karein.`,
+          'Q&A 2: Labeled diagrams aur SI units se step-marking me full score secure karein.'
+        ];
+      } else {
+        title = `❓ Viva & Conceptual Q&A Drill: ${topic}`;
+        turns = [
+          {
+            id: 'turn-1',
+            speaker: 'host1',
+            text: `Question 1: What is the single most critical governing principle behind ${topic}?`,
+            durationEstimateSeconds: 7,
+            keyConcepts: ['Question 1', 'Governing Principle']
+          },
+          {
+            id: 'turn-2',
+            speaker: 'host2',
+            text: `Answer: The core principle of ${topic} relies on conservation and boundary invariance. In written exams, always state the standard mathematical formulation first before providing boundary conditions.`,
+            durationEstimateSeconds: 10,
+            keyConcepts: ['Model Answer', 'Mathematical Formulation']
+          },
+          {
+            id: 'turn-3',
+            speaker: 'host1',
+            text: `Question 2: What common pitfall should students avoid when solving numerical questions on this topic?`,
+            durationEstimateSeconds: 7,
+            keyConcepts: ['Question 2', 'Common Pitfalls']
+          },
+          {
+            id: 'turn-4',
+            speaker: 'host2',
+            text: `Answer: Neglecting standard unit normalization and sign conventions. Always verify dimensions of your final expression before substituting numerical constants.`,
+            durationEstimateSeconds: 9,
+            keyConcepts: ['Model Answer', 'Unit Normalization']
+          }
+        ];
+        takeaways = [
+          `Q1: Master the fundamental governing formulation of ${topic}.`,
+          'Q2: Ensure rigorous dimensional consistency and sign convention adherence.'
+        ];
+      }
+    } else if (mode === 'CONTINUOUS_READER') {
+      if (dto.sourceText && dto.sourceText.trim().length > 10) {
+        const paragraphs = dto.sourceText
+          .split(/\n\s*\n|\n(?=[0-9]+\.|\*|-|Chapter|Section|भाग|अध्याय)/)
+          .map(p => p.trim())
+          .filter(p => p.length > 0);
+
+        title = `📖 Continuous Notes Reader: ${topic}`;
+        turns = paragraphs.map((p, idx) => ({
+          id: `turn-${idx + 1}`,
           speaker: 'host1',
-          text: `Welcome students! Aaj hum ${topic} ke sabse important exam concepts ko break down karenge.`,
-          durationEstimateSeconds: 7,
-          keyConcepts: ['Topic Overview', 'Concept Foundations']
-        },
-        {
-          id: 'turn-2',
-          speaker: 'host2',
-          text: `Haan Alex! Previous year papers dekhein to ${topic} se direct questions aate hain. Iske primary formulas aur exceptions ko yaad rakhna bahut zaroori hai.`,
-          durationEstimateSeconds: 8,
-          keyConcepts: ['Exam Weightage', 'Formula Application']
-        },
-        {
-          id: 'turn-3',
-          speaker: 'host1',
-          text: `Ek golden tip: numerical solve karte waqt always units aur boundary conditions check karein.`,
-          durationEstimateSeconds: 7,
-          keyConcepts: ['Numerical Strategy', 'Boundary Limits']
-        },
-        {
-          id: 'turn-4',
-          speaker: 'host2',
-          text: `Aur daily revision ke liye 1-page quick formula sheet banayein taaki exam day par zero confusion ho!`,
-          durationEstimateSeconds: 7,
-          keyConcepts: ['Revision Technique', 'Spaced Recall']
+          text: p,
+          durationEstimateSeconds: Math.max(6, Math.round(p.split(' ').length * 0.4)),
+          keyConcepts: [`Section ${idx + 1}`, topic]
+        }));
+
+        takeaways = [
+          `Complete continuous reading of provided notes for ${topic}.`,
+          `${turns.length} structured sections synthesized for uninterrupted audiobook listening.`
+        ];
+      } else {
+        if (lang === 'hi-IN') {
+          title = `📖 अविरल व्याख्यान पाठ (Continuous Audio Lecture): ${topic}`;
+          turns = [
+            {
+              id: 'turn-1',
+              speaker: 'host1',
+              text: `अध्याय एक: ${topic} की व्यापक प्रस्तावना। इस विषय के अंतर्गत हम उन सभी आधारभूत नियमों और समीकरणों का अध्ययन करेंगे जो पाठ्यक्रम और प्रतियोगी परीक्षाओं की दृष्टि से अत्यंत महत्वपूर्ण हैं।`,
+              durationEstimateSeconds: 11,
+              keyConcepts: ['अध्याय 1', 'प्रस्तावना']
+            },
+            {
+              id: 'turn-2',
+              speaker: 'host1',
+              text: `अध्याय दो: मुख्य सूत्र एवं सिद्धांत। ${topic} के सभी प्रमुख सिद्धांतों को तार्किक क्रम में व्यवस्थित किया गया है ताकि आप बिना किसी व्यवधान के इनका क्रमिक अध्ययन कर सकें।`,
+              durationEstimateSeconds: 11,
+              keyConcepts: ['अध्याय 2', 'सैद्धांतिक संरचना']
+            },
+            {
+              id: 'turn-3',
+              speaker: 'host1',
+              text: `अध्याय तीन: परीक्षा हेतु महत्वपूर्ण निष्कर्ष एवं सारांश। संपूर्ण सामग्री के अध्ययन के उपरांत प्रमुख बिंदुओं का नियमित पुनरावलोकन सुनिश्चित करें।`,
+              durationEstimateSeconds: 10,
+              keyConcepts: ['अध्याय 3', 'निष्कर्ष']
+            }
+          ];
+          takeaways = [
+            `${topic} का सम्पूर्ण अविरल एवं धाराप्रवाह वाचन पाठ।`,
+            'बिना किसी रुकावट के लगातार सुनने हेतु अनुकूलित।'
+          ];
+        } else if (lang === 'hinglish') {
+          title = `📖 Continuous Notes Audio Reader: ${topic}`;
+          turns = [
+            {
+              id: 'turn-1',
+              speaker: 'host1',
+              text: `Section 1: Overview of ${topic}. Is chapter ke essential conceptual points aur exam definitions ko hum step-by-step continuous narration me cover kar rahe hain.`,
+              durationEstimateSeconds: 10,
+              keyConcepts: ['Section 1', 'Introduction']
+            },
+            {
+              id: 'turn-2',
+              speaker: 'host1',
+              text: `Section 2: Governing Principles & Formulas. ${topic} ke sabhi critical formulas aur application rules ko audio notes ke roop me dhyan se sunein.`,
+              durationEstimateSeconds: 11,
+              keyConcepts: ['Section 2', 'Core Rules']
+            },
+            {
+              id: 'turn-3',
+              speaker: 'host1',
+              text: `Section 3: Summary & Key Takeaways. Revision karte waqt in audio points ko regularly repeat karein taaki quick recall ban sake.`,
+              durationEstimateSeconds: 9,
+              keyConcepts: ['Section 3', 'Review Summary']
+            }
+          ];
+          takeaways = [
+            `Seamless continuous reading flow for ${topic}.`,
+            'Ideal for passive listening while commuting or revising.'
+          ];
+        } else {
+          title = `📖 Continuous Lecture Reader: ${topic}`;
+          turns = [
+            {
+              id: 'turn-1',
+              speaker: 'host1',
+              text: `Section 1: Introduction to ${topic}. We begin by establishing the comprehensive theoretical background and defining the core parameters governing this domain.`,
+              durationEstimateSeconds: 10,
+              keyConcepts: ['Section 1', 'Introduction']
+            },
+            {
+              id: 'turn-2',
+              speaker: 'host1',
+              text: `Section 2: Primary Formulations and Analytical Laws. ${topic} incorporates direct functional relationships that remain central to advanced problem solving.`,
+              durationEstimateSeconds: 10,
+              keyConcepts: ['Section 2', 'Analytical Laws']
+            },
+            {
+              id: 'turn-3',
+              speaker: 'host1',
+              text: `Section 3: Practical Takeaways and Review. Consolidate these key points into active memory through systematic listening.`,
+              durationEstimateSeconds: 9,
+              keyConcepts: ['Section 3', 'Summary']
+            }
+          ];
+          takeaways = [
+            `Uninterrupted continuous audio reading of ${topic}.`,
+            'Designed for focused, distraction-free audio study.'
+          ];
         }
-      ];
-      takeaways = [
-        `${topic} ke core first-principles aur standard exceptions ko master karein.`,
-        'Numerical questions me boundary conditions aur SI units verify karein.',
-        'Spaced repetition aur 1-page formula summary se retention 3x badhayein.'
-      ];
-    } else if (lang === 'hi-IN') {
-      title = `AI ऑडियो पॉडकास्ट: ${topic} (हिन्दी)`;
-      turns = [
-        {
-          id: 'turn-1',
-          speaker: 'host1',
-          text: `नमस्कार विद्यार्थियों! आज के इस विशेष सत्र में हम ${topic} के प्रमुख सिद्धांतों का गहन विश्लेषण करेंगे।`,
-          durationEstimateSeconds: 8,
-          keyConcepts: ['विषय परिचय', 'मूल सिद्धांत']
-        },
-        {
-          id: 'turn-2',
-          speaker: 'host2',
-          text: `जी बिल्कुल! प्रतियोगी परीक्षाओं की दृष्टि से ${topic} के मुख्य सूत्र और व्यावहारिक अनुप्रयोग अत्यंत महत्वपूर्ण हैं।`,
-          durationEstimateSeconds: 8,
-          keyConcepts: ['परीक्षा रणनीति', 'सूत्र अनुप्रयोग']
-        },
-        {
-          id: 'turn-3',
-          speaker: 'host1',
-          text: `प्रश्नों को हल करते समय सीमांत शर्तों (Boundary Conditions) का ध्यान रखें और चरणबद्ध गणना करें।`,
-          durationEstimateSeconds: 8,
-          keyConcepts: ['चरणबद्ध समाधान', 'सटीकता']
-        }
-      ];
-      takeaways = [
-        `${topic} के सैद्धांतिक आधार और सूत्रों को समझें।`,
-        'अभ्यास प्रश्नों में इकाइयों और सीमाओं का ध्यान रखें।',
-        'नियमित अंतराल पर मुख्य बिंदुओं का पुनरावलोकन करें।'
-      ];
-    } else if (lang === 'es-ES') {
-      title = `Podcast de Estudio IA: ${topic} (Español)`;
-      turns = [
-        {
-          id: 'turn-1',
-          speaker: 'host1',
-          text: `¡Bienvenidos estudiantes! Hoy desglosamos los conceptos clave de ${topic} para dominar tus exámenes.`,
-          durationEstimateSeconds: 7,
-          keyConcepts: ['Resumen del Tema', 'Fundamentos']
-        },
-        {
-          id: 'turn-2',
-          speaker: 'host2',
-          text: `¡Excelente! Para ${topic}, es crucial comprender la derivación matemática y las aplicaciones prácticas.`,
-          durationEstimateSeconds: 8,
-          keyConcepts: ['Estrategia de Examen', 'Derivación']
-        }
-      ];
-      takeaways = [
-        `Domina los fundamentos esenciales de ${topic}.`,
-        'Verifica siempre las unidades y condiciones de frontera.',
-        'Aplica la técnica de repetición espaciada.'
-      ];
-    } else if (lang === 'fr-FR') {
-      title = `Masterclass Audio IA: ${topic} (Français)`;
-      turns = [
-        {
-          id: 'turn-1',
-          speaker: 'host1',
-          text: `Bienvenue à tous! Aujourd'hui, nous décomposons les principes fondamentaux de ${topic}.`,
-          durationEstimateSeconds: 7,
-          keyConcepts: ['Vue d\'ensemble', 'Principes Fondamentaux']
-        },
-        {
-          id: 'turn-2',
-          speaker: 'host2',
-          text: `Tout à fait! Pour réussir vos épreuves sur ${topic}, concentrez-vous sur les relations directes et les formules clés.`,
-          durationEstimateSeconds: 8,
-          keyConcepts: ['Stratégie d\'Examen', 'Formules Clés']
-        }
-      ];
-      takeaways = [
-        `Comprendre les bases théoriques de ${topic}.`,
-        'Analyser les conditions aux limites dans les calculs.',
-        'Mémoriser les formules avec des fiches de synthèse.'
-      ];
+      }
     } else {
       title = `AI Masterclass Podcast: ${topic}`;
       turns = [
@@ -471,8 +720,9 @@ export class AiPodcastService {
       title,
       topic,
       language: lang,
+      mode,
       sourceType: dto.sourceText ? 'NOTES' : 'SYLLABUS',
-      totalDurationSeconds: turns.length * 28,
+      totalDurationSeconds: turns.reduce((acc, t) => acc + (t.durationEstimateSeconds || 8), 0),
       host1: this.host1,
       host2: this.host2,
       summaryKeyTakeaways: takeaways,

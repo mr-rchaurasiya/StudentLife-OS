@@ -19,7 +19,8 @@ import {
 } from 'lucide-react';
 import {
   AiPodcast,
-  GeneratePodcastDto
+  GeneratePodcastDto,
+  PodcastMode
 } from '@studentlife/shared';
 
 const LANGUAGE_OPTIONS = [
@@ -36,10 +37,18 @@ const LANGUAGE_OPTIONS = [
   { code: 'mr-IN', label: 'मराठी (Marathi)', flag: '🇮🇳' }
 ];
 
+const MODE_OPTIONS = [
+  { code: 'ALL', label: 'All Formats', icon: '✨' },
+  { code: 'DEEP_DIVE', label: '2-Host Dialogue', icon: '🎙️' },
+  { code: 'QA_INTERVIEW', label: 'Q&A Viva Drill', icon: '❓' },
+  { code: 'CONTINUOUS_READER', label: 'Continuous Reader', icon: '📖' }
+];
+
 export const AiPodcastStudioView: React.FC = () => {
   const [podcasts, setPodcasts] = useState<AiPodcast[]>([]);
   const [activePodcastId, setActivePodcastId] = useState<string>('podcast-quantum-physics');
   const [selectedLanguageFilter, setSelectedLanguageFilter] = useState<string>('ALL');
+  const [selectedModeFilter, setSelectedModeFilter] = useState<string>('ALL');
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [activeTurnIndex, setActiveTurnIndex] = useState<number>(0);
@@ -48,6 +57,7 @@ export const AiPodcastStudioView: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
   const [topicInput, setTopicInput] = useState<string>('Indian Constitution & Fundamental Rights');
   const [languageInput, setLanguageInput] = useState<string>('hinglish');
+  const [modeInput, setModeInput] = useState<PodcastMode>('DEEP_DIVE');
   const [notesInput, setNotesInput] = useState<string>('');
   const [isSynthesizing, setIsSynthesizing] = useState<boolean>(false);
   const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
@@ -100,9 +110,11 @@ export const AiPodcastStudioView: React.FC = () => {
     }
   };
 
-  const filteredPodcasts = selectedLanguageFilter === 'ALL'
-    ? podcasts
-    : podcasts.filter(p => p.language === selectedLanguageFilter || (selectedLanguageFilter === 'en-US' && !p.language));
+  const filteredPodcasts = podcasts.filter(p => {
+    const matchesLang = selectedLanguageFilter === 'ALL' || p.language === selectedLanguageFilter || (selectedLanguageFilter === 'en-US' && !p.language);
+    const matchesMode = selectedModeFilter === 'ALL' || (p.mode || 'DEEP_DIVE') === selectedModeFilter;
+    return matchesLang && matchesMode;
+  });
 
   const activePodcast = podcasts.find(p => p.id === activePodcastId) || filteredPodcasts[0] || podcasts[0];
 
@@ -118,6 +130,17 @@ export const AiPodcastStudioView: React.FC = () => {
       case 'bn-IN': return '🇮🇳 বাংলা';
       case 'mr-IN': return '🇮🇳 मराठी';
       default: return '🇺🇸 English';
+    }
+  };
+
+  const getModeBadge = (mode?: string) => {
+    switch (mode) {
+      case 'QA_INTERVIEW':
+        return { label: 'Q&A Viva', icon: '❓', color: '#fbbf24', bg: 'rgba(245, 158, 11, 0.18)', border: 'rgba(245, 158, 11, 0.35)' };
+      case 'CONTINUOUS_READER':
+        return { label: 'Straight Reader', icon: '📖', color: '#34d399', bg: 'rgba(16, 185, 129, 0.18)', border: 'rgba(16, 185, 129, 0.35)' };
+      default:
+        return { label: '2-Host Debate', icon: '🎙️', color: '#c084fc', bg: 'rgba(168, 85, 247, 0.18)', border: 'rgba(168, 85, 247, 0.35)' };
     }
   };
 
@@ -313,6 +336,7 @@ export const AiPodcastStudioView: React.FC = () => {
       const dto: GeneratePodcastDto = {
         topic: topicInput,
         language: languageInput,
+        mode: modeInput,
         sourceText: notesInput || undefined,
         style: 'DEEP_DIVE'
       };
@@ -400,11 +424,11 @@ export const AiPodcastStudioView: React.FC = () => {
                     gap: '5px'
                   }}
                 >
-                  <Sparkles size={12} color="#c084fc" /> Multi-Language 2-Host Dialogue
+                  <Sparkles size={12} color="#c084fc" /> 3 Study Formats &bull; Multi-Language
                 </span>
               </div>
               <p style={{ fontSize: '0.9rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
-                Convert any lecture notes or syllabus topic into an interactive two-host audio discussion in your preferred native language.
+                2-Host Discussions, Question & Answer Viva Drills, ya Continuous Notes Audiobook Reader &mdash; apni pasand ki bhasha me sunein.
               </p>
             </div>
           </div>
@@ -434,35 +458,70 @@ export const AiPodcastStudioView: React.FC = () => {
           </div>
         </div>
 
-        {/* Language Filter Chips Bar */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '20px', paddingTop: '16px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', overflowX: 'auto', paddingBottom: '4px' }}>
-          <span style={{ fontSize: '0.78rem', color: '#94a3b8', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '5px', flexShrink: 0 }}>
-            <Globe size={14} color="#38bdf8" /> Filter Language:
-          </span>
-          {LANGUAGE_OPTIONS.slice(0, 6).map((lang) => {
-            const isActive = selectedLanguageFilter === lang.code;
-            return (
-              <button
-                key={lang.code}
-                onClick={() => setSelectedLanguageFilter(lang.code)}
-                className="glow-hover"
-                style={{
-                  padding: '5px 12px',
-                  borderRadius: '10px',
-                  border: isActive ? '1px solid #c084fc' : '1px solid rgba(255, 255, 255, 0.08)',
-                  backgroundColor: isActive ? 'rgba(168, 85, 247, 0.25)' : 'rgba(2, 6, 23, 0.7)',
-                  color: isActive ? '#f8fafc' : '#94a3b8',
-                  fontSize: '0.75rem',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  whiteSpace: 'nowrap',
-                  flexShrink: 0
-                }}
-              >
-                {lang.flag} {lang.label}
-              </button>
-            );
-          })}
+        {/* Format Mode & Language Filters Row */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '20px', paddingTop: '16px', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+          {/* Format Chips */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflowX: 'auto', paddingBottom: '2px' }}>
+            <span style={{ fontSize: '0.75rem', color: '#cbd5e1', fontWeight: 700, flexShrink: 0 }}>Format:</span>
+            {MODE_OPTIONS.map((m) => {
+              const isActive = selectedModeFilter === m.code;
+              return (
+                <button
+                  key={m.code}
+                  onClick={() => setSelectedModeFilter(m.code)}
+                  className="glow-hover"
+                  style={{
+                    padding: '4px 12px',
+                    borderRadius: '8px',
+                    border: isActive ? '1px solid #38bdf8' : '1px solid rgba(255, 255, 255, 0.08)',
+                    backgroundColor: isActive ? 'rgba(56, 189, 248, 0.22)' : 'rgba(2, 6, 23, 0.7)',
+                    color: isActive ? '#38bdf8' : '#94a3b8',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '5px',
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0
+                  }}
+                >
+                  <span>{m.icon}</span> {m.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Language Filter Chips */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflowX: 'auto', paddingBottom: '2px' }}>
+            <span style={{ fontSize: '0.75rem', color: '#cbd5e1', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
+              <Globe size={13} color="#c084fc" /> Language:
+            </span>
+            {LANGUAGE_OPTIONS.slice(0, 6).map((lang) => {
+              const isActive = selectedLanguageFilter === lang.code;
+              return (
+                <button
+                  key={lang.code}
+                  onClick={() => setSelectedLanguageFilter(lang.code)}
+                  className="glow-hover"
+                  style={{
+                    padding: '4px 10px',
+                    borderRadius: '8px',
+                    border: isActive ? '1px solid #c084fc' : '1px solid rgba(255, 255, 255, 0.08)',
+                    backgroundColor: isActive ? 'rgba(168, 85, 247, 0.25)' : 'rgba(2, 6, 23, 0.7)',
+                    color: isActive ? '#f8fafc' : '#94a3b8',
+                    fontSize: '0.72rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0
+                  }}
+                >
+                  {lang.flag} {lang.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -491,11 +550,12 @@ export const AiPodcastStudioView: React.FC = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {filteredPodcasts.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '24px 12px', color: '#64748b', fontSize: '0.8rem' }}>
-                No podcasts in this language. Click &ldquo;Generate New Podcast&rdquo; to create one!
+                No episodes found in this filter. Click &ldquo;Generate New Podcast&rdquo; to create one!
               </div>
             ) : (
               filteredPodcasts.map(pod => {
                 const isActive = pod.id === activePodcast?.id;
+                const modeBadge = getModeBadge(pod.mode);
                 return (
                   <button
                     key={pod.id}
@@ -519,20 +579,24 @@ export const AiPodcastStudioView: React.FC = () => {
                       boxShadow: isActive ? '0 4px 14px rgba(168, 85, 247, 0.25)' : 'none'
                     }}
                   >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '4px' }}>
                       <span 
                         style={{
-                          backgroundColor: isActive ? 'rgba(168, 85, 247, 0.25)' : 'rgba(255, 255, 255, 0.08)',
-                          color: isActive ? '#e9d5ff' : '#cbd5e1',
-                          padding: '2px 8px',
+                          backgroundColor: modeBadge.bg,
+                          color: modeBadge.color,
+                          border: `1px solid ${modeBadge.border}`,
+                          padding: '2px 7px',
                           borderRadius: '6px',
-                          fontSize: '0.68rem',
-                          fontWeight: 800
+                          fontSize: '0.65rem',
+                          fontWeight: 800,
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '3px'
                         }}
                       >
-                        {getTagOrTopic(pod)}
+                        <span>{modeBadge.icon}</span> {modeBadge.label}
                       </span>
-                      <span style={{ fontSize: '0.7rem', color: '#38bdf8', fontFamily: 'monospace', fontWeight: 700 }}>
+                      <span style={{ fontSize: '0.68rem', color: '#38bdf8', fontFamily: 'monospace', fontWeight: 700 }}>
                         {getLanguageTag(pod.language)}
                       </span>
                     </div>
@@ -540,7 +604,7 @@ export const AiPodcastStudioView: React.FC = () => {
                       {pod.title}
                     </div>
                     <div style={{ fontSize: '0.7rem', color: '#64748b' }}>
-                      {pod.dialogueTurns.length} Turns &bull; ~{Math.round(pod.totalDurationSeconds / 60)} Mins
+                      {pod.dialogueTurns.length} {pod.mode === 'CONTINUOUS_READER' ? 'Sections' : 'Turns'} &bull; ~{Math.round(pod.totalDurationSeconds / 60)} Mins
                     </div>
                   </button>
                 );
@@ -570,8 +634,22 @@ export const AiPodcastStudioView: React.FC = () => {
               <div style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '18px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#c084fc', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                      {activePodcast.topic}
+                    <span 
+                      style={{ 
+                        backgroundColor: getModeBadge(activePodcast.mode).bg, 
+                        color: getModeBadge(activePodcast.mode).color, 
+                        border: `1px solid ${getModeBadge(activePodcast.mode).border}`,
+                        padding: '2px 8px', 
+                        borderRadius: '6px', 
+                        fontSize: '0.7rem', 
+                        fontWeight: 800,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}
+                    >
+                      <span>{getModeBadge(activePodcast.mode).icon}</span>
+                      {getModeBadge(activePodcast.mode).label}
                     </span>
                     <span style={{ backgroundColor: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', padding: '2px 8px', borderRadius: '6px', fontSize: '0.7rem', fontWeight: 700 }}>
                       {getLanguageTag(activePodcast.language)}
@@ -585,7 +663,7 @@ export const AiPodcastStudioView: React.FC = () => {
                   {activePodcast.title}
                 </h2>
 
-                {/* Hosts Avatars */}
+                {/* Hosts Avatars / Audio Reader Badge */}
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', paddingTop: '4px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: 'rgba(2, 6, 23, 0.8)', padding: '8px 14px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
                     <span style={{ fontSize: '1.4rem' }}>{activePodcast.host1.avatar}</span>
@@ -594,13 +672,15 @@ export const AiPodcastStudioView: React.FC = () => {
                       <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>{activePodcast.host1.role}</div>
                     </div>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: 'rgba(2, 6, 23, 0.8)', padding: '8px 14px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                    <span style={{ fontSize: '1.4rem' }}>{activePodcast.host2.avatar}</span>
-                    <div>
-                      <div style={{ fontWeight: 800, color: '#fbcfe8', fontSize: '0.82rem' }}>{activePodcast.host2.name}</div>
-                      <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>{activePodcast.host2.role}</div>
+                  {activePodcast.host2 && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: 'rgba(2, 6, 23, 0.8)', padding: '8px 14px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                      <span style={{ fontSize: '1.4rem' }}>{activePodcast.host2.avatar}</span>
+                      <div>
+                        <div style={{ fontWeight: 800, color: '#fbcfe8', fontSize: '0.82rem' }}>{activePodcast.host2.name}</div>
+                        <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>{activePodcast.host2.role}</div>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
 
@@ -740,25 +820,27 @@ export const AiPodcastStudioView: React.FC = () => {
                     </button>
 
                     {/* Audition Host 2 */}
-                    <button
-                      onClick={() => handleTestVoice('host2')}
-                      style={{
-                        padding: '4px 10px',
-                        borderRadius: '8px',
-                        border: '1px solid rgba(244, 114, 182, 0.3)',
-                        backgroundColor: voiceTestPlaying === 'host2' ? 'rgba(244, 114, 182, 0.3)' : 'rgba(255, 255, 255, 0.05)',
-                        color: '#fbcfe8',
-                        fontSize: '0.72rem',
-                        fontWeight: 700,
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '5px'
-                      }}
-                    >
-                      <Volume2 size={13} color="#f472b6" />
-                      {voiceTestPlaying === 'host2' ? 'Speaking...' : `Test ${activePodcast.host2.name.split(' ')[0]}`}
-                    </button>
+                    {activePodcast.host2 && (
+                      <button
+                        onClick={() => handleTestVoice('host2')}
+                        style={{
+                          padding: '4px 10px',
+                          borderRadius: '8px',
+                          border: '1px solid rgba(244, 114, 182, 0.3)',
+                          backgroundColor: voiceTestPlaying === 'host2' ? 'rgba(244, 114, 182, 0.3)' : 'rgba(255, 255, 255, 0.05)',
+                          color: '#fbcfe8',
+                          fontSize: '0.72rem',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '5px'
+                        }}
+                      >
+                        <Volume2 size={13} color="#f472b6" />
+                        {voiceTestPlaying === 'host2' ? 'Speaking...' : `Test ${activePodcast.host2.name.split(' ')[0]}`}
+                      </button>
+                    )}
 
                     <button
                       onClick={() => setShowVoiceSettings(!showVoiceSettings)}
@@ -795,7 +877,7 @@ export const AiPodcastStudioView: React.FC = () => {
                   >
                     <div>
                       <label style={{ fontSize: '0.72rem', fontWeight: 700, color: '#a5b4fc', display: 'block', marginBottom: '4px' }}>
-                        👨‍🏫 {activePodcast.host1.name} (Male Voice):
+                        👨‍🏫 {activePodcast.host1.name} (Primary Voice):
                       </label>
                       <select
                         value={customHost1Voice || getVoiceForSpeaker('host1', activePodcast.language)?.name || ''}
@@ -811,7 +893,7 @@ export const AiPodcastStudioView: React.FC = () => {
                           outline: 'none'
                         }}
                       >
-                        <option value="">Auto Indian Human Male Voice</option>
+                        <option value="">Auto Indian Human Voice</option>
                         {availableVoices.map(v => (
                           <option key={`h1-${v.name}`} value={v.name}>
                             {v.name} ({v.lang})
@@ -820,42 +902,50 @@ export const AiPodcastStudioView: React.FC = () => {
                       </select>
                     </div>
 
-                    <div>
-                      <label style={{ fontSize: '0.72rem', fontWeight: 700, color: '#f472b6', display: 'block', marginBottom: '4px' }}>
-                        👩‍🔬 {activePodcast.host2.name} (Female Voice):
-                      </label>
-                      <select
-                        value={customHost2Voice || getVoiceForSpeaker('host2', activePodcast.language)?.name || ''}
-                        onChange={(e) => setCustomHost2Voice(e.target.value)}
-                        style={{
-                          width: '100%',
-                          backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                          border: '1px solid rgba(244, 114, 182, 0.3)',
-                          borderRadius: '8px',
-                          color: '#ffffff',
-                          padding: '6px 10px',
-                          fontSize: '0.75rem',
-                          outline: 'none'
-                        }}
-                      >
-                        <option value="">Auto Indian Human Female Voice</option>
-                        {availableVoices.map(v => (
-                          <option key={`h2-${v.name}`} value={v.name}>
-                            {v.name} ({v.lang})
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                    {activePodcast.host2 && (
+                      <div>
+                        <label style={{ fontSize: '0.72rem', fontWeight: 700, color: '#f472b6', display: 'block', marginBottom: '4px' }}>
+                          👩‍🔬 {activePodcast.host2.name} (Secondary Voice):
+                        </label>
+                        <select
+                          value={customHost2Voice || getVoiceForSpeaker('host2', activePodcast.language)?.name || ''}
+                          onChange={(e) => setCustomHost2Voice(e.target.value)}
+                          style={{
+                            width: '100%',
+                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                            border: '1px solid rgba(244, 114, 182, 0.3)',
+                            borderRadius: '8px',
+                            color: '#ffffff',
+                            padding: '6px 10px',
+                            fontSize: '0.75rem',
+                            outline: 'none'
+                          }}
+                        >
+                          <option value="">Auto Indian Female Voice</option>
+                          {availableVoices.map(v => (
+                            <option key={`h2-${v.name}`} value={v.name}>
+                              {v.name} ({v.lang})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
 
-              {/* Dialogue Transcript Stream */}
+              {/* Dialogue Transcript Stream with Mode-Specific Rendering */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', maxHeight: '460px', overflowY: 'auto', paddingRight: '4px' }}>
                 {activePodcast.dialogueTurns.map((turn, tIdx) => {
                   const isCurrent = tIdx === activeTurnIndex && isPlaying;
                   const isHost1 = turn.speaker === 'host1';
-                  const currentHost = isHost1 ? activePodcast.host1 : activePodcast.host2;
+                  const currentHost = isHost1 ? activePodcast.host1 : (activePodcast.host2 || activePodcast.host1);
+
+                  // Contextual headers based on Mode
+                  const isQA = activePodcast.mode === 'QA_INTERVIEW';
+                  const isReader = activePodcast.mode === 'CONTINUOUS_READER';
+                  const isQuestion = isQA && isHost1;
+                  const isAnswer = isQA && !isHost1;
 
                   return (
                     <div
@@ -866,10 +956,22 @@ export const AiPodcastStudioView: React.FC = () => {
                       }}
                       className="glow-hover"
                       style={{
-                        padding: '16px',
+                        padding: isReader ? '18px 20px' : '16px',
                         borderRadius: '16px',
-                        border: isCurrent ? '1px solid #c084fc' : '1px solid rgba(255, 255, 255, 0.08)',
-                        backgroundColor: isCurrent ? 'rgba(168, 85, 247, 0.18)' : 'rgba(2, 6, 23, 0.6)',
+                        border: isCurrent 
+                          ? '1px solid #c084fc' 
+                          : isQuestion 
+                            ? '1px solid rgba(245, 158, 11, 0.35)' 
+                            : isAnswer
+                              ? '1px solid rgba(52, 211, 153, 0.35)'
+                              : '1px solid rgba(255, 255, 255, 0.08)',
+                        backgroundColor: isCurrent 
+                          ? 'rgba(168, 85, 247, 0.18)' 
+                          : isQuestion
+                            ? 'rgba(245, 158, 11, 0.08)'
+                            : isAnswer
+                              ? 'rgba(16, 185, 129, 0.08)'
+                              : 'rgba(2, 6, 23, 0.6)',
                         display: 'flex',
                         gap: '14px',
                         cursor: 'pointer',
@@ -877,15 +979,25 @@ export const AiPodcastStudioView: React.FC = () => {
                         boxShadow: isCurrent ? '0 4px 18px rgba(168, 85, 247, 0.25)' : 'none'
                       }}
                     >
-                      <div style={{ fontSize: '1.6rem', flexShrink: 0, marginTop: '2px' }}>{currentHost.avatar}</div>
+                      <div style={{ fontSize: '1.6rem', flexShrink: 0, marginTop: '2px' }}>
+                        {isQuestion ? '❓' : isAnswer ? '💡' : isReader ? '📖' : currentHost.avatar}
+                      </div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', flex: 1 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ fontWeight: 800, fontSize: '0.82rem', color: isHost1 ? '#a5b4fc' : '#f472b6' }}>
-                            {currentHost.name}
+                          <span 
+                            style={{ 
+                              fontWeight: 800, 
+                              fontSize: '0.82rem', 
+                              color: isQuestion ? '#fbbf24' : isAnswer ? '#34d399' : isHost1 ? '#a5b4fc' : '#f472b6' 
+                            }}
+                          >
+                            {isQuestion ? `Question Turn: ${currentHost.name}` : isAnswer ? `Model Answer: ${currentHost.name}` : isReader ? `Section ${tIdx + 1} &bull; Audio Narration` : currentHost.name}
                           </span>
-                          <span style={{ fontSize: '0.68rem', color: '#64748b', fontFamily: 'monospace' }}>Turn {tIdx + 1}</span>
+                          <span style={{ fontSize: '0.68rem', color: '#64748b', fontFamily: 'monospace' }}>
+                            {isReader ? `Part ${tIdx + 1}` : `Turn ${tIdx + 1}`}
+                          </span>
                         </div>
-                        <p style={{ margin: 0, fontSize: '0.88rem', color: '#f1f5f9', lineHeight: 1.55 }}>
+                        <p style={{ margin: 0, fontSize: '0.88rem', color: '#f1f5f9', lineHeight: 1.6 }}>
                           {turn.text}
                         </p>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', paddingTop: '4px' }}>
@@ -943,7 +1055,7 @@ export const AiPodcastStudioView: React.FC = () => {
 
       </div>
 
-      {/* Modal: Synthesize New Podcast */}
+      {/* Modal: Synthesize New Podcast with Mode Selector */}
       {showCreateModal && (
         <div 
           style={{
@@ -964,19 +1076,21 @@ export const AiPodcastStudioView: React.FC = () => {
               backgroundColor: '#0f172a',
               border: '1px solid rgba(168, 85, 247, 0.4)',
               borderRadius: '24px',
-              maxWidth: '540px',
+              maxWidth: '580px',
               width: '100%',
               padding: '24px',
               boxShadow: '0 25px 60px rgba(0, 0, 0, 0.8)',
               display: 'flex',
               flexDirection: 'column',
-              gap: '18px'
+              gap: '18px',
+              maxHeight: '90vh',
+              overflowY: 'auto'
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '12px' }}>
               <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#ffffff', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
                 <Mic size={20} color="#c084fc" />
-                Synthesize Multi-Language AI Podcast
+                Synthesize AI Study Podcast
               </h3>
               <button
                 onClick={() => setShowCreateModal(false)}
@@ -987,6 +1101,47 @@ export const AiPodcastStudioView: React.FC = () => {
             </div>
 
             <form onSubmit={handleGeneratePodcast} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+              
+              {/* Format / Mode Selector */}
+              <div>
+                <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '8px' }}>
+                  Choose Podcast Presentation Format
+                </label>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '10px' }}>
+                  {[
+                    { mode: 'DEEP_DIVE', title: '2-Host Discussion', desc: 'Interactive Deep Dive', icon: '🎙️' },
+                    { mode: 'QA_INTERVIEW', title: 'Q&A Viva Drill', desc: 'Question & Model Answer', icon: '❓' },
+                    { mode: 'CONTINUOUS_READER', title: 'Straight Reader', desc: 'As-Is Continuous Notes', icon: '📖' }
+                  ].map(m => {
+                    const isSelected = modeInput === m.mode;
+                    return (
+                      <button
+                        type="button"
+                        key={m.mode}
+                        onClick={() => setModeInput(m.mode as PodcastMode)}
+                        style={{
+                          textAlign: 'left',
+                          padding: '12px',
+                          borderRadius: '12px',
+                          border: isSelected ? '1.5px solid #a855f7' : '1px solid rgba(255, 255, 255, 0.1)',
+                          backgroundColor: isSelected ? 'rgba(168, 85, 247, 0.2)' : 'rgba(2, 6, 23, 0.8)',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '4px'
+                        }}
+                      >
+                        <div style={{ fontSize: '1.2rem' }}>{m.icon}</div>
+                        <div style={{ fontWeight: 800, fontSize: '0.78rem', color: isSelected ? '#ffffff' : '#cbd5e1' }}>
+                          {m.title}
+                        </div>
+                        <div style={{ fontSize: '0.68rem', color: '#94a3b8' }}>{m.desc}</div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               <div>
                 <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '6px' }}>
                   Target Topic or Chapter
@@ -996,7 +1151,7 @@ export const AiPodcastStudioView: React.FC = () => {
                   required
                   value={topicInput}
                   onChange={e => setTopicInput(e.target.value)}
-                  placeholder="e.g. Graph Dijkstra Algorithm / Fundamental Rights"
+                  placeholder="e.g. Thermodynamics / Photosynthesis / Constitution Articles"
                   style={{
                     width: '100%',
                     backgroundColor: 'rgba(2, 6, 23, 0.9)',
@@ -1047,13 +1202,13 @@ export const AiPodcastStudioView: React.FC = () => {
 
               <div>
                 <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '6px' }}>
-                  Source Notes Text (Optional)
+                  Source Notes / Text {modeInput === 'CONTINUOUS_READER' ? '(Reads As-Is Seamlessly)' : '(Optional)'}
                 </label>
                 <textarea
                   rows={4}
                   value={notesInput}
                   onChange={e => setNotesInput(e.target.value)}
-                  placeholder="Paste class notes or key equations for host discussion in this language..."
+                  placeholder={modeInput === 'CONTINUOUS_READER' ? 'Paste your chapter notes or article text here to read it continuously without interruptions...' : 'Paste class notes, equations or key points for discussion...'}
                   style={{
                     width: '100%',
                     backgroundColor: 'rgba(2, 6, 23, 0.9)',
@@ -1102,7 +1257,7 @@ export const AiPodcastStudioView: React.FC = () => {
                     boxShadow: '0 4px 14px rgba(168, 85, 247, 0.35)'
                   }}
                 >
-                  {isSynthesizing ? 'Synthesizing Dialogue...' : 'Create & Play'}
+                  {isSynthesizing ? 'Synthesizing...' : 'Create & Play'}
                 </button>
               </div>
             </form>
@@ -1111,10 +1266,6 @@ export const AiPodcastStudioView: React.FC = () => {
       )}
     </div>
   );
-};
-
-const getTagOrTopic = (pod: AiPodcast) => {
-  return pod.topic.split('&')[0];
 };
 
 export default AiPodcastStudioView;

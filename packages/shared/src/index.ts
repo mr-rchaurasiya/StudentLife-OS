@@ -1953,6 +1953,8 @@ export interface CompleteTreeDto {
 // ==========================================
 // 37. AI Audio Podcast & Lecture Dialogue Studio (Phase 37)
 // ==========================================
+export type PodcastMode = 'DEEP_DIVE' | 'QA_INTERVIEW' | 'CONTINUOUS_READER' | 'RAPID_REVISION' | 'EXAM_CRACKER';
+
 export interface PodcastHost {
   id: string;
   name: string;
@@ -1975,6 +1977,7 @@ export interface AiPodcast {
   title: string;
   topic: string;
   language?: string;
+  mode?: PodcastMode;
   sourceType: 'NOTES' | 'SYLLABUS' | 'TEXTBOOK_CHAPTER';
   totalDurationSeconds: number;
   host1: PodcastHost;
@@ -1987,6 +1990,7 @@ export interface AiPodcast {
 export interface GeneratePodcastDto {
   topic: string;
   language?: string;
+  mode?: PodcastMode;
   sourceText?: string;
   style?: 'DEEP_DIVE' | 'RAPID_REVISION' | 'EXAM_CRACKER';
   durationPresetMinutes?: number;
