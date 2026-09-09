@@ -7,7 +7,6 @@ import {
   Award,
   CheckCircle2,
   AlertCircle,
-  HelpCircle,
   Clock,
   BookOpen,
   Eye,
@@ -140,10 +139,10 @@ export const CustomPaperGeneratorView: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-slate-400 text-sm font-medium">Loading AI Mock Paper & Test Series Generator...</p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px' }}>
+          <RefreshCw size={36} color="#f59e0b" className="animate-spin" />
+          <p style={{ color: '#94a3b8', fontSize: '0.9rem', fontWeight: 600 }}>Loading AI Mock Paper &amp; Test Series Generator...</p>
         </div>
       </div>
     );
@@ -152,123 +151,257 @@ export const CustomPaperGeneratorView: React.FC = () => {
   const scoreStats = testSubmitted ? calculateScore() : null;
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', maxWidth: '1280px', margin: '0 auto', width: '100%' }}>
       {/* Top Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-2xl p-6 shadow-2xl">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-amber-600 via-rose-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-rose-500/20">
-            <FileCheck2 className="w-6 h-6" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-white tracking-tight">AI Custom Mock Paper & Test Series</h1>
-              <span className="px-2.5 py-0.5 text-xs font-semibold bg-gradient-to-r from-amber-500/20 to-rose-500/20 text-amber-300 border border-amber-500/30 rounded-full flex items-center gap-1">
-                <Sparkles className="w-3 h-3" /> Exam Grade Synthesizer
-              </span>
+      <div 
+        className="glass-panel"
+        style={{
+          padding: '28px 32px',
+          background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(244, 63, 94, 0.15) 50%, rgba(15, 23, 42, 0.95) 100%)',
+          position: 'relative',
+          overflow: 'hidden',
+          border: '1px solid rgba(245, 158, 11, 0.35)',
+          borderRadius: '24px',
+          boxShadow: '0 0 35px rgba(245, 158, 11, 0.12)'
+        }}
+      >
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
+            <div 
+              style={{
+                width: '54px',
+                height: '54px',
+                borderRadius: '16px',
+                background: 'linear-gradient(135deg, #f59e0b 0%, #f43f5e 50%, #6366f1 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 8px 24px rgba(245, 158, 11, 0.35)'
+              }}
+            >
+              <FileCheck2 size={28} color="#ffffff" />
             </div>
-            <p className="text-sm text-slate-400">
-              Generate full-length customized test series with negative marking schemes, difficulty ratios, and instant step-by-step LaTeX solutions.
-            </p>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '6px' }}>
+                <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em', margin: 0 }}>
+                  AI Custom Mock Paper &amp; Test Series
+                </h1>
+                <span 
+                  style={{
+                    backgroundColor: 'rgba(245, 158, 11, 0.18)',
+                    color: '#fbbf24',
+                    border: '1px solid rgba(245, 158, 11, 0.4)',
+                    padding: '3px 10px',
+                    borderRadius: '9999px',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px'
+                  }}
+                >
+                  <Sparkles size={12} color="#fbbf24" /> Exam Grade Synthesizer v3.0
+                </span>
+              </div>
+              <p style={{ fontSize: '0.9rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
+                Generate full-length customized test series with negative marking schemes, difficulty ratios, and instant step-by-step LaTeX solutions.
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setShowSolutions(!showSolutions)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl font-medium text-sm transition-all shadow-md"
-          >
-            {showSolutions ? <EyeOff className="w-4 h-4 text-rose-400" /> : <Eye className="w-4 h-4 text-cyan-400" />}
-            {showSolutions ? 'Hide Solutions' : 'Reveal Solution Key'}
-          </button>
-          <button
-            onClick={handlePrint}
-            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-600 to-rose-600 hover:from-amber-500 hover:to-rose-500 text-white rounded-xl font-semibold text-sm transition-all shadow-lg shadow-rose-500/25"
-          >
-            <Printer className="w-4 h-4" />
-            Print / PDF Paper
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            <button
+              onClick={() => setShowSolutions(!showSolutions)}
+              className="glow-hover"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '10px 18px',
+                borderRadius: '12px',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                backgroundColor: 'rgba(15, 23, 42, 0.85)',
+                color: showSolutions ? '#f43f5e' : '#38bdf8',
+                fontWeight: 700,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              {showSolutions ? <EyeOff size={16} color="#f43f5e" /> : <Eye size={16} color="#38bdf8" />}
+              {showSolutions ? 'Hide Solutions' : 'Reveal Solution Key'}
+            </button>
+            <button
+              onClick={handlePrint}
+              className="glow-hover"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '10px 20px',
+                borderRadius: '12px',
+                border: 'none',
+                background: 'linear-gradient(135deg, #f59e0b 0%, #f43f5e 100%)',
+                color: '#ffffff',
+                fontWeight: 800,
+                fontSize: '0.85rem',
+                cursor: 'pointer',
+                boxShadow: '0 6px 20px rgba(244, 63, 94, 0.35)'
+              }}
+            >
+              <Printer size={16} />
+              Print / PDF Paper
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px, 380px) 1fr', gap: '24px', alignItems: 'start' }}>
         
         {/* Left Side: Paper Generator Settings & Paper Library (4 cols) */}
-        <div className="lg:col-span-4 space-y-6">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           
           {/* Custom Paper Synthesizer Form */}
-          <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
-            <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2 border-b border-slate-800 pb-3">
-              <Sliders className="w-4 h-4 text-amber-400" />
+          <div 
+            className="glass-panel"
+            style={{
+              padding: '24px',
+              borderRadius: '20px',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              backgroundColor: 'rgba(15, 23, 42, 0.85)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '18px'
+            }}
+          >
+            <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#f8fafc', display: 'flex', alignItems: 'center', gap: '8px', margin: 0, textTransform: 'uppercase', letterSpacing: '0.04em', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '14px' }}>
+              <Sliders size={18} color="#fbbf24" />
               AI Paper Synthesizer
             </h3>
 
-            <form onSubmit={handleGeneratePaper} className="space-y-3.5 text-xs">
+            <form onSubmit={handleGeneratePaper} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div>
-                <label className="text-slate-400 font-semibold block mb-1">Target Exam Domain</label>
+                <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '6px' }}>
+                  Target Exam Domain
+                </label>
                 <select
                   value={examType}
                   onChange={e => setExamType(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-amber-500"
+                  style={{
+                    width: '100%',
+                    backgroundColor: 'rgba(2, 6, 23, 0.9)',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    borderRadius: '12px',
+                    padding: '10px 14px',
+                    color: '#f8fafc',
+                    fontSize: '0.85rem',
+                    fontWeight: 600,
+                    outline: 'none',
+                    cursor: 'pointer'
+                  }}
                 >
-                  <option value="JEE Advanced">JEE Advanced (Engineering)</option>
-                  <option value="NEET UG">NEET UG (Medical)</option>
+                  <option value="JEE Advanced">JEE Advanced (Engineering / IITs)</option>
+                  <option value="JEE Main">JEE Main (NITs / IIITs)</option>
+                  <option value="NEET UG">NEET UG (Medical / AIIMS)</option>
                   <option value="UPSC Prelims">UPSC Civil Services (GS Prelims)</option>
-                  <option value="GATE CS">GATE CS & IT</option>
+                  <option value="GATE CS">GATE CS &amp; IT</option>
                   <option value="CBSE 12th Board">CBSE Class 12th Board</option>
-                  <option value="SSC CGL">SSC CGL / Banking PO</option>
+                  <option value="CAT &amp; IIMs">CAT &amp; Management (IIM A/B/C)</option>
                 </select>
               </div>
 
               <div>
-                <label className="text-slate-400 font-semibold block mb-1">Subject</label>
+                <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '6px' }}>
+                  Subject / Domain
+                </label>
                 <input
                   type="text"
                   value={subject}
                   onChange={e => setSubject(e.target.value)}
                   placeholder="e.g. Physics, Data Structures, Economy"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-amber-500"
+                  style={{
+                    width: '100%',
+                    backgroundColor: 'rgba(2, 6, 23, 0.9)',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    borderRadius: '12px',
+                    padding: '10px 14px',
+                    color: '#f8fafc',
+                    fontSize: '0.85rem',
+                    fontWeight: 600,
+                    outline: 'none',
+                    boxSizing: 'border-box'
+                  }}
                 />
               </div>
 
               <div>
-                <label className="text-slate-400 font-semibold block mb-1">High-Yield Topics (Comma-separated)</label>
+                <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '6px' }}>
+                  High-Yield Topics (Comma-separated)
+                </label>
                 <input
                   type="text"
                   value={topicsInput}
                   onChange={e => setTopicsInput(e.target.value)}
                   placeholder="e.g. Thermodynamics, Modern Physics"
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-amber-500"
+                  style={{
+                    width: '100%',
+                    backgroundColor: 'rgba(2, 6, 23, 0.9)',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    borderRadius: '12px',
+                    padding: '10px 14px',
+                    color: '#f8fafc',
+                    fontSize: '0.85rem',
+                    fontWeight: 600,
+                    outline: 'none',
+                    boxSizing: 'border-box'
+                  }}
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label className="text-slate-400 font-semibold block mb-1">Total Questions</label>
+                  <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '6px' }}>
+                    Total Questions
+                  </label>
                   <select
                     value={totalQuestions}
                     onChange={e => setTotalQuestions(Number(e.target.value))}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-slate-200 focus:outline-none focus:border-amber-500"
+                    style={{
+                      width: '100%',
+                      backgroundColor: 'rgba(2, 6, 23, 0.9)',
+                      border: '1px solid rgba(255, 255, 255, 0.15)',
+                      borderRadius: '12px',
+                      padding: '10px 12px',
+                      color: '#f8fafc',
+                      fontSize: '0.82rem',
+                      fontWeight: 600,
+                      outline: 'none',
+                      cursor: 'pointer'
+                    }}
                   >
-                    <option value={4}>4 Questions (Micro Mock)</option>
-                    <option value={6}>6 Questions (Speed Test)</option>
-                    <option value={10}>10 Questions (Sectional Mock)</option>
-                    <option value={15}>15 Questions (Grand Mock)</option>
+                    <option value={4}>4 Qs (Micro Mock)</option>
+                    <option value={6}>6 Qs (Speed Test)</option>
+                    <option value={10}>10 Qs (Sectional Mock)</option>
+                    <option value={15}>15 Qs (Grand Mock)</option>
                   </select>
                 </div>
                 <div>
-                  <label className="text-slate-400 font-semibold block mb-1">Hardness Ratio</label>
-                  <div className="text-[11px] text-slate-400 bg-slate-950 border border-slate-800 rounded-xl p-2 flex items-center justify-between">
-                    <span className="text-emerald-400">{easyPct}% E</span>
-                    <span className="text-amber-400">{mediumPct}% M</span>
-                    <span className="text-rose-400">{hardPct}% H</span>
+                  <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '6px' }}>
+                    Hardness Ratio
+                  </label>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'rgba(2, 6, 23, 0.9)', border: '1px solid rgba(255, 255, 255, 0.15)', borderRadius: '12px', padding: '10px 12px', fontSize: '0.75rem', fontWeight: 800 }}>
+                    <span style={{ color: '#34d399' }}>{easyPct}% E</span>
+                    <span style={{ color: '#fbbf24' }}>{mediumPct}% M</span>
+                    <span style={{ color: '#f43f5e' }}>{hardPct}% H</span>
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-1 pt-1">
-                <div className="flex justify-between text-[11px] text-slate-400">
-                  <span>Difficulty Distribution Slider</span>
-                  <span className="text-slate-300 font-mono">E:{easyPct} M:{mediumPct} H:{hardPct}</span>
+              {/* Difficulty Slider */}
+              <div style={{ backgroundColor: 'rgba(2, 6, 23, 0.5)', padding: '12px 14px', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>Hardness Weight Slider</span>
+                  <span style={{ fontSize: '0.8rem', color: '#f43f5e', fontWeight: 800, fontFamily: 'monospace' }}>H: {hardPct}%</span>
                 </div>
                 <input
                   type="range"
@@ -282,23 +415,40 @@ export const CustomPaperGeneratorView: React.FC = () => {
                     setMediumPct(Math.round(rem * 0.6));
                     setEasyPct(Math.round(rem * 0.4));
                   }}
-                  className="w-full accent-rose-500"
+                  style={{ width: '100%', accentColor: '#f43f5e', cursor: 'pointer' }}
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={isGenerating}
-                className="w-full py-2.5 bg-gradient-to-r from-amber-600 to-rose-600 hover:from-amber-500 hover:to-rose-500 text-white font-bold rounded-xl shadow-lg shadow-rose-500/20 transition-all flex items-center justify-center gap-2"
+                className="glow-hover"
+                style={{
+                  width: '100%',
+                  padding: '13px 20px',
+                  borderRadius: '14px',
+                  border: 'none',
+                  background: 'linear-gradient(135deg, #f59e0b 0%, #f43f5e 100%)',
+                  color: '#ffffff',
+                  fontSize: '0.9rem',
+                  fontWeight: 800,
+                  cursor: isGenerating ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  boxShadow: '0 8px 24px rgba(244, 63, 94, 0.3)',
+                  marginTop: '4px'
+                }}
               >
                 {isGenerating ? (
                   <>
-                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <RefreshCw size={16} className="animate-spin" />
                     Synthesizing Test Paper...
                   </>
                 ) : (
                   <>
-                    <Zap className="w-4 h-4" />
+                    <Zap size={16} />
                     Synthesize Custom Mock Paper
                   </>
                 )}
@@ -306,13 +456,24 @@ export const CustomPaperGeneratorView: React.FC = () => {
             </form>
           </div>
 
-          {/* Saved Papers List */}
-          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl space-y-3">
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider px-2 flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-indigo-400" />
+          {/* Generated Papers Library */}
+          <div 
+            className="glass-panel"
+            style={{
+              padding: '20px',
+              borderRadius: '20px',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              backgroundColor: 'rgba(15, 23, 42, 0.85)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '14px'
+            }}
+          >
+            <h3 style={{ fontSize: '0.85rem', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
+              <BookOpen size={16} color="#818cf8" />
               Generated Test Series ({papers.length})
             </h3>
-            <div className="space-y-2">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {papers.map(p => {
                 const isActive = p.id === activePaper?.id;
                 return (
@@ -323,27 +484,44 @@ export const CustomPaperGeneratorView: React.FC = () => {
                       setSelectedAnswers({});
                       setTestSubmitted(false);
                     }}
-                    className={`w-full text-left p-3 rounded-xl transition-all border flex flex-col gap-1 ${
-                      isActive
-                        ? 'bg-gradient-to-r from-rose-950/60 to-slate-900 border-rose-500/50 shadow-md shadow-rose-950/50'
-                        : 'bg-slate-950/40 border-slate-800/60 hover:bg-slate-800/40 text-slate-400'
-                    }`}
+                    className="glow-hover"
+                    style={{
+                      width: '100%',
+                      textAlign: 'left',
+                      padding: '14px',
+                      borderRadius: '14px',
+                      border: isActive ? '1px solid rgba(244, 63, 94, 0.5)' : '1px solid rgba(255, 255, 255, 0.08)',
+                      backgroundColor: isActive ? 'rgba(244, 63, 94, 0.15)' : 'rgba(2, 6, 23, 0.6)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '6px',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      boxShadow: isActive ? '0 4px 16px rgba(244, 63, 94, 0.2)' : 'none'
+                    }}
                   >
-                    <div className="flex items-center justify-between">
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
-                        isActive ? 'bg-rose-500/20 text-rose-300' : 'bg-slate-800 text-slate-400'
-                      }`}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span 
+                        style={{
+                          backgroundColor: isActive ? 'rgba(244, 63, 94, 0.25)' : 'rgba(255, 255, 255, 0.1)',
+                          color: isActive ? '#fecdd3' : '#cbd5e1',
+                          padding: '2px 8px',
+                          borderRadius: '6px',
+                          fontSize: '0.68rem',
+                          fontWeight: 800
+                        }}
+                      >
                         {p.examType}
                       </span>
-                      <span className="text-[11px] text-slate-500 font-mono">
-                        {p.totalMarks} Marks • {p.durationMinutes}m
+                      <span style={{ fontSize: '0.72rem', color: '#94a3b8', fontFamily: 'monospace' }}>
+                        {p.totalMarks} Marks &bull; {p.durationMinutes}m
                       </span>
                     </div>
-                    <div className={`font-semibold text-sm line-clamp-1 ${isActive ? 'text-white' : 'text-slate-300'}`}>
+                    <div style={{ fontWeight: 700, fontSize: '0.85rem', color: isActive ? '#ffffff' : '#e2e8f0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                       {p.title}
                     </div>
-                    <div className="text-[11px] text-slate-500">
-                      {p.totalQuestions} Questions • {p.subject}
+                    <div style={{ fontSize: '0.72rem', color: '#64748b' }}>
+                      {p.totalQuestions} Questions &bull; {p.subject}
                     </div>
                   </button>
                 );
@@ -353,31 +531,55 @@ export const CustomPaperGeneratorView: React.FC = () => {
         </div>
 
         {/* Right Side: Mock Paper Printable Sheet & Interactive Exam Simulator (8 cols) */}
-        <div className="lg:col-span-8 space-y-4">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {activePaper ? (
-            <div className="bg-slate-900/95 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl text-slate-200 space-y-6">
+            <div 
+              className="glass-panel"
+              style={{
+                padding: '30px',
+                borderRadius: '24px',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                backgroundColor: 'rgba(15, 23, 42, 0.92)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '24px',
+                boxShadow: '0 12px 40px rgba(0, 0, 0, 0.3)'
+              }}
+            >
               
               {/* Formal Exam Paper Header */}
-              <div className="border-2 border-dashed border-slate-700/80 rounded-xl p-5 bg-slate-950/60 space-y-3 text-center">
-                <div className="text-xs font-mono font-bold tracking-widest text-amber-400 uppercase">
+              <div 
+                style={{
+                  border: '2px dashed rgba(255, 255, 255, 0.2)',
+                  borderRadius: '16px',
+                  padding: '20px',
+                  backgroundColor: 'rgba(2, 6, 23, 0.7)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '10px',
+                  textAlign: 'center'
+                }}
+              >
+                <div style={{ fontSize: '0.75rem', fontFamily: 'monospace', fontWeight: 800, letterSpacing: '0.15em', color: '#fbbf24', textTransform: 'uppercase' }}>
                   {activePaper.examType.toUpperCase()} ALL-INDIA STANDARDIZED ASSESSMENT
                 </div>
-                <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                <h2 style={{ fontSize: '1.4rem', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.02em', margin: 0 }}>
                   {activePaper.title}
                 </h2>
-                <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-slate-400 pt-1 border-t border-slate-800">
-                  <span className="flex items-center gap-1 font-mono">
-                    <Clock className="w-3.5 h-3.5 text-cyan-400" />
+                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: '16px', fontSize: '0.8rem', color: '#94a3b8', paddingTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', width: '100%' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '5px', fontFamily: 'monospace' }}>
+                    <Clock size={14} color="#38bdf8" />
                     Duration: {activePaper.durationMinutes} Minutes
                   </span>
-                  <span>•</span>
-                  <span className="flex items-center gap-1 font-mono">
-                    <Award className="w-3.5 h-3.5 text-amber-400" />
+                  <span>&bull;</span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '5px', fontFamily: 'monospace' }}>
+                    <Award size={14} color="#fbbf24" />
                     Maximum Marks: {activePaper.totalMarks}
                   </span>
-                  <span>•</span>
-                  <span className="flex items-center gap-1 font-mono">
-                    <Target className="w-3.5 h-3.5 text-rose-400" />
+                  <span>&bull;</span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '5px', fontFamily: 'monospace' }}>
+                    <Target size={14} color="#f43f5e" />
                     Total Questions: {activePaper.totalQuestions}
                   </span>
                 </div>
@@ -385,25 +587,38 @@ export const CustomPaperGeneratorView: React.FC = () => {
 
               {/* Score card when submitted */}
               {testSubmitted && scoreStats && (
-                <div className="bg-gradient-to-r from-indigo-950/80 via-slate-900 to-purple-950/80 border border-indigo-500/40 rounded-xl p-4 flex flex-wrap items-center justify-around gap-4 text-center">
+                <div 
+                  className="glass-panel"
+                  style={{
+                    padding: '20px',
+                    borderRadius: '16px',
+                    border: '1px solid rgba(99, 102, 241, 0.4)',
+                    background: 'linear-gradient(135deg, rgba(30, 27, 75, 0.8) 0%, rgba(15, 23, 42, 0.95) 100%)',
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                    gap: '16px',
+                    alignItems: 'center',
+                    textAlign: 'center'
+                  }}
+                >
                   <div>
-                    <div className="text-xs text-slate-400">Total Score</div>
-                    <div className="text-2xl font-black text-cyan-300">
-                      {scoreStats.score} / {activePaper.totalMarks}
+                    <div style={{ fontSize: '0.72rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>Total Score</div>
+                    <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#38bdf8', fontFamily: 'monospace', marginTop: '4px' }}>
+                      {scoreStats.score} <span style={{ fontSize: '1rem', color: '#64748b' }}>/ {activePaper.totalMarks}</span>
                     </div>
                   </div>
                   <div>
-                    <div className="text-xs text-slate-400">Accuracy</div>
-                    <div className="text-2xl font-black text-emerald-400">
+                    <div style={{ fontSize: '0.72rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>Accuracy Rate</div>
+                    <div style={{ fontSize: '1.8rem', fontWeight: 900, color: '#34d399', fontFamily: 'monospace', marginTop: '4px' }}>
                       {scoreStats.correct + scoreStats.incorrect > 0
                         ? Math.round((scoreStats.correct / (scoreStats.correct + scoreStats.incorrect)) * 100)
                         : 0}%
                     </div>
                   </div>
                   <div>
-                    <div className="text-xs text-slate-400">Correct / Wrong</div>
-                    <div className="text-base font-bold text-white font-mono">
-                      <span className="text-emerald-400">{scoreStats.correct} Correct</span> | <span className="text-rose-400">{scoreStats.incorrect} Wrong</span>
+                    <div style={{ fontSize: '0.72rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>Result Breakdown</div>
+                    <div style={{ fontSize: '0.9rem', fontWeight: 800, fontFamily: 'monospace', marginTop: '6px' }}>
+                      <span style={{ color: '#34d399' }}>{scoreStats.correct} Correct</span> &bull; <span style={{ color: '#f43f5e' }}>{scoreStats.incorrect} Wrong</span>
                     </div>
                   </div>
                   <button
@@ -411,83 +626,162 @@ export const CustomPaperGeneratorView: React.FC = () => {
                       setTestSubmitted(false);
                       setSelectedAnswers({});
                     }}
-                    className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs rounded-lg font-semibold"
+                    className="glow-hover"
+                    style={{
+                      padding: '10px 18px',
+                      borderRadius: '10px',
+                      border: '1px solid rgba(255, 255, 255, 0.15)',
+                      backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                      color: '#f8fafc',
+                      fontSize: '0.78rem',
+                      fontWeight: 700,
+                      cursor: 'pointer'
+                    }}
                   >
-                    Reset & Retake
+                    Reset &amp; Retake
                   </button>
                 </div>
               )}
 
               {/* Sections and Questions */}
-              <div className="space-y-8">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                 {activePaper.sections.map((section, sIdx) => (
-                  <div key={sIdx} className="space-y-4">
-                    <div className="bg-slate-800/70 px-4 py-2.5 rounded-xl border border-slate-700 text-sm font-bold text-slate-200 flex items-center justify-between">
-                      <span>{section.title}</span>
-                      <span className="text-xs text-amber-300 font-mono">Weightage: {section.weightageMarks} Marks</span>
+                  <div key={sIdx} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div 
+                      style={{
+                        backgroundColor: 'rgba(30, 41, 59, 0.7)',
+                        padding: '12px 18px',
+                        borderRadius: '14px',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <span style={{ fontSize: '0.9rem', fontWeight: 800, color: '#f8fafc' }}>{section.title}</span>
+                      <span style={{ fontSize: '0.78rem', color: '#fbbf24', fontFamily: 'monospace', fontWeight: 700 }}>Weightage: {section.weightageMarks} Marks</span>
                     </div>
 
-                    <div className="space-y-6">
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                       {section.questions.map((q, qIdx) => {
+                        const isHard = q.difficulty === 'HARD';
+                        const isMed = q.difficulty === 'MEDIUM';
+                        const diffColor = isHard ? '#f43f5e' : isMed ? '#fbbf24' : '#34d399';
+                        const diffBg = isHard ? 'rgba(244, 63, 94, 0.15)' : isMed ? 'rgba(245, 158, 11, 0.15)' : 'rgba(52, 211, 153, 0.15)';
+                        const diffBorder = isHard ? 'rgba(244, 63, 94, 0.3)' : isMed ? 'rgba(245, 158, 11, 0.3)' : 'rgba(52, 211, 153, 0.3)';
+
                         return (
                           <div
                             key={q.id}
-                            className="bg-slate-950/60 border border-slate-800 rounded-2xl p-5 space-y-4 hover:border-slate-700 transition-all"
+                            className="glow-hover"
+                            style={{
+                              backgroundColor: 'rgba(2, 6, 23, 0.65)',
+                              border: '1px solid rgba(255, 255, 255, 0.08)',
+                              borderRadius: '18px',
+                              padding: '20px',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: '14px',
+                              transition: 'all 0.2s ease'
+                            }}
                           >
                             {/* Question Meta header */}
-                            <div className="flex items-center justify-between text-xs">
-                              <div className="flex items-center gap-2">
-                                <span className="w-6 h-6 rounded-full bg-slate-800 text-cyan-300 font-mono font-bold flex items-center justify-center">
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <span 
+                                  style={{
+                                    width: '26px',
+                                    height: '26px',
+                                    borderRadius: '50%',
+                                    backgroundColor: 'rgba(56, 189, 248, 0.15)',
+                                    color: '#38bdf8',
+                                    border: '1px solid rgba(56, 189, 248, 0.3)',
+                                    fontFamily: 'monospace',
+                                    fontWeight: 800,
+                                    fontSize: '0.8rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                  }}
+                                >
                                   {q.questionNumber || qIdx + 1}
                                 </span>
-                                <span className="text-slate-400 font-medium">Topic: {q.topic}</span>
+                                <span style={{ fontSize: '0.78rem', color: '#94a3b8', fontWeight: 600 }}>Topic: {q.topic}</span>
                               </div>
-                              <div className="flex items-center gap-2 font-mono">
-                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                                  q.difficulty === 'EASY' ? 'bg-emerald-500/20 text-emerald-300' :
-                                  q.difficulty === 'MEDIUM' ? 'bg-amber-500/20 text-amber-300' :
-                                  'bg-rose-500/20 text-rose-300'
-                                }`}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'monospace' }}>
+                                <span 
+                                  style={{
+                                    backgroundColor: diffBg,
+                                    color: diffColor,
+                                    border: `1px solid ${diffBorder}`,
+                                    padding: '2px 8px',
+                                    borderRadius: '6px',
+                                    fontSize: '0.68rem',
+                                    fontWeight: 800
+                                  }}
+                                >
                                   {q.difficulty}
                                 </span>
-                                <span className="text-slate-500">+{q.marks} / -{q.negativeMarks}</span>
+                                <span style={{ fontSize: '0.75rem', color: '#64748b' }}>+{q.marks} / -{q.negativeMarks}</span>
                               </div>
                             </div>
 
                             {/* Question Text */}
-                            <div className="text-sm sm:text-base font-medium text-slate-200 whitespace-pre-wrap leading-relaxed">
+                            <div style={{ fontSize: '0.92rem', fontWeight: 600, color: '#f1f5f9', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
                               {q.questionText}
                             </div>
 
                             {/* Options if MCQ */}
                             {q.options && q.options.length > 0 && (
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '10px', paddingTop: '4px' }}>
                                 {q.options.map((opt, optIdx) => {
                                   const isOptionChosen = selectedAnswers[q.id] === opt;
-                                  let optStyles = 'bg-slate-900 border-slate-800 hover:border-slate-700 text-slate-300';
+                                  let optBg = 'rgba(15, 23, 42, 0.8)';
+                                  let optBorder = 'rgba(255, 255, 255, 0.08)';
+                                  let optText = '#cbd5e1';
 
                                   if (testSubmitted) {
                                     if (opt === q.correctAnswer || opt.startsWith(q.correctAnswer.slice(0, 10))) {
-                                      optStyles = 'bg-emerald-950/60 border-emerald-500/60 text-emerald-200';
+                                      optBg = 'rgba(6, 78, 59, 0.35)';
+                                      optBorder = 'rgba(52, 211, 153, 0.6)';
+                                      optText = '#a7f3d0';
                                     } else if (isOptionChosen) {
-                                      optStyles = 'bg-rose-950/60 border-rose-500/60 text-rose-200';
+                                      optBg = 'rgba(136, 19, 55, 0.35)';
+                                      optBorder = 'rgba(244, 63, 94, 0.6)';
+                                      optText = '#fecdd3';
                                     }
                                   } else if (isOptionChosen) {
-                                    optStyles = 'bg-amber-500/20 border-amber-500/60 text-amber-200 shadow-md shadow-amber-950/40';
+                                    optBg = 'rgba(245, 158, 11, 0.2)';
+                                    optBorder = '#fbbf24';
+                                    optText = '#fde68a';
                                   }
 
                                   return (
                                     <button
                                       key={optIdx}
                                       onClick={() => handleSelectOption(q.id, opt)}
-                                      className={`p-3 rounded-xl border text-left text-xs font-medium transition-all flex items-start gap-2 ${optStyles}`}
+                                      style={{
+                                        padding: '12px 16px',
+                                        borderRadius: '12px',
+                                        border: `1px solid ${optBorder}`,
+                                        backgroundColor: optBg,
+                                        color: optText,
+                                        fontSize: '0.82rem',
+                                        fontWeight: 600,
+                                        textAlign: 'left',
+                                        cursor: testSubmitted ? 'default' : 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '10px',
+                                        transition: 'all 0.15s ease'
+                                      }}
                                     >
-                                      <span className="font-mono font-bold text-slate-500">
+                                      <span style={{ fontFamily: 'monospace', fontWeight: 800, color: '#64748b' }}>
                                         {String.fromCharCode(65 + optIdx)}.
                                       </span>
-                                      <span className="flex-1">{opt}</span>
+                                      <span style={{ flex: 1 }}>{opt}</span>
                                       {testSubmitted && (opt === q.correctAnswer || opt.startsWith(q.correctAnswer.slice(0, 10))) && (
-                                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                                        <CheckCircle2 size={16} color="#34d399" style={{ flexShrink: 0 }} />
                                       )}
                                     </button>
                                   );
@@ -497,15 +791,26 @@ export const CustomPaperGeneratorView: React.FC = () => {
 
                             {/* Solution breakdown (if revealed or submitted) */}
                             {(showSolutions || testSubmitted) && (
-                              <div className="mt-3 p-3.5 bg-slate-900/90 border border-indigo-500/20 rounded-xl text-xs space-y-2 animate-in fade-in">
-                                <div className="flex items-center gap-1.5 font-bold text-cyan-300">
-                                  <Sparkles className="w-3.5 h-3.5" />
-                                  Detailed LaTeX Solution & Conceptual Derivation:
+                              <div 
+                                style={{
+                                  marginTop: '8px',
+                                  padding: '16px',
+                                  backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                                  border: '1px solid rgba(56, 189, 248, 0.25)',
+                                  borderRadius: '14px',
+                                  display: 'flex',
+                                  flexDirection: 'column',
+                                  gap: '8px'
+                                }}
+                              >
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 800, color: '#38bdf8', fontSize: '0.82rem' }}>
+                                  <Sparkles size={14} />
+                                  Detailed LaTeX Solution &amp; Conceptual Derivation:
                                 </div>
-                                <div className="text-slate-300 whitespace-pre-wrap leading-relaxed font-sans bg-slate-950/50 p-2.5 rounded-lg border border-slate-800/80">
+                                <div style={{ color: '#cbd5e1', fontSize: '0.8rem', lineHeight: 1.6, whiteSpace: 'pre-wrap', backgroundColor: 'rgba(2, 6, 23, 0.6)', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
                                   {q.detailedSolution}
                                 </div>
-                                <div className="text-[11px] text-amber-300 font-mono">
+                                <div style={{ fontSize: '0.78rem', color: '#fbbf24', fontFamily: 'monospace', fontWeight: 700 }}>
                                   Correct Key: {q.correctAnswer}
                                 </div>
                               </div>
@@ -519,27 +824,53 @@ export const CustomPaperGeneratorView: React.FC = () => {
               </div>
 
               {/* Submit / Finish Test Actions */}
-              <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-slate-800">
-                <div className="text-xs text-slate-400 flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 text-amber-400" />
-                  <span>Answer all questions before submitting to calculate final rank and percentile.</span>
+              <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '14px', paddingTop: '16px', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                <div style={{ fontSize: '0.78rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <AlertCircle size={16} color="#fbbf24" />
+                  <span>Answer questions before submitting to calculate verified score and accuracy.</span>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   {!testSubmitted ? (
                     <button
                       onClick={() => setTestSubmitted(true)}
-                      className="px-6 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-emerald-500/25 flex items-center gap-2"
+                      className="glow-hover"
+                      style={{
+                        padding: '11px 24px',
+                        borderRadius: '12px',
+                        border: 'none',
+                        background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
+                        color: '#ffffff',
+                        fontWeight: 800,
+                        fontSize: '0.85rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        boxShadow: '0 6px 20px rgba(16, 185, 129, 0.35)'
+                      }}
                     >
-                      <CheckCircle2 className="w-4 h-4" />
-                      Submit & Grade Test
+                      <CheckCircle2 size={16} />
+                      Submit &amp; Grade Test
                     </button>
                   ) : (
                     <button
                       onClick={() => setShowSolutions(true)}
-                      className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl text-xs flex items-center gap-1.5"
+                      className="glow-hover"
+                      style={{
+                        padding: '10px 20px',
+                        borderRadius: '12px',
+                        border: 'none',
+                        backgroundColor: '#6366f1',
+                        color: '#ffffff',
+                        fontWeight: 700,
+                        fontSize: '0.82rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px'
+                      }}
                     >
-                      <HelpCircle className="w-4 h-4" />
                       Inspect Full Solutions
                     </button>
                   )}
@@ -548,7 +879,10 @@ export const CustomPaperGeneratorView: React.FC = () => {
 
             </div>
           ) : (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center text-slate-400">
+            <div 
+              className="glass-panel"
+              style={{ padding: '48px', borderRadius: '24px', textAlign: 'center', color: '#64748b' }}
+            >
               No paper selected. Synthesize a new paper from the panel on the left!
             </div>
           )}
@@ -558,4 +892,5 @@ export const CustomPaperGeneratorView: React.FC = () => {
     </div>
   );
 };
+
 export default CustomPaperGeneratorView;
