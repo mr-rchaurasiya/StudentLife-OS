@@ -13,7 +13,9 @@ import {
   ListOrdered,
   X,
   RefreshCw,
-  Globe
+  Globe,
+  Settings,
+  Headphones
 } from 'lucide-react';
 import {
   AiPodcast,
@@ -48,11 +50,31 @@ export const AiPodcastStudioView: React.FC = () => {
   const [languageInput, setLanguageInput] = useState<string>('hinglish');
   const [notesInput, setNotesInput] = useState<string>('');
   const [isSynthesizing, setIsSynthesizing] = useState<boolean>(false);
+  const [availableVoices, setAvailableVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [customHost1Voice, setCustomHost1Voice] = useState<string>('');
+  const [customHost2Voice, setCustomHost2Voice] = useState<string>('');
+  const [showVoiceSettings, setShowVoiceSettings] = useState<boolean>(false);
+  const [voiceTestPlaying, setVoiceTestPlaying] = useState<'host1' | 'host2' | null>(null);
 
   const speechSynthRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   useEffect(() => {
     fetchPodcasts();
+
+    const loadVoices = () => {
+      if ('speechSynthesis' in window) {
+        const voices = window.speechSynthesis.getVoices();
+        if (voices.length > 0) {
+          setAvailableVoices(voices);
+        }
+      }
+    };
+
+    loadVoices();
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
     return () => {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
@@ -99,6 +121,84 @@ export const AiPodcastStudioView: React.FC = () => {
     }
   };
 
+  // Helper to select the most natural Indian human voice for Host 1 (Male) and Host 2 (Female)
+  const getVoiceForSpeaker = (speaker: 'host1' | 'host2', langCode?: string): SpeechSynthesisVoice | null => {
+    if (!availableVoices.length) return null;
+    const isHindiOrHinglish = langCode === 'hi-IN' || langCode === 'hinglish';
+
+    if (isHindiOrHinglish) {
+      if (speaker === 'host1') {
+        if (customHost1Voice) {
+          const matched = availableVoices.find(v => v.name === customHost1Voice);
+          if (matched) return matched;
+        }
+        // Look for Indian Hindi Male Voices (Microsoft Hemant, Madhur, Ravi, hi-IN male, en-IN male)
+        const hindiMale = availableVoices.find(v => {
+          const n = v.name.toLowerCase();
+          const l = v.lang.toLowerCase();
+          return (
+            (l.startsWith('hi') || l === 'en-in') &&
+            (n.includes('hemant') || n.includes('madhur') || n.includes('ravi') || n.includes('prabhat') || n.includes('male') || n.includes('hie') || n.includes('hid'))
+          );
+        });
+        if (hindiMale) return hindiMale;
+
+        // Fallback to any Hindi voice
+        const anyHindi = availableVoices.find(v => v.lang.toLowerCase().startsWith('hi') || v.name.toLowerCase().includes('hindi'));
+        if (anyHindi) return anyHindi;
+
+        // Fallback to any Indian English voice
+        const anyIndian = availableVoices.find(v => v.lang.toLowerCase() === 'en-in' || v.name.toLowerCase().includes('india'));
+        if (anyIndian) return anyIndian;
+      } else {
+        if (customHost2Voice) {
+          const matched = availableVoices.find(v => v.name === customHost2Voice);
+          if (matched) return matched;
+        }
+        // Look for Indian Hindi Female Voices (Microsoft Heera, Kalpana, Swara, Neerja, hi-IN female, Google हिन्दी)
+        const hindiFemale = availableVoices.find(v => {
+          const n = v.name.toLowerCase();
+          const l = v.lang.toLowerCase();
+          return (
+            (l.startsWith('hi') || l === 'en-in') &&
+            (n.includes('heera') || n.includes('kalpana') || n.includes('swara') || n.includes('neerja') || n.includes('female') || n.includes('hif') || n.includes('google हिन्दी'))
+          );
+        });
+        if (hindiFemale) return hindiFemale;
+
+        // Fallback to any Hindi voice
+        const anyHindi = availableVoices.find(v => v.lang.toLowerCase().startsWith('hi') || v.name.toLowerCase().includes('hindi'));
+        if (anyHindi) return anyHindi;
+
+        // Fallback to any Indian English voice
+        const anyIndian = availableVoices.find(v => v.lang.toLowerCase() === 'en-in' || v.name.toLowerCase().includes('india'));
+        if (anyIndian) return anyIndian;
+      }
+    } else if (langCode && langCode !== 'en-US') {
+      // Exact language match (e.g. es-ES, fr-FR, de-DE, ta-IN, te-IN)
+      const prefix = langCode.split('-')[0].toLowerCase();
+      const matched = availableVoices.find(v => v.lang.toLowerCase().startsWith(prefix));
+      if (matched) return matched;
+    } else {
+      // English voices
+      if (speaker === 'host1') {
+        const maleEn = availableVoices.find(v => {
+          const n = v.name.toLowerCase();
+          return v.lang.toLowerCase().startsWith('en') && (n.includes('david') || n.includes('guy') || n.includes('male') || n.includes('george') || n.includes('natural'));
+        });
+        if (maleEn) return maleEn;
+      } else {
+        const femaleEn = availableVoices.find(v => {
+          const n = v.name.toLowerCase();
+          return v.lang.toLowerCase().startsWith('en') && (n.includes('zira') || n.includes('jenny') || n.includes('aria') || n.includes('female') || n.includes('samantha'));
+        });
+        if (femaleEn) return femaleEn;
+      }
+    }
+
+    return null;
+  };
+
   const playTurn = (index: number) => {
     if (!activePodcast || !('speechSynthesis' in window) || isMuted) {
       return;
@@ -113,12 +213,27 @@ export const AiPodcastStudioView: React.FC = () => {
     window.speechSynthesis.cancel();
     const turn = activePodcast.dialogueTurns[index];
     const utterance = new SpeechSynthesisUtterance(turn.text);
-    utterance.rate = playbackSpeed;
-    utterance.pitch = turn.speaker === 'host1' ? 0.9 : 1.15; // Host 1 lower pitch, Host 2 higher pitch
 
-    // Map podcast language to speech synthesis language code
-    const podLang = activePodcast.language || 'en-US';
-    utterance.lang = podLang === 'hinglish' ? 'hi-IN' : podLang;
+    const isHindiOrHinglish = activePodcast.language === 'hi-IN' || activePodcast.language === 'hinglish';
+    const voice = getVoiceForSpeaker(turn.speaker, activePodcast.language);
+
+    if (voice) {
+      utterance.voice = voice;
+      utterance.lang = voice.lang;
+    } else {
+      const podLang = activePodcast.language || 'en-US';
+      utterance.lang = podLang === 'hinglish' ? 'hi-IN' : podLang;
+    }
+
+    // Human-like pitch and cadence tuning
+    if (isHindiOrHinglish) {
+      // Natural Indian Human pacing: slightly slower on Devanagari for maximum clarity
+      utterance.rate = playbackSpeed * 0.94;
+      utterance.pitch = turn.speaker === 'host1' ? 0.94 : 1.06;
+    } else {
+      utterance.rate = playbackSpeed;
+      utterance.pitch = turn.speaker === 'host1' ? 0.92 : 1.12;
+    }
 
     utterance.onend = () => {
       if (index + 1 < activePodcast.dialogueTurns.length) {
@@ -135,6 +250,39 @@ export const AiPodcastStudioView: React.FC = () => {
     };
 
     speechSynthRef.current = utterance;
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const handleTestVoice = (speaker: 'host1' | 'host2') => {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    setVoiceTestPlaying(speaker);
+
+    const isHindi = activePodcast?.language === 'hi-IN' || activePodcast?.language === 'hinglish';
+    const sampleText = speaker === 'host1'
+      ? (isHindi ? 'नमस्ते, मैं डॉक्टर हेमंत हूँ - आपका एआई स्टडी पॉडकास्ट होस्ट।' : 'Hello, I am Dr. Alex Vance, your analytical theory specialist.')
+      : (isHindi ? 'और मैं प्रोफ़ेसर माया शर्मा, आपकी एग्ज़ाम स्ट्रेटेजिस्ट!' : 'And I am Professor Maya Sharma, your intuitive exam strategist!');
+
+    const utterance = new SpeechSynthesisUtterance(sampleText);
+    const voice = getVoiceForSpeaker(speaker, activePodcast?.language);
+    if (voice) {
+      utterance.voice = voice;
+      utterance.lang = voice.lang;
+    } else {
+      utterance.lang = isHindi ? 'hi-IN' : 'en-US';
+    }
+
+    if (isHindi) {
+      utterance.rate = 0.94;
+      utterance.pitch = speaker === 'host1' ? 0.94 : 1.06;
+    } else {
+      utterance.rate = 1.0;
+      utterance.pitch = speaker === 'host1' ? 0.92 : 1.12;
+    }
+
+    utterance.onend = () => setVoiceTestPlaying(null);
+    utterance.onerror = () => setVoiceTestPlaying(null);
+
     window.speechSynthesis.speak(utterance);
   };
 
@@ -546,6 +694,160 @@ export const AiPodcastStudioView: React.FC = () => {
                     {isMuted ? <VolumeX size={15} /> : <Volume2 size={15} />}
                   </button>
                 </div>
+              </div>
+
+              {/* Natural Human Voice Engine & Audition Panel */}
+              <div
+                style={{
+                  backgroundColor: 'rgba(2, 6, 23, 0.65)',
+                  border: '1px solid rgba(56, 189, 248, 0.25)',
+                  borderRadius: '16px',
+                  padding: '12px 18px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '10px'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#22c55e', boxShadow: '0 0 8px #22c55e' }} />
+                    <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#38bdf8', letterSpacing: '0.02em', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Headphones size={14} color="#38bdf8" />
+                      {(activePodcast.language === 'hi-IN' || activePodcast.language === 'hinglish') ? '🇮🇳 Indian Human Voice Engine (Active)' : '🎙️ Dual-Host AI Voice Engine'}
+                    </span>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {/* Audition Host 1 */}
+                    <button
+                      onClick={() => handleTestVoice('host1')}
+                      style={{
+                        padding: '4px 10px',
+                        borderRadius: '8px',
+                        border: '1px solid rgba(165, 180, 252, 0.3)',
+                        backgroundColor: voiceTestPlaying === 'host1' ? 'rgba(165, 180, 252, 0.3)' : 'rgba(255, 255, 255, 0.05)',
+                        color: '#c7d2fe',
+                        fontSize: '0.72rem',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '5px'
+                      }}
+                    >
+                      <Volume2 size={13} color="#a5b4fc" />
+                      {voiceTestPlaying === 'host1' ? 'Speaking...' : `Test ${activePodcast.host1.name.split(' ')[0]}`}
+                    </button>
+
+                    {/* Audition Host 2 */}
+                    <button
+                      onClick={() => handleTestVoice('host2')}
+                      style={{
+                        padding: '4px 10px',
+                        borderRadius: '8px',
+                        border: '1px solid rgba(244, 114, 182, 0.3)',
+                        backgroundColor: voiceTestPlaying === 'host2' ? 'rgba(244, 114, 182, 0.3)' : 'rgba(255, 255, 255, 0.05)',
+                        color: '#fbcfe8',
+                        fontSize: '0.72rem',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '5px'
+                      }}
+                    >
+                      <Volume2 size={13} color="#f472b6" />
+                      {voiceTestPlaying === 'host2' ? 'Speaking...' : `Test ${activePodcast.host2.name.split(' ')[0]}`}
+                    </button>
+
+                    <button
+                      onClick={() => setShowVoiceSettings(!showVoiceSettings)}
+                      style={{
+                        padding: '4px 8px',
+                        borderRadius: '8px',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        backgroundColor: showVoiceSettings ? 'rgba(168, 85, 247, 0.25)' : 'rgba(255, 255, 255, 0.05)',
+                        color: '#94a3b8',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        fontSize: '0.72rem'
+                      }}
+                      title="Customize TTS Voices"
+                    >
+                      <Settings size={13} />
+                      Voice Settings
+                    </button>
+                  </div>
+                </div>
+
+                {/* Voice Status & Custom Voice Selectors Drawer */}
+                {showVoiceSettings && (
+                  <div 
+                    style={{
+                      borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+                      paddingTop: '10px',
+                      display: 'grid',
+                      gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                      gap: '12px'
+                    }}
+                  >
+                    <div>
+                      <label style={{ fontSize: '0.72rem', fontWeight: 700, color: '#a5b4fc', display: 'block', marginBottom: '4px' }}>
+                        👨‍🏫 {activePodcast.host1.name} (Male Voice):
+                      </label>
+                      <select
+                        value={customHost1Voice || getVoiceForSpeaker('host1', activePodcast.language)?.name || ''}
+                        onChange={(e) => setCustomHost1Voice(e.target.value)}
+                        style={{
+                          width: '100%',
+                          backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                          border: '1px solid rgba(165, 180, 252, 0.3)',
+                          borderRadius: '8px',
+                          color: '#ffffff',
+                          padding: '6px 10px',
+                          fontSize: '0.75rem',
+                          outline: 'none'
+                        }}
+                      >
+                        <option value="">Auto Indian Human Male Voice</option>
+                        {availableVoices.map(v => (
+                          <option key={`h1-${v.name}`} value={v.name}>
+                            {v.name} ({v.lang})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label style={{ fontSize: '0.72rem', fontWeight: 700, color: '#f472b6', display: 'block', marginBottom: '4px' }}>
+                        👩‍🔬 {activePodcast.host2.name} (Female Voice):
+                      </label>
+                      <select
+                        value={customHost2Voice || getVoiceForSpeaker('host2', activePodcast.language)?.name || ''}
+                        onChange={(e) => setCustomHost2Voice(e.target.value)}
+                        style={{
+                          width: '100%',
+                          backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                          border: '1px solid rgba(244, 114, 182, 0.3)',
+                          borderRadius: '8px',
+                          color: '#ffffff',
+                          padding: '6px 10px',
+                          fontSize: '0.75rem',
+                          outline: 'none'
+                        }}
+                      >
+                        <option value="">Auto Indian Human Female Voice</option>
+                        {availableVoices.map(v => (
+                          <option key={`h2-${v.name}`} value={v.name}>
+                            {v.name} ({v.lang})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Dialogue Transcript Stream */}
