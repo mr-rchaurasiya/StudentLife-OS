@@ -45,3 +45,7 @@ Thumbs.db
 *.db-journal
 packages/database/prisma/dev.db
 packages/database/prisma/dev.db-journal
+
+# Temporary / Scratch
+scratch/
+*.timestamp-*.mjs

@@ -14,12 +14,14 @@ import {
   CampusItemCategory,
   CreateCampusItemDto
 } from '@studentlife/shared';
+import { useLanguage } from '../context/LanguageContext';
 
 interface CampusExchangeViewProps {
   onAddXp?: (xp: number, reason: string) => void;
 }
 
 export const CampusExchangeView: React.FC<CampusExchangeViewProps> = ({ onAddXp }) => {
+  const { t } = useLanguage();
   const [items, setItems] = useState<CampusItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [selectedType, setSelectedType] = useState<CampusItemType | 'ALL'>('ALL');
@@ -106,11 +108,21 @@ export const CampusExchangeView: React.FC<CampusExchangeViewProps> = ({ onAddXp 
   const getTypeBadge = (type: CampusItemType) => {
     switch (type) {
       case 'LOST':
-        return { label: 'LOST ITEM 🔍', bg: 'rgba(239, 68, 68, 0.2)', color: '#fca5a5' };
+        return { label: t('badge_lost'), bg: 'rgba(239, 68, 68, 0.2)', color: '#fca5a5' };
       case 'FOUND':
-        return { label: 'FOUND ITEM 🎁', bg: 'rgba(16, 185, 129, 0.2)', color: '#86efac' };
+        return { label: t('badge_found'), bg: 'rgba(16, 185, 129, 0.2)', color: '#86efac' };
       default:
-        return { label: 'BORROW / RENT 🤝', bg: 'rgba(56, 189, 248, 0.2)', color: '#7dd3fc' };
+        return { label: t('badge_borrow'), bg: 'rgba(56, 189, 248, 0.2)', color: '#7dd3fc' };
+    }
+  };
+
+  const getFilterLabel = (type: CampusItemType | 'ALL') => {
+    switch (type) {
+      case 'ALL': return t('filter_all');
+      case 'LOST': return t('filter_lost');
+      case 'FOUND': return t('filter_found');
+      case 'FOR_BORROW_RENT': return t('filter_borrow');
+      default: return type;
     }
   };
 
@@ -138,15 +150,15 @@ export const CampusExchangeView: React.FC<CampusExchangeViewProps> = ({ onAddXp 
         <div>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
             <span className="badge badge-active" style={{ backgroundColor: 'rgba(34, 197, 94, 0.2)', color: '#4ade80' }}>
-              <Sparkles size={12} /> PHASE 53 &bull; CAMPUS RESOURCE BAZAAR
+              <Sparkles size={12} /> {t('phase_badge')}
             </span>
-            <span className="badge badge-completed">Verified Student Registry</span>
+            <span className="badge badge-completed">{t('verified_registry')}</span>
           </div>
           <h2 style={{ fontSize: '1.8rem', fontWeight: 800 }}>
-            Smart Campus Lost & Found <span className="gradient-text">& Equipment Exchange 🎒</span>
+            {t('campus_exchange_title')} <span className="gradient-text">{t('campus_exchange_title_accent')}</span>
           </h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '4px' }}>
-            Report lost items, claim found IDs & scientific calculators, and borrow lab drafters & robotics kits from verified peers.
+            {t('campus_exchange_desc')}
           </p>
         </div>
 
@@ -155,7 +167,7 @@ export const CampusExchangeView: React.FC<CampusExchangeViewProps> = ({ onAddXp 
           className="btn btn-primary"
           style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem' }}
         >
-          <Plus size={14} /> Report / Share Item
+          <Plus size={14} /> {t('report_share_btn')}
         </button>
       </div>
 
@@ -177,7 +189,7 @@ export const CampusExchangeView: React.FC<CampusExchangeViewProps> = ({ onAddXp 
                 cursor: 'pointer'
               }}
             >
-              {type.replace(/_/g, ' ')}
+              {getFilterLabel(type)}
             </button>
           ))}
         </div>
@@ -188,7 +200,7 @@ export const CampusExchangeView: React.FC<CampusExchangeViewProps> = ({ onAddXp 
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search items or location..."
+            placeholder={t('search_items_placeholder')}
             className="glass-input"
             style={{ width: '100%', padding: '8px 12px 8px 32px', fontSize: '0.85rem' }}
           />
@@ -255,7 +267,7 @@ export const CampusExchangeView: React.FC<CampusExchangeViewProps> = ({ onAddXp 
                     className="btn btn-secondary"
                     style={{ padding: '4px 10px', fontSize: '0.75rem' }}
                   >
-                    Mark {item.type === 'FOR_BORROW_RENT' ? 'Borrowed' : 'Resolved'}
+                    {item.type === 'FOR_BORROW_RENT' ? t('mark_borrowed') : t('mark_resolved')}
                   </button>
                 ) : (
                   <span style={{ fontSize: '0.75rem', color: '#34d399', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -286,14 +298,14 @@ export const CampusExchangeView: React.FC<CampusExchangeViewProps> = ({ onAddXp 
         }}>
           <div className="glass-panel" style={{ width: '100%', maxWidth: '480px', padding: '28px' }}>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '16px' }}>
-              Report Lost / Found / Share Equipment 🎒
+              {t('report_modal_title')}
             </h3>
 
             <form onSubmit={handleReportItem} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
                   <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
-                    Type
+                    {t('field_type')}
                   </label>
                   <select
                     value={reportType}
@@ -301,15 +313,15 @@ export const CampusExchangeView: React.FC<CampusExchangeViewProps> = ({ onAddXp 
                     className="glass-input"
                     style={{ width: '100%', padding: '8px 10px', fontSize: '0.85rem' }}
                   >
-                    <option value="LOST">Lost Item</option>
-                    <option value="FOUND">Found Item</option>
-                    <option value="FOR_BORROW_RENT">Available for Borrowing</option>
+                    <option value="LOST">{t('opt_lost')}</option>
+                    <option value="FOUND">{t('opt_found')}</option>
+                    <option value="FOR_BORROW_RENT">{t('opt_borrow')}</option>
                   </select>
                 </div>
 
                 <div>
                   <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
-                    Category
+                    {t('field_category')}
                   </label>
                   <select
                     value={reportCategory}
@@ -317,18 +329,18 @@ export const CampusExchangeView: React.FC<CampusExchangeViewProps> = ({ onAddXp 
                     className="glass-input"
                     style={{ width: '100%', padding: '8px 10px', fontSize: '0.85rem' }}
                   >
-                    <option value="CALCULATOR">Scientific Calculator</option>
-                    <option value="ID_DOCUMENT">ID Card / Document</option>
-                    <option value="LAB_EQUIPMENT">Lab Drafter / Tools</option>
-                    <option value="BOOK_STATIONERY">Notes / Book</option>
-                    <option value="ELECTRONICS">Electronics / Cables</option>
+                    <option value="CALCULATOR">{t('opt_calculator')}</option>
+                    <option value="ID_DOCUMENT">{t('opt_id_card')}</option>
+                    <option value="LAB_EQUIPMENT">{t('opt_lab_equipment')}</option>
+                    <option value="BOOK_STATIONERY">{t('opt_book_notes')}</option>
+                    <option value="ELECTRONICS">{t('opt_electronics')}</option>
                   </select>
                 </div>
               </div>
 
               <div>
                 <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
-                  Item Title
+                  {t('field_title')}
                 </label>
                 <input
                   type="text"
@@ -343,7 +355,7 @@ export const CampusExchangeView: React.FC<CampusExchangeViewProps> = ({ onAddXp 
 
               <div>
                 <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
-                  Location Details
+                  {t('field_location')}
                 </label>
                 <input
                   type="text"
@@ -358,7 +370,7 @@ export const CampusExchangeView: React.FC<CampusExchangeViewProps> = ({ onAddXp 
 
               <div>
                 <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
-                  Description & Identifiers
+                  {t('field_desc')}
                 </label>
                 <textarea
                   value={reportDescription}
@@ -372,7 +384,7 @@ export const CampusExchangeView: React.FC<CampusExchangeViewProps> = ({ onAddXp 
 
               <div>
                 <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
-                  Contact (Telegram / WhatsApp / Email)
+                  {t('field_contact')}
                 </label>
                 <input
                   type="text"
@@ -391,14 +403,14 @@ export const CampusExchangeView: React.FC<CampusExchangeViewProps> = ({ onAddXp 
                   className="btn btn-secondary"
                   style={{ padding: '8px 16px', fontSize: '0.85rem' }}
                 >
-                  Cancel
+                  {t('btn_cancel')}
                 </button>
                 <button
                   type="submit"
                   className="btn btn-primary"
                   style={{ padding: '8px 18px', fontSize: '0.85rem' }}
                 >
-                  Publish Item
+                  {t('btn_publish')}
                 </button>
               </div>
             </form>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StudentCardWidget } from './StudentCardWidget';
 import { FocusTimerWidget } from './FocusTimerWidget';
+import { useLanguage } from '../context/LanguageContext';
 import { StudentProfile, DashboardSummaryData } from '@studentlife/shared';
 import {
   Clock,
@@ -34,6 +35,7 @@ export const DashboardCockpit: React.FC<DashboardCockpitProps> = ({
   onFocusSessionComplete,
   onOpenRoadmap,
 }) => {
+  const { t } = useLanguage();
   const [aiPromptResponse, setAiPromptResponse] = useState<string | null>(null);
 
   const handleQuickAiAction = (action: string) => {
@@ -75,8 +77,8 @@ export const DashboardCockpit: React.FC<DashboardCockpitProps> = ({
                   <Clock size={18} />
                 </div>
                 <div>
-                  <h4 style={{ fontSize: '1rem', fontWeight: 700 }}>Today's Study Commitment</h4>
-                  <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Daily target telemetry</p>
+                  <h4 style={{ fontSize: '1rem', fontWeight: 700 }}>{t('study_commitment')}</h4>
+                  <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>{t('daily_telemetry')}</p>
                 </div>
               </div>
               <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--accent-secondary)' }}>
@@ -85,7 +87,7 @@ export const DashboardCockpit: React.FC<DashboardCockpitProps> = ({
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '8px' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Time Studied Today:</span>
+              <span style={{ color: 'var(--text-secondary)' }}>{t('time_studied_today')}</span>
               <strong style={{ color: 'var(--text-primary)' }}>
                 {Math.floor(summary.todayStudiedMinutes / 60)}h {summary.todayStudiedMinutes % 60}m
               </strong>
@@ -104,8 +106,8 @@ export const DashboardCockpit: React.FC<DashboardCockpitProps> = ({
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-              <span>Target: {Math.floor(summary.dailyGoalMinutes / 60)}h {summary.dailyGoalMinutes % 60 > 0 ? `${summary.dailyGoalMinutes % 60}m` : ''}</span>
-              <span>Remaining: {Math.max(0, summary.dailyGoalMinutes - summary.todayStudiedMinutes)} mins</span>
+              <span>{t('target_label')} {Math.floor(summary.dailyGoalMinutes / 60)}h {summary.dailyGoalMinutes % 60 > 0 ? `${summary.dailyGoalMinutes % 60}m` : ''}</span>
+              <span>{t('remaining_label')} {Math.max(0, summary.dailyGoalMinutes - summary.todayStudiedMinutes)} mins</span>
             </div>
           </div>
 
@@ -122,15 +124,15 @@ export const DashboardCockpit: React.FC<DashboardCockpitProps> = ({
                   <Target size={18} />
                 </div>
                 <div>
-                  <h4 style={{ fontSize: '1rem', fontWeight: 700 }}>Target Exam Countdowns</h4>
-                  <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Milestone countdown tracker</p>
+                  <h4 style={{ fontSize: '1rem', fontWeight: 700 }}>{t('target_exam_countdowns')}</h4>
+                  <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>{t('milestone_tracker')}</p>
                 </div>
               </div>
               <button
                 onClick={onOpenRoadmap}
                 style={{ background: 'transparent', border: 'none', color: '#818cf8', fontSize: '0.75rem', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '2px' }}
               >
-                View Prep Hub <ArrowUpRight size={12} />
+                {t('view_prep_hub')} <ArrowUpRight size={12} />
               </button>
             </div>
 
@@ -158,7 +160,7 @@ export const DashboardCockpit: React.FC<DashboardCockpitProps> = ({
                     <div style={{ fontSize: '1.2rem', fontWeight: 800, color: exam.daysRemaining < 60 ? '#f43f5e' : '#fbbf24', fontFamily: 'var(--font-mono)' }}>
                       {exam.daysRemaining}d
                     </div>
-                    <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>remaining</div>
+                    <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>{t('days_left')}</div>
                   </div>
                 </div>
               ))}
@@ -173,8 +175,8 @@ export const DashboardCockpit: React.FC<DashboardCockpitProps> = ({
                   <RotateCw size={18} />
                 </div>
                 <div>
-                  <h4 style={{ fontSize: '1rem', fontWeight: 700 }}>Spaced Repetition Due</h4>
-                  <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>SM-2 memory retention engine</p>
+                  <h4 style={{ fontSize: '1rem', fontWeight: 700 }}>{t('spaced_repetition_queue')}</h4>
+                  <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>{t('memory_curve')}</p>
                 </div>
               </div>
               <span className="badge badge-completed" style={{ fontSize: '0.65rem' }}>
@@ -232,8 +234,8 @@ export const DashboardCockpit: React.FC<DashboardCockpitProps> = ({
               <BrainCircuit size={20} />
             </div>
             <div>
-              <h4 style={{ fontSize: '0.95rem', fontWeight: 700 }}>AI Study & Mentor Shortcuts</h4>
-              <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Instant context-aware acceleration tools</p>
+              <h4 style={{ fontSize: '0.95rem', fontWeight: 700 }}>{t('ai_shortcuts_title')}</h4>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{t('ai_shortcuts_sub')}</p>
             </div>
           </div>
 
@@ -243,21 +245,21 @@ export const DashboardCockpit: React.FC<DashboardCockpitProps> = ({
               className="btn btn-secondary"
               style={{ padding: '8px 14px', fontSize: '0.8rem' }}
             >
-              <FileText size={14} color="#38bdf8" /> Summarize Notes
+              <FileText size={14} color="#38bdf8" /> {t('summarize_notes')}
             </button>
             <button
               onClick={() => handleQuickAiAction('flashcards')}
               className="btn btn-secondary"
               style={{ padding: '8px 14px', fontSize: '0.8rem' }}
             >
-              <Sparkles size={14} color="#c084fc" /> Generate Flashcards
+              <Sparkles size={14} color="#c084fc" /> {t('generate_flashcards')}
             </button>
             <button
               onClick={() => handleQuickAiAction('mentor')}
               className="btn btn-primary"
               style={{ padding: '8px 14px', fontSize: '0.8rem' }}
             >
-              <MessageSquare size={14} /> Ask AI Mentor
+              <MessageSquare size={14} /> {t('ask_ai_mentor')}
             </button>
           </div>
         </div>
@@ -298,10 +300,10 @@ export const DashboardCockpit: React.FC<DashboardCockpitProps> = ({
         <Quote size={24} color="var(--accent-primary)" style={{ opacity: 0.7, flexShrink: 0 }} />
         <div>
           <p style={{ fontSize: '0.85rem', fontStyle: 'italic', color: 'var(--text-primary)' }}>
-            "{summary.motivationalQuote.quote}"
+            {t('quote_text')}
           </p>
           <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px', display: 'block' }}>
-            &mdash; {summary.motivationalQuote.author}
+            {t('quote_author')}
           </span>
         </div>
       </div>

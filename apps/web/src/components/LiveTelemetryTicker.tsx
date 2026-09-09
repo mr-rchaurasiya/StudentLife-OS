@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Activity, Radio, Cpu, Orbit } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export const LiveTelemetryTicker: React.FC = () => {
+  const { t } = useLanguage();
   const [ligoStrain, setLigoStrain] = useState('1.04e-21');
   const [hftBtcSpread, setHftBtcSpread] = useState('0.15');
   const [tokamakQ, setTokamakQ] = useState('10.42');
@@ -23,66 +25,106 @@ export const LiveTelemetryTicker: React.FC = () => {
   }, [isLive]);
 
   return (
-    <div className="w-full bg-slate-950/90 border-t border-slate-800/80 px-4 py-1.5 flex items-center justify-between text-xs backdrop-blur-md z-40">
-      <div className="flex items-center gap-3 overflow-x-auto no-scrollbar">
+    <div
+      style={{
+        width: '100%',
+        backgroundColor: 'rgba(9, 13, 22, 0.95)',
+        borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+        padding: '7px 24px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        fontSize: '0.74rem',
+        backdropFilter: 'blur(12px)',
+        gap: '12px',
+        flexWrap: 'wrap'
+      }}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', gap: '14px', overflowX: 'auto', flexWrap: 'wrap' }}>
         {/* Live Indicator */}
-        <div className="flex items-center gap-1.5 shrink-0">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span style={{ position: 'relative', display: 'flex', width: '8px', height: '8px' }}>
+            <span
+              style={{
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                borderRadius: '50%',
+                backgroundColor: '#34d399',
+                opacity: 0.75,
+                animation: 'ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite'
+              }}
+            />
+            <span
+              style={{
+                position: 'relative',
+                width: '8px',
+                height: '8px',
+                borderRadius: '50%',
+                backgroundColor: '#10b981'
+              }}
+            />
           </span>
-          <span className="font-semibold text-slate-300 uppercase tracking-wider text-[10px]">
-            Live Telemetry
+          <span style={{ fontWeight: 700, color: 'var(--text-secondary, #94a3b8)', textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.68rem' }}>
+            {t('live_telemetry')}
           </span>
         </div>
 
-        <div className="h-3 w-px bg-slate-800" />
+        <div style={{ width: '1px', height: '14px', backgroundColor: 'rgba(255, 255, 255, 0.1)' }} />
 
         {/* LIGO Gravitational Wave Strain */}
-        <div className="flex items-center gap-1.5 shrink-0 text-slate-400">
-          <Radio className="w-3 h-3 text-cyan-400" />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#94a3b8' }}>
+          <Radio size={12} color="#22d3ee" />
           <span>LIGO Strain h(t):</span>
-          <span className="font-mono text-cyan-300 font-medium">{ligoStrain}</span>
+          <span style={{ fontFamily: 'var(--font-mono, monospace)', color: '#67e8f9', fontWeight: 600 }}>{ligoStrain}</span>
         </div>
 
-        <div className="h-3 w-px bg-slate-800" />
+        <div style={{ width: '1px', height: '14px', backgroundColor: 'rgba(255, 255, 255, 0.1)' }} />
 
         {/* HFT Limit Order Book Spread */}
-        <div className="flex items-center gap-1.5 shrink-0 text-slate-400">
-          <Activity className="w-3 h-3 text-emerald-400" />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#94a3b8' }}>
+          <Activity size={12} color="#34d399" />
           <span>HFT L2 Spread:</span>
-          <span className="font-mono text-emerald-300 font-medium">${hftBtcSpread}</span>
+          <span style={{ fontFamily: 'var(--font-mono, monospace)', color: '#6ee7b7', fontWeight: 600 }}>${hftBtcSpread}</span>
         </div>
 
-        <div className="h-3 w-px bg-slate-800" />
+        <div style={{ width: '1px', height: '14px', backgroundColor: 'rgba(255, 255, 255, 0.1)' }} />
 
         {/* Fusion Tokamak Q */}
-        <div className="flex items-center gap-1.5 shrink-0 text-slate-400">
-          <Orbit className="w-3 h-3 text-amber-400" />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#94a3b8' }}>
+          <Orbit size={12} color="#fbbf24" />
           <span>Tokamak Q-Factor:</span>
-          <span className="font-mono text-amber-300 font-medium">{tokamakQ}</span>
+          <span style={{ fontFamily: 'var(--font-mono, monospace)', color: '#fde047', fontWeight: 600 }}>{tokamakQ}</span>
         </div>
 
-        <div className="h-3 w-px bg-slate-800" />
+        <div style={{ width: '1px', height: '14px', backgroundColor: 'rgba(255, 255, 255, 0.1)' }} />
 
         {/* BCI Neuro-Speller SNR */}
-        <div className="flex items-center gap-1.5 shrink-0 text-slate-400">
-          <Cpu className="w-3 h-3 text-purple-400" />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#94a3b8' }}>
+          <Cpu size={12} color="#c084fc" />
           <span>BCI P300 SNR:</span>
-          <span className="font-mono text-purple-300 font-medium">{bciSnr} dB</span>
+          <span style={{ fontFamily: 'var(--font-mono, monospace)', color: '#d8b4fe', fontWeight: 600 }}>{bciSnr} dB</span>
         </div>
       </div>
 
-      <div className="flex items-center gap-2 shrink-0">
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         <button
           onClick={() => setIsLive(!isLive)}
-          className={`px-2 py-0.5 rounded text-[10px] font-mono transition-colors ${
-            isLive 
-              ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' 
-              : 'bg-slate-800 text-slate-500 border border-slate-700'
-          }`}
+          style={{
+            padding: '2px 8px',
+            borderRadius: '4px',
+            fontSize: '0.65rem',
+            fontFamily: 'var(--font-mono, monospace)',
+            fontWeight: 700,
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            backgroundColor: isLive ? 'rgba(16, 185, 129, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+            color: isLive ? '#34d399' : '#94a3b8',
+            border: isLive ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(255, 255, 255, 0.1)'
+          }}
         >
-          {isLive ? 'STREAMING' : 'PAUSED'}
+          {isLive ? t('streaming') : t('paused')}
         </button>
       </div>
     </div>

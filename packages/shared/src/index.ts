@@ -2086,7 +2086,29 @@ export interface RetestMistakeDto {
 // ==========================================
 // 40. Vernacular Multi-Language Engine (Phase 40)
 // ==========================================
-export type SupportedLanguage = 'en' | 'hi' | 'hinglish' | 'bn' | 'ta' | 'te';
+export type SupportedLanguage =
+  | 'en'
+  | 'hi'
+  | 'hinglish'
+  | 'bn'
+  | 'ta'
+  | 'te'
+  | 'mr'
+  | 'gu'
+  | 'kn'
+  | 'ml'
+  | 'pa'
+  | 'or'
+  | 'ur'
+  | 'as'
+  | 'sa'
+  | 'es'
+  | 'fr'
+  | 'de'
+  | 'ja'
+  | 'ru'
+  | 'zh'
+  | 'ar';
 
 // ==========================================
 // 41. 2D Multiplayer Virtual Campus (Phase 41)

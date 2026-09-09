@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StudentProfile } from '@studentlife/shared';
+import { useLanguage } from '../context/LanguageContext';
 import {
   Flame,
   Zap,
@@ -25,6 +26,7 @@ export const StudentCardWidget: React.FC<StudentCardWidgetProps> = ({
   onClaimStreak,
   isClaimingStreak,
 }) => {
+  const { t } = useLanguage();
   const [streakClaimedFeedback, setStreakClaimedFeedback] = useState(false);
 
   if (!profile) return null;
@@ -53,10 +55,10 @@ export const StudentCardWidget: React.FC<StudentCardWidgetProps> = ({
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
             <span className="badge badge-active" style={{ fontSize: '0.7rem' }}>
-              <Award size={12} /> LEVEL {profile.level} SCHOLAR
+              <Award size={12} /> {t('level_scholar', { level: profile.level })}
             </span>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-              {profile.xpPoints} Total XP
+              {profile.xpPoints} {t('total_xp')}
             </span>
           </div>
           <h3 style={{ fontSize: '1.4rem', fontWeight: 800 }}>{profile.collegeOrSchool || 'Student Workspace'}</h3>
@@ -85,7 +87,7 @@ export const StudentCardWidget: React.FC<StudentCardWidgetProps> = ({
                 <CheckCircle2 size={14} /> +50 XP
               </span>
             ) : (
-              `${profile.streakCount} Day Streak`
+              `${profile.streakCount} ${t('day_streak')}`
             )}
           </button>
 
@@ -94,7 +96,7 @@ export const StudentCardWidget: React.FC<StudentCardWidgetProps> = ({
             className="btn btn-secondary"
             style={{ padding: '8px 14px', fontSize: '0.8rem' }}
           >
-            <Edit3 size={14} /> Edit Profile
+            <Edit3 size={14} /> {t('edit_profile')}
           </button>
         </div>
       </div>
@@ -106,7 +108,7 @@ export const StudentCardWidget: React.FC<StudentCardWidgetProps> = ({
             <Zap size={14} color="var(--accent-primary)" /> XP to Level {profile.level + 1}
           </span>
           <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>
-            {profile.xpToNextLevel} XP needed ({currentLevelXpProgress}%)
+            {profile.xpToNextLevel} {t('xp_needed')} ({currentLevelXpProgress}%)
           </span>
         </div>
         <div style={{ width: '100%', height: '8px', backgroundColor: '#1e293b', borderRadius: '4px', overflow: 'hidden' }}>
@@ -127,7 +129,7 @@ export const StudentCardWidget: React.FC<StudentCardWidgetProps> = ({
         {/* Daily Study Goal */}
         <div style={{ padding: '12px 14px', borderRadius: '10px', backgroundColor: 'rgba(0,0,0,0.25)', border: '1px solid var(--border-glass)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '4px' }}>
-            <Clock size={14} color="var(--accent-secondary)" /> Daily Study Target
+            <Clock size={14} color="var(--accent-secondary)" /> {t('daily_study_target')}
           </div>
           <div style={{ fontSize: '1.1rem', fontWeight: 800 }}>
             {Math.floor(profile.dailyStudyGoalMinutes / 60)}h {profile.dailyStudyGoalMinutes % 60 > 0 ? `${profile.dailyStudyGoalMinutes % 60}m` : ''} / day
@@ -137,7 +139,7 @@ export const StudentCardWidget: React.FC<StudentCardWidgetProps> = ({
         {/* Target Exams */}
         <div style={{ padding: '12px 14px', borderRadius: '10px', backgroundColor: 'rgba(0,0,0,0.25)', border: '1px solid var(--border-glass)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '4px' }}>
-            <Target size={14} color="var(--accent-rose)" /> Target Exams
+            <Target size={14} color="var(--accent-rose)" /> {t('target_exams')}
           </div>
           <div style={{ fontSize: '0.95rem', fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {profile.targetExams.length > 0 ? profile.targetExams.join(', ') : 'No target exams set'}
@@ -147,7 +149,7 @@ export const StudentCardWidget: React.FC<StudentCardWidgetProps> = ({
         {/* Career Aspirations */}
         <div style={{ padding: '12px 14px', borderRadius: '10px', backgroundColor: 'rgba(0,0,0,0.25)', border: '1px solid var(--border-glass)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '4px' }}>
-            <Sparkles size={14} color="var(--accent-purple)" /> Dream Career
+            <Sparkles size={14} color="var(--accent-purple)" /> {t('dream_career')}
           </div>
           <div style={{ fontSize: '0.95rem', fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {profile.careerAspirations.length > 0 ? profile.careerAspirations.join(', ') : 'Undecided'}
@@ -159,7 +161,7 @@ export const StudentCardWidget: React.FC<StudentCardWidgetProps> = ({
       {profile.skillTags.length > 0 && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <BookMarked size={13} /> Skills:
+            <BookMarked size={13} /> {t('skills')}:
           </span>
           {profile.skillTags.map((tag, idx) => (
             <span

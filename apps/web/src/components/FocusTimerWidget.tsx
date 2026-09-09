@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Play, Pause, RotateCcw, Flame, Sparkles } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface FocusTimerWidgetProps {
   onSessionComplete: (durationMinutes: number, sessionType: 'FOCUS_25' | 'FOCUS_50') => Promise<void>;
 }
 
 export const FocusTimerWidget: React.FC<FocusTimerWidgetProps> = ({ onSessionComplete }) => {
+  const { t } = useLanguage();
   const [sessionType, setSessionType] = useState<'FOCUS_25' | 'FOCUS_50' | 'BREAK_5'>('FOCUS_25');
   const [totalSeconds, setTotalSeconds] = useState<number>(25 * 60);
   const [secondsRemaining, setSecondsRemaining] = useState<number>(25 * 60);
@@ -92,8 +94,8 @@ export const FocusTimerWidget: React.FC<FocusTimerWidgetProps> = ({ onSessionCom
             <Flame size={18} />
           </div>
           <div>
-            <h4 style={{ fontSize: '1rem', fontWeight: 700 }}>Smart Focus Engine</h4>
-            <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Pomodoro Deep Work Protocol</p>
+            <h4 style={{ fontSize: '1rem', fontWeight: 700 }}>{t('smart_focus_engine')}</h4>
+            <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>{t('pomodoro_protocol')}</p>
           </div>
         </div>
 
@@ -118,7 +120,7 @@ export const FocusTimerWidget: React.FC<FocusTimerWidgetProps> = ({ onSessionCom
             color: sessionType === 'FOCUS_25' ? '#ffffff' : 'var(--text-secondary)',
           }}
         >
-          25m Focus
+          {t('focus_25')}
         </button>
         <button
           onClick={() => switchMode('FOCUS_50')}
@@ -134,7 +136,7 @@ export const FocusTimerWidget: React.FC<FocusTimerWidgetProps> = ({ onSessionCom
             color: sessionType === 'FOCUS_50' ? '#ffffff' : 'var(--text-secondary)',
           }}
         >
-          50m Deep
+          {t('focus_50')}
         </button>
         <button
           onClick={() => switchMode('BREAK_5')}
@@ -150,7 +152,7 @@ export const FocusTimerWidget: React.FC<FocusTimerWidgetProps> = ({ onSessionCom
             color: sessionType === 'BREAK_5' ? '#ffffff' : 'var(--text-secondary)',
           }}
         >
-          5m Break
+          {t('break_5')}
         </button>
       </div>
 
