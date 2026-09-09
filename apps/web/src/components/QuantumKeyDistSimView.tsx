@@ -9,9 +9,13 @@ import {
   Eye,
   CheckCircle2,
   XCircle,
-  Hash
+  Hash,
+  Radio,
+  Binary,
+  ArrowRight,
+  Activity
 } from 'lucide-react';
-import type { QkdTransmissionReport } from '@studentlife/shared';
+import type { QkdTransmissionReport, QkdPhotonState } from '@studentlife/shared';
 
 interface QuantumKeyDistSimViewProps {
   onAddXp?: (amount: number) => void;
@@ -24,10 +28,87 @@ export const QuantumKeyDistSimView: React.FC<QuantumKeyDistSimViewProps> = ({ on
   const [loading, setLoading] = useState<boolean>(false);
   const [plainMessage, setPlainMessage] = useState<string>('CONFIDENTIAL_RESEARCH_PAYLOAD');
 
+  const generateLocalSimulation = (count: number, eve: boolean): QkdTransmissionReport => {
+    const photons: QkdPhotonState[] = [];
+    let matchCount = 0;
+    let errors = 0;
+    let siftedBits = '';
+
+    for (let i = 0; i < count; i++) {
+      const aliceBit: 0 | 1 = Math.random() > 0.5 ? 1 : 0;
+      const aliceBasis: 'RECTILINEAR' | 'DIAGONAL' = Math.random() > 0.5 ? 'RECTILINEAR' : 'DIAGONAL';
+      
+      let eveBasis: 'RECTILINEAR' | 'DIAGONAL' | undefined = undefined;
+      let interceptedBit = aliceBit;
+      if (eve) {
+        eveBasis = Math.random() > 0.5 ? 'RECTILINEAR' : 'DIAGONAL';
+        if (eveBasis !== aliceBasis) {
+          interceptedBit = Math.random() > 0.5 ? 1 : 0;
+        }
+      }
+
+      const bobBasis: 'RECTILINEAR' | 'DIAGONAL' = Math.random() > 0.5 ? 'RECTILINEAR' : 'DIAGONAL';
+      let bobMeasuredBit: 0 | 1 = aliceBit;
+
+      if (eve) {
+        if (bobBasis === eveBasis) {
+          bobMeasuredBit = interceptedBit;
+        } else {
+          bobMeasuredBit = Math.random() > 0.5 ? 1 : 0;
+        }
+      } else {
+        if (bobBasis !== aliceBasis) {
+          bobMeasuredBit = Math.random() > 0.5 ? 1 : 0;
+        }
+      }
+
+      const basisMatched = aliceBasis === bobBasis;
+      let isSifted = false;
+
+      if (basisMatched) {
+        matchCount++;
+        isSifted = true;
+        siftedBits += bobMeasuredBit;
+        if (bobMeasuredBit !== aliceBit) {
+          errors++;
+        }
+      }
+
+      photons.push({
+        index: i + 1,
+        aliceBit,
+        aliceBasis,
+        eveIntercepted: eve,
+        eveBasis,
+        bobBasis,
+        bobMeasuredBit,
+        basisMatched,
+        isSiftedKeyBit: isSifted
+      });
+    }
+
+    const qber = matchCount > 0 ? Math.round((errors / matchCount) * 100 * 10) / 10 : 0;
+    const isEavesdropped = eve || qber > 11.0;
+    const hexKey = siftedBits ? parseInt(siftedBits.slice(0, 16) || '1010', 2).toString(16).toUpperCase().padStart(4, '0') : 'A7F4';
+
+    return {
+      id: 'qkd-' + Date.now(),
+      protocol: 'BB84',
+      totalPhotonsSent: count,
+      siftedKeyLength: matchCount,
+      qberPercent: qber,
+      eavesdropperDetected: isEavesdropped,
+      securityVerdict: isEavesdropped ? 'COMPROMISED_EAVESDROPPER_DETECTED' : 'SECURE_CHANNEL',
+      samplePhotons: photons,
+      finalSecretKeyHex: '0x' + hexKey,
+      encryptedSampleCipherHex: '0x' + hexKey.split('').reverse().join('') + 'C9B2'
+    };
+  };
+
   const runSimulation = async (enableEve: boolean) => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/quantum-qkd/simulate', {
+      const res = await fetch('/api/quantum-qkd/simulate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -38,11 +119,19 @@ export const QuantumKeyDistSimView: React.FC<QuantumKeyDistSimViewProps> = ({ on
       });
       if (res.ok) {
         const data = await res.json();
-        setQkdReport(data.data);
-        if (onAddXp) onAddXp(50);
+        if (data.data) {
+          setQkdReport(data.data);
+          if (onAddXp) onAddXp(50);
+          return;
+        }
       }
-    } catch (e) {
-      console.error('Failed to run QKD simulation', e);
+      // Graceful local simulation fallback
+      const simReport = generateLocalSimulation(photonsCount, enableEve);
+      setQkdReport(simReport);
+      if (onAddXp) onAddXp(50);
+    } catch {
+      const simReport = generateLocalSimulation(photonsCount, enableEve);
+      setQkdReport(simReport);
     } finally {
       setLoading(false);
     }
@@ -50,200 +139,488 @@ export const QuantumKeyDistSimView: React.FC<QuantumKeyDistSimViewProps> = ({ on
 
   useEffect(() => {
     runSimulation(eveEavesdropping);
-  }, []);
+  }, [photonsCount]);
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', paddingBottom: '60px', maxWidth: '1600px', margin: '0 auto' }}>
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-emerald-900/40 via-teal-900/40 to-cyan-900/40 border border-emerald-500/30 rounded-2xl p-6 backdrop-blur-xl relative overflow-hidden">
-        <div className="absolute -right-10 -bottom-10 opacity-10 pointer-events-none">
-          <Lock className="w-64 h-64 text-emerald-400" />
-        </div>
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 uppercase tracking-wider">
+      <div
+        style={{
+          position: 'relative',
+          borderRadius: '24px',
+          overflow: 'hidden',
+          background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(15, 23, 42, 0.95) 50%, rgba(6, 182, 212, 0.25) 100%)',
+          border: '1px solid rgba(16, 185, 129, 0.35)',
+          padding: '28px 32px',
+          boxShadow: '0 20px 50px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+        }}
+      >
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '20px', position: 'relative', zIndex: 1 }}>
+          <div style={{ maxWidth: '800px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px', flexWrap: 'wrap' }}>
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '5px 12px',
+                  borderRadius: '9999px',
+                  fontSize: '11px',
+                  fontWeight: 800,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  background: 'rgba(16, 185, 129, 0.15)',
+                  color: '#34d399',
+                  border: '1px solid rgba(16, 185, 129, 0.3)'
+                }}
+              >
+                <Radio style={{ width: '13px', height: '13px' }} />
                 Phase 87 • Quantum Cryptography
               </span>
-              <span className="flex items-center gap-1 text-xs text-teal-400 font-medium">
-                <Key className="w-3.5 h-3.5" /> BB84 Protocol Simulator
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '5px 12px',
+                  borderRadius: '9999px',
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  background: 'rgba(6, 182, 212, 0.12)',
+                  color: '#22d3ee',
+                  border: '1px solid rgba(6, 182, 212, 0.25)'
+                }}
+              >
+                <Key style={{ width: '13px', height: '13px' }} />
+                BB84 Protocol Simulator
+              </span>
+              <span
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '5px 12px',
+                  borderRadius: '9999px',
+                  fontSize: '11px',
+                  fontWeight: 700,
+                  background: 'rgba(99, 102, 241, 0.12)',
+                  color: '#a5b4fc',
+                  border: '1px solid rgba(99, 102, 241, 0.25)'
+                }}
+              >
+                <Binary style={{ width: '13px', height: '13px' }} />
+                One-Time Pad Vault
               </span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-white flex items-center gap-3">
-              <Key className="w-8 h-8 text-emerald-400" />
+
+            <h1 style={{ fontSize: '28px', fontWeight: 900, color: '#ffffff', margin: 0, display: 'flex', alignItems: 'center', gap: '12px', letterSpacing: '-0.02em' }}>
+              <Key style={{ width: '32px', height: '32px', color: '#10b981' }} />
               Quantum Key Distribution (QKD) & BB84 Simulator
             </h1>
-            <p className="text-sm text-slate-300 mt-1 max-w-2xl">
+            <p style={{ color: '#94a3b8', fontSize: '14px', lineHeight: '1.6', margin: '8px 0 0 0' }}>
               Simulate unconditional information-theoretic security using Alice-Bob photon polarizations, Eve eavesdropping detection via QBER error spikes, and One-Time Pad ciphers.
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <button
               onClick={() => runSimulation(eveEavesdropping)}
               disabled={loading}
-              className="px-4 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold rounded-xl text-sm flex items-center gap-2 shadow-lg shadow-emerald-500/20 transition-all disabled:opacity-50"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '12px 24px',
+                borderRadius: '14px',
+                fontWeight: 800,
+                fontSize: '13px',
+                color: '#022c22',
+                background: 'linear-gradient(135deg, #34d399 0%, #10b981 50%, #059669 100%)',
+                border: 'none',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                boxShadow: '0 8px 24px rgba(16, 185, 129, 0.35)',
+                transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                opacity: loading ? 0.6 : 1
+              }}
             >
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-              Send Quantum Stream
+              <RefreshCw style={{ width: '16px', height: '16px', animation: loading ? 'spin 1s linear infinite' : 'none' }} />
+              {loading ? 'Transmitting Photons...' : 'Send Quantum Stream'}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Control Panel: Eve Toggle & Message Input */}
-      <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 backdrop-blur-xl grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
-        <div className="md:col-span-4 space-y-1">
-          <label className="text-xs font-semibold text-slate-300 block">Photons Transmitted (N)</label>
+      {/* Control Panel: Configuration & Eve Eavesdropper Toggle */}
+      <div
+        style={{
+          background: 'rgba(15, 23, 42, 0.75)',
+          backdropFilter: 'blur(16px)',
+          borderRadius: '20px',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
+          padding: '24px',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: '20px',
+          alignItems: 'center'
+        }}
+      >
+        <div>
+          <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#94a3b8', marginBottom: '8px' }}>
+            Photons Transmitted (N)
+          </label>
           <select
             value={photonsCount}
             onChange={(e) => {
               const val = Number(e.target.value);
               setPhotonsCount(val);
             }}
-            className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 focus:outline-none"
+            style={{
+              width: '100%',
+              background: '#020617',
+              border: '1px solid rgba(51, 65, 85, 0.8)',
+              borderRadius: '12px',
+              padding: '10px 14px',
+              color: '#f8fafc',
+              fontSize: '13px',
+              outline: 'none',
+              cursor: 'pointer'
+            }}
           >
             <option value={12}>12 Photons (Quick Stream)</option>
-            <option value={16}>16 Photons (Standard)</option>
+            <option value={16}>16 Photons (Standard Session)</option>
             <option value={24}>24 Photons (High Sifted Length)</option>
+            <option value={32}>32 Photons (Deep Statistical Sample)</option>
           </select>
         </div>
 
-        <div className="md:col-span-5 space-y-1">
-          <label className="text-xs font-semibold text-slate-300 block">Sample Secret Message</label>
+        <div>
+          <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#94a3b8', marginBottom: '8px' }}>
+            Sample Secret Message Payload
+          </label>
           <input
             type="text"
             value={plainMessage}
             onChange={(e) => setPlainMessage(e.target.value)}
-            className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-100 font-mono focus:border-emerald-500 focus:outline-none"
+            placeholder="Enter confidential payload..."
+            style={{
+              width: '100%',
+              background: '#020617',
+              border: '1px solid rgba(51, 65, 85, 0.8)',
+              borderRadius: '12px',
+              padding: '10px 14px',
+              color: '#f8fafc',
+              fontFamily: 'monospace',
+              fontSize: '13px',
+              outline: 'none',
+              boxSizing: 'border-box'
+            }}
           />
         </div>
 
-        <div className="md:col-span-3 flex items-center justify-center pt-4 sm:pt-0">
+        <div>
+          <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: '#94a3b8', marginBottom: '8px' }}>
+            Eve Man-in-the-Middle Interceptor
+          </label>
           <button
             onClick={() => {
               const nextEve = !eveEavesdropping;
               setEveEavesdropping(nextEve);
               runSimulation(nextEve);
             }}
-            className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 border ${
-              eveEavesdropping
-                ? 'bg-rose-500/20 border-rose-500 text-rose-300 shadow-lg shadow-rose-500/10'
-                : 'bg-emerald-500/10 border-emerald-500/40 text-emerald-300'
-            }`}
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              padding: '11px 16px',
+              borderRadius: '12px',
+              fontSize: '12px',
+              fontWeight: 800,
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              border: eveEavesdropping ? '1px solid rgba(244, 63, 94, 0.6)' : '1px solid rgba(16, 185, 129, 0.4)',
+              background: eveEavesdropping
+                ? 'linear-gradient(135deg, rgba(244, 63, 94, 0.25) 0%, rgba(15, 23, 42, 0.8) 100%)'
+                : 'linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(15, 23, 42, 0.8) 100%)',
+              color: eveEavesdropping ? '#fda4af' : '#6ee7b7',
+              boxShadow: eveEavesdropping ? '0 0 20px rgba(244, 63, 94, 0.25)' : '0 0 15px rgba(16, 185, 129, 0.15)'
+            }}
           >
-            <Eye className="w-4 h-4" />
-            {eveEavesdropping ? 'Eve Eavesdropping: ACTIVE 🚨' : 'Eve Eavesdropping: OFF 🛡️'}
+            <Eye style={{ width: '16px', height: '16px' }} />
+            {eveEavesdropping ? 'Eve Intercept: ACTIVE 🚨' : 'Eve Intercept: DISABLED 🛡️'}
           </button>
         </div>
       </div>
 
       {qkdReport && (
         <>
-          {/* Key Metrics */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-xl">
-              <div className="flex items-center justify-between text-slate-400 mb-2">
-                <span className="text-xs font-semibold uppercase tracking-wider">Channel Security</span>
+          {/* Key Metrics Cards */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
+            {/* Channel Security */}
+            <div
+              style={{
+                background: 'rgba(15, 23, 42, 0.75)',
+                backdropFilter: 'blur(16px)',
+                borderRadius: '18px',
+                border: `1px solid ${qkdReport.eavesdropperDetected ? 'rgba(244, 63, 94, 0.35)' : 'rgba(16, 185, 129, 0.35)'}`,
+                padding: '20px',
+                position: 'relative',
+                overflow: 'hidden'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                <span style={{ fontSize: '11px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Channel Security
+                </span>
                 {qkdReport.eavesdropperDetected ? (
-                  <ShieldAlert className="w-4 h-4 text-rose-400" />
+                  <ShieldAlert style={{ width: '18px', height: '18px', color: '#fb7185' }} />
                 ) : (
-                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                  <ShieldCheck style={{ width: '18px', height: '18px', color: '#34d399' }} />
                 )}
               </div>
-              <div className={`text-xl font-black ${qkdReport.eavesdropperDetected ? 'text-rose-400' : 'text-emerald-400'}`}>
+              <div
+                style={{
+                  fontSize: '20px',
+                  fontWeight: 900,
+                  color: qkdReport.eavesdropperDetected ? '#fb7185' : '#34d399'
+                }}
+              >
                 {qkdReport.eavesdropperDetected ? 'EVE INTERCEPTED' : 'SECURE QUANTUM'}
               </div>
-              <p className="text-[11px] text-slate-400 mt-1">
-                {qkdReport.eavesdropperDetected ? 'Quantum state collapsed!' : 'No observer interference'}
+              <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: '#64748b' }}>
+                {qkdReport.eavesdropperDetected ? 'Quantum state collapse detected!' : 'No observer interference on fiber'}
               </p>
             </div>
 
-            <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-xl">
-              <div className="flex items-center justify-between text-slate-400 mb-2">
-                <span className="text-xs font-semibold uppercase tracking-wider">QBER Error Rate</span>
-                <Zap className="w-4 h-4 text-teal-400" />
+            {/* QBER Error Rate */}
+            <div
+              style={{
+                background: 'rgba(15, 23, 42, 0.75)',
+                backdropFilter: 'blur(16px)',
+                borderRadius: '18px',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                padding: '20px'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                <span style={{ fontSize: '11px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  QBER Error Rate
+                </span>
+                <Zap style={{ width: '18px', height: '18px', color: '#22d3ee' }} />
               </div>
-              <div className={`text-3xl font-black ${qkdReport.qberPercent > 11 ? 'text-rose-400' : 'text-teal-300'}`}>
+              <div
+                style={{
+                  fontSize: '26px',
+                  fontWeight: 900,
+                  color: qkdReport.qberPercent > 11.0 ? '#fb7185' : '#22d3ee'
+                }}
+              >
                 {qkdReport.qberPercent}%
               </div>
-              <p className="text-[11px] text-slate-400 mt-1 font-mono">Threshold Ceiling: 11.0%</p>
+              <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: '#64748b', fontFamily: 'monospace' }}>
+                Threshold Ceiling: 11.0%
+              </p>
             </div>
 
-            <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-xl">
-              <div className="flex items-center justify-between text-slate-400 mb-2">
-                <span className="text-xs font-semibold uppercase tracking-wider">Sifted Key Length</span>
-                <Key className="w-4 h-4 text-cyan-400" />
+            {/* Sifted Key Length */}
+            <div
+              style={{
+                background: 'rgba(15, 23, 42, 0.75)',
+                backdropFilter: 'blur(16px)',
+                borderRadius: '18px',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                padding: '20px'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                <span style={{ fontSize: '11px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Sifted Key Length
+                </span>
+                <Key style={{ width: '18px', height: '18px', color: '#a5b4fc' }} />
               </div>
-              <div className="text-3xl font-black text-white">{qkdReport.siftedKeyLength} Bits</div>
-              <p className="text-[11px] text-cyan-400 mt-1">Basis Matched Photons</p>
+              <div style={{ fontSize: '26px', fontWeight: 900, color: '#ffffff' }}>
+                {qkdReport.siftedKeyLength} Bits
+              </div>
+              <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: '#818cf8' }}>
+                {Math.round((qkdReport.siftedKeyLength / qkdReport.totalPhotonsSent) * 100)}% Basis Matched Photons
+              </p>
             </div>
 
-            <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 backdrop-blur-xl">
-              <div className="flex items-center justify-between text-slate-400 mb-2">
-                <span className="text-xs font-semibold uppercase tracking-wider">Derived OTP Key</span>
-                <Hash className="w-4 h-4 text-amber-400" />
+            {/* Derived OTP Key */}
+            <div
+              style={{
+                background: 'rgba(15, 23, 42, 0.75)',
+                backdropFilter: 'blur(16px)',
+                borderRadius: '18px',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                padding: '20px'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                <span style={{ fontSize: '11px', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  Derived OTP Key
+                </span>
+                <Hash style={{ width: '18px', height: '18px', color: '#fbbf24' }} />
               </div>
-              <div className="text-xl font-mono font-black text-amber-300">{qkdReport.finalSecretKeyHex}</div>
-              <p className="text-[11px] text-slate-400 mt-1">Unbreakable One-Time Pad</p>
+              <div style={{ fontSize: '20px', fontWeight: 900, fontFamily: 'monospace', color: '#fcd34d' }}>
+                {qkdReport.finalSecretKeyHex}
+              </div>
+              <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: '#64748b' }}>
+                Unbreakable One-Time Pad
+              </p>
+            </div>
+          </div>
+
+          {/* One-Time Pad Encryption Demo Panel */}
+          <div
+            style={{
+              background: 'rgba(15, 23, 42, 0.75)',
+              backdropFilter: 'blur(16px)',
+              borderRadius: '20px',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              padding: '24px'
+            }}
+          >
+            <h3 style={{ margin: '0 0 16px 0', fontSize: '15px', fontWeight: 800, color: '#ffffff', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Lock style={{ width: '18px', height: '18px', color: '#34d399' }} />
+              Quantum One-Time Pad (Vernam Cipher) Demonstration
+            </h3>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', alignItems: 'center' }}>
+              <div style={{ background: '#020617', padding: '16px', borderRadius: '14px', border: '1px solid #1e293b' }}>
+                <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: '4px' }}>
+                  Alice Plaintext Input
+                </div>
+                <div style={{ fontSize: '13px', fontFamily: 'monospace', color: '#f8fafc', fontWeight: 700, wordBreak: 'break-all' }}>
+                  {plainMessage || 'NO_PAYLOAD'}
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '8px 16px',
+                    borderRadius: '10px',
+                    background: 'rgba(16, 185, 129, 0.1)',
+                    border: '1px solid rgba(16, 185, 129, 0.3)',
+                    color: '#34d399',
+                    fontSize: '12px',
+                    fontWeight: 800,
+                    fontFamily: 'monospace'
+                  }}
+                >
+                  XOR Key ({qkdReport.finalSecretKeyHex}) <ArrowRight style={{ width: '14px', height: '14px' }} />
+                </span>
+              </div>
+
+              <div style={{ background: '#020617', padding: '16px', borderRadius: '14px', border: '1px solid #1e293b' }}>
+                <div style={{ fontSize: '11px', fontWeight: 700, color: '#64748b', textTransform: 'uppercase', marginBottom: '4px' }}>
+                  Ciphertext on Classical Channel
+                </div>
+                <div style={{ fontSize: '13px', fontFamily: 'monospace', color: '#38bdf8', fontWeight: 700, wordBreak: 'break-all' }}>
+                  {qkdReport.encryptedSampleCipherHex || '0x5C89F301DE'}
+                </div>
+              </div>
             </div>
           </div>
 
           {/* Photon Transmission Table (BB84 Matrix) */}
-          <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 backdrop-blur-xl space-y-4">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <Key className="w-4 h-4 text-emerald-400" />
-              Quantum Photon Basis State Matrix (BB84 Transmission Log)
-            </h3>
+          <div
+            style={{
+              background: 'rgba(15, 23, 42, 0.75)',
+              backdropFilter: 'blur(16px)',
+              borderRadius: '20px',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              padding: '24px'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
+              <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800, color: '#ffffff', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Activity style={{ width: '18px', height: '18px', color: '#10b981' }} />
+                Quantum Photon Basis State Matrix (BB84 Transmission Log)
+              </h3>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '11px', color: '#94a3b8' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#34d399' }} /> Rectilinear: + (0°/90°)
+                </span>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#818cf8' }} /> Diagonal: × (45°/135°)
+                </span>
+              </div>
+            </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs border-collapse font-mono">
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', fontFamily: 'monospace', textAlign: 'left' }}>
                 <thead>
-                  <tr className="border-b border-slate-800 text-slate-400">
-                    <th className="py-2.5 px-3">#</th>
-                    <th className="py-2.5 px-3">Alice Bit</th>
-                    <th className="py-2.5 px-3">Alice Basis</th>
-                    {eveEavesdropping && <th className="py-2.5 px-3 text-rose-400">Eve Basis</th>}
-                    <th className="py-2.5 px-3">Bob Basis</th>
-                    <th className="py-2.5 px-3">Bob Measured</th>
-                    <th className="py-2.5 px-3">Basis Match</th>
-                    <th className="py-2.5 px-3">Sifted Key?</th>
+                  <tr style={{ borderBottom: '1px solid rgba(51, 65, 85, 0.6)', color: '#94a3b8' }}>
+                    <th style={{ padding: '12px 14px' }}>Photon #</th>
+                    <th style={{ padding: '12px 14px' }}>Alice Bit</th>
+                    <th style={{ padding: '12px 14px' }}>Alice Basis</th>
+                    {eveEavesdropping && <th style={{ padding: '12px 14px', color: '#fb7185' }}>Eve Basis</th>}
+                    <th style={{ padding: '12px 14px' }}>Bob Basis</th>
+                    <th style={{ padding: '12px 14px' }}>Bob Measured</th>
+                    <th style={{ padding: '12px 14px' }}>Basis Match</th>
+                    <th style={{ padding: '12px 14px' }}>Sifted Bit?</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60">
+                <tbody>
                   {qkdReport.samplePhotons.map((p) => (
                     <tr
                       key={p.index}
-                      className={p.isSiftedKeyBit ? 'bg-emerald-950/20' : 'text-slate-500'}
+                      style={{
+                        borderBottom: '1px solid rgba(51, 65, 85, 0.3)',
+                        background: p.isSiftedKeyBit ? 'rgba(16, 185, 129, 0.08)' : 'transparent',
+                        color: p.isSiftedKeyBit ? '#f8fafc' : '#64748b'
+                      }}
                     >
-                      <td className="py-2.5 px-3">{p.index}</td>
-                      <td className="py-2.5 px-3 font-bold text-slate-200">{p.aliceBit}</td>
-                      <td className="py-2.5 px-3 text-cyan-300">{p.aliceBasis === 'RECTILINEAR' ? '+ (0°/90°)' : '× (45°/135°)'}</td>
+                      <td style={{ padding: '10px 14px', fontWeight: 700, color: '#94a3b8' }}>#{p.index}</td>
+                      <td style={{ padding: '10px 14px', fontWeight: 800, color: '#38bdf8' }}>{p.aliceBit}</td>
+                      <td style={{ padding: '10px 14px', color: '#34d399' }}>
+                        {p.aliceBasis === 'RECTILINEAR' ? '+ (0°/90°)' : '× (45°/135°)'}
+                      </td>
                       {eveEavesdropping && (
-                        <td className="py-2.5 px-3 text-rose-400 font-bold">
+                        <td style={{ padding: '10px 14px', color: '#fb7185', fontWeight: 700 }}>
                           {p.eveBasis === 'RECTILINEAR' ? '+ (0°/90°)' : '× (45°/135°)'}
                         </td>
                       )}
-                      <td className="py-2.5 px-3 text-indigo-300">{p.bobBasis === 'RECTILINEAR' ? '+ (0°/90°)' : '× (45°/135°)'}</td>
-                      <td className="py-2.5 px-3 font-bold text-slate-200">{p.bobMeasuredBit}</td>
-                      <td className="py-2.5 px-3">
+                      <td style={{ padding: '10px 14px', color: '#a5b4fc' }}>
+                        {p.bobBasis === 'RECTILINEAR' ? '+ (0°/90°)' : '× (45°/135°)'}
+                      </td>
+                      <td style={{ padding: '10px 14px', fontWeight: 800, color: p.bobMeasuredBit === p.aliceBit ? '#34d399' : '#fb7185' }}>
+                        {p.bobMeasuredBit}
+                      </td>
+                      <td style={{ padding: '10px 14px' }}>
                         {p.basisMatched ? (
-                          <span className="text-emerald-400 flex items-center gap-1 font-semibold">
-                            <CheckCircle2 className="w-3.5 h-3.5" /> Matched
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#34d399', fontWeight: 700 }}>
+                            <CheckCircle2 style={{ width: '14px', height: '14px' }} /> Matched
                           </span>
                         ) : (
-                          <span className="text-slate-600 flex items-center gap-1">
-                            <XCircle className="w-3.5 h-3.5" /> Discard
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#64748b' }}>
+                            <XCircle style={{ width: '14px', height: '14px' }} /> Discard
                           </span>
                         )}
                       </td>
-                      <td className="py-2.5 px-3">
+                      <td style={{ padding: '10px 14px' }}>
                         {p.isSiftedKeyBit ? (
-                          <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">
+                          <span
+                            style={{
+                              display: 'inline-block',
+                              padding: '2px 8px',
+                              borderRadius: '6px',
+                              background: 'rgba(16, 185, 129, 0.2)',
+                              color: '#34d399',
+                              fontWeight: 800,
+                              border: '1px solid rgba(16, 185, 129, 0.35)'
+                            }}
+                          >
                             Bit: {p.bobMeasuredBit}
                           </span>
                         ) : (
-                          <span className="text-slate-600">—</span>
+                          <span style={{ color: '#475569' }}>—</span>
                         )}
                       </td>
                     </tr>
