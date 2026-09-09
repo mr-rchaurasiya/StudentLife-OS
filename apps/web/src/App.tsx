@@ -99,6 +99,7 @@ import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { FocusAudioPlayerWidget } from './components/FocusAudioPlayerWidget';
 import { PwaInstallPromptWidget } from './components/PwaInstallPromptWidget';
 import { DailyStudyDigestModal } from './components/DailyStudyDigestModal';
+import { ApiHealthModal } from './components/ApiHealthModal';
 import {
   StudentProfile,
   UpdateStudentProfileDto,
@@ -454,6 +455,7 @@ function DashboardContent() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isDigestModalOpen, setIsDigestModalOpen] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isApiHealthModalOpen, setIsApiHealthModalOpen] = useState(false);
   const [profile, setProfile] = useState<StudentProfile>(DEFAULT_DEMO_PROFILE);
   const [summary, setSummary] = useState<DashboardSummaryData>(DEFAULT_DASHBOARD_SUMMARY);
   const [tasks, setTasks] = useState<StudyTask[]>(DEFAULT_TASKS);
@@ -1163,7 +1165,21 @@ function DashboardContent() {
             </button>
 
             {/* Telemetry */}
-            <div className="glass-pill" style={{ padding: '6px 14px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem' }}>
+            <button
+              onClick={() => setIsApiHealthModalOpen(true)}
+              className="glass-pill glow-hover cursor-pointer"
+              style={{
+                padding: '6px 14px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '0.8rem',
+                border: apiHealth?.status === 'ONLINE' ? '1px solid rgba(16, 185, 129, 0.35)' : '1px solid rgba(245, 158, 11, 0.35)',
+                backgroundColor: apiHealth?.status === 'ONLINE' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)',
+                cursor: 'pointer'
+              }}
+              title="Click to view Live API Diagnostics & Health Monitor"
+            >
               <div style={{
                 width: '8px',
                 height: '8px',
@@ -1175,7 +1191,7 @@ function DashboardContent() {
               <strong style={{ color: apiHealth?.status === 'ONLINE' ? '#34d399' : '#fbbf24' }}>
                 {apiHealth?.status === 'ONLINE' ? t('api_online') : t('api_standby')}
               </strong>
-            </div>
+            </button>
 
             {/* Vernacular Language Switcher */}
             <button
@@ -2432,6 +2448,16 @@ function DashboardContent() {
           console.log(`XP Earned: +${xp} (${reason})`);
         }}
         onNavigateView={(v) => setActiveView(v as any)}
+      />
+      <ApiHealthModal
+        isOpen={isApiHealthModalOpen}
+        onClose={() => setIsApiHealthModalOpen(false)}
+        apiHealth={{
+          status: apiHealth?.status === 'ONLINE' ? 'ONLINE' : 'STANDBY',
+          uptime: apiHealth?.uptime,
+          latency: apiHealth?.latency
+        }}
+        onRefreshHealth={checkHealth}
       />
 
       {/* Floating Persistent Real-Time Focus Audio Player Widget */}
