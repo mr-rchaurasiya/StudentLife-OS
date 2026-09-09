@@ -14,7 +14,10 @@ import {
   Languages,
   Calculator,
   Layers,
-  X
+  X,
+  Clock,
+  User,
+  Info
 } from 'lucide-react';
 import {
   SmartDocument,
@@ -31,12 +34,12 @@ export const SmartDocumentAnnotatorView: React.FC = () => {
   const [selectedText, setSelectedText] = useState<string>('');
   const [selectedParagraphIdx, setSelectedParagraphIdx] = useState<number>(0);
   const [floatingMenuPos, setFloatingMenuPos] = useState<{ x: number; y: number } | null>(null);
-  
+
   // Note creation state
   const [highlightColor, setHighlightColor] = useState<DocumentAnnotationColor>('yellow');
   const [stickyNoteInput, setStickyNoteInput] = useState<string>('');
   const [showNoteModal, setShowNoteModal] = useState<boolean>(false);
-  
+
   // Active AI output modal
   const [aiResultModal, setAiResultModal] = useState<{
     action: string;
@@ -78,7 +81,7 @@ export const SmartDocumentAnnotatorView: React.FC = () => {
     }
   };
 
-  const activeDoc = documents.find(d => d.id === activeDocId) || documents[0];
+  const activeDoc = documents.find((d) => d.id === activeDocId) || documents[0];
 
   // Handle Text Selection
   const handleMouseUp = (paragraphIdx: number) => {
@@ -98,8 +101,8 @@ export const SmartDocumentAnnotatorView: React.FC = () => {
       const containerRect = readerContainerRef.current?.getBoundingClientRect() || { top: 0, left: 0 };
 
       setFloatingMenuPos({
-        x: Math.max(10, rect.left - containerRect.left + rect.width / 2 - 150),
-        y: Math.max(10, rect.top - containerRect.top - 54)
+        x: Math.max(10, rect.left - containerRect.left + rect.width / 2 - 200),
+        y: Math.max(10, rect.top - containerRect.top - 58)
       });
     } else {
       setFloatingMenuPos(null);
@@ -137,7 +140,11 @@ export const SmartDocumentAnnotatorView: React.FC = () => {
     }
   };
 
-  const handleAddHighlight = async (type: DocumentAnnotationType = 'HIGHLIGHT', noteContent?: string, aiResponse?: string) => {
+  const handleAddHighlight = async (
+    type: DocumentAnnotationType = 'HIGHLIGHT',
+    noteContent?: string,
+    aiResponse?: string
+  ) => {
     if (!selectedText || !activeDoc) return;
     try {
       const res = await fetch(`/api/document-annotator/documents/${activeDoc.id}/annotations`, {
@@ -156,8 +163,8 @@ export const SmartDocumentAnnotatorView: React.FC = () => {
 
       const json = await res.json();
       if (json.success && json.data) {
-        setDocuments(prev =>
-          prev.map(doc =>
+        setDocuments((prev) =>
+          prev.map((doc) =>
             doc.id === activeDoc.id
               ? { ...doc, annotations: [...doc.annotations, json.data] }
               : doc
@@ -179,10 +186,10 @@ export const SmartDocumentAnnotatorView: React.FC = () => {
       await fetch(`/api/document-annotator/documents/${activeDoc.id}/annotations/${annId}`, {
         method: 'DELETE'
       });
-      setDocuments(prev =>
-        prev.map(doc =>
+      setDocuments((prev) =>
+        prev.map((doc) =>
           doc.id === activeDoc.id
-            ? { ...doc, annotations: doc.annotations.filter(a => a.id !== annId) }
+            ? { ...doc, annotations: doc.annotations.filter((a) => a.id !== annId) }
             : doc
         )
       );
@@ -203,7 +210,7 @@ export const SmartDocumentAnnotatorView: React.FC = () => {
       });
       const json = await res.json();
       if (json.success && json.data) {
-        setDocuments(prev => [json.data, ...prev]);
+        setDocuments((prev) => [json.data, ...prev]);
         setActiveDocId(json.data.id);
         setShowNewDocModal(false);
         setNewDocForm({ title: '', subject: '', category: '', author: '', text: '' });
@@ -232,80 +239,234 @@ export const SmartDocumentAnnotatorView: React.FC = () => {
     }
   };
 
-  const getColorClasses = (color: DocumentAnnotationColor) => {
+  const getColorStyles = (color: DocumentAnnotationColor) => {
     switch (color) {
-      case 'yellow': return 'bg-amber-500/25 text-amber-200 border-b-2 border-amber-400';
-      case 'emerald': return 'bg-emerald-500/25 text-emerald-200 border-b-2 border-emerald-400';
-      case 'cyan': return 'bg-cyan-500/25 text-cyan-200 border-b-2 border-cyan-400';
-      case 'rose': return 'bg-rose-500/25 text-rose-200 border-b-2 border-rose-400';
-      case 'violet': return 'bg-purple-500/25 text-purple-200 border-b-2 border-purple-400';
-      default: return 'bg-amber-500/25 text-amber-200';
+      case 'yellow':
+        return {
+          bg: 'rgba(245, 158, 11, 0.22)',
+          text: '#fef3c7',
+          border: '1px solid rgba(245, 158, 11, 0.5)',
+          dot: '#f59e0b'
+        };
+      case 'emerald':
+        return {
+          bg: 'rgba(16, 185, 129, 0.22)',
+          text: '#d1fae5',
+          border: '1px solid rgba(16, 185, 129, 0.5)',
+          dot: '#10b981'
+        };
+      case 'cyan':
+        return {
+          bg: 'rgba(6, 182, 212, 0.22)',
+          text: '#cffafe',
+          border: '1px solid rgba(6, 182, 212, 0.5)',
+          dot: '#06b6d4'
+        };
+      case 'rose':
+        return {
+          bg: 'rgba(244, 63, 94, 0.22)',
+          text: '#ffe4e6',
+          border: '1px solid rgba(244, 63, 94, 0.5)',
+          dot: '#f43f5e'
+        };
+      case 'violet':
+        return {
+          bg: 'rgba(168, 85, 247, 0.22)',
+          text: '#f3e8ff',
+          border: '1px solid rgba(168, 85, 247, 0.5)',
+          dot: '#a855f7'
+        };
+      default:
+        return {
+          bg: 'rgba(245, 158, 11, 0.22)',
+          text: '#fef3c7',
+          border: '1px solid rgba(245, 158, 11, 0.5)',
+          dot: '#f59e0b'
+        };
     }
   };
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-slate-400 text-sm font-medium">Loading Smart Document Annotator Engine...</p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+          <div
+            style={{
+              width: '40px',
+              height: '40px',
+              border: '4px solid #06b6d4',
+              borderTopColor: 'transparent',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite'
+            }}
+          />
+          <p style={{ color: '#94a3b8', fontSize: '0.9rem', fontWeight: 600 }}>
+            Loading Smart Document Annotator Engine...
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', paddingBottom: '60px', maxWidth: '1600px', margin: '0 auto' }}>
       {/* Top Header & Action Bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-2xl p-6 shadow-2xl">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-cyan-600 via-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
-            <Highlighter className="w-6 h-6" />
+      <div
+        style={{
+          position: 'relative',
+          borderRadius: '24px',
+          overflow: 'hidden',
+          background: 'linear-gradient(135deg, rgba(14, 116, 144, 0.3) 0%, rgba(15, 23, 42, 0.95) 50%, rgba(49, 46, 129, 0.5) 100%)',
+          border: '1px solid rgba(6, 182, 212, 0.3)',
+          padding: '28px 32px',
+          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
+          backdropFilter: 'blur(16px)',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '20px'
+        }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            top: '-50px',
+            right: '-50px',
+            width: '320px',
+            height: '320px',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(6, 182, 212, 0.18) 0%, rgba(0, 0, 0, 0) 70%)',
+            pointerEvents: 'none'
+          }}
+        />
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', position: 'relative', zIndex: 1, maxWidth: '800px' }}>
+          <div
+            style={{
+              width: '54px',
+              height: '54px',
+              borderRadius: '16px',
+              background: 'linear-gradient(135deg, #06b6d4 0%, #6366f1 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 8px 24px rgba(6, 182, 212, 0.35)',
+              flexShrink: 0
+            }}
+          >
+            <Highlighter size={28} color="#ffffff" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-white tracking-tight">Smart PDF & Notes Annotator</h1>
-              <span className="px-2.5 py-0.5 text-xs font-semibold bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 border border-cyan-500/30 rounded-full flex items-center gap-1">
-                <Sparkles className="w-3 h-3" /> In-Place AI
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '6px' }}>
+              <h1 style={{ fontSize: '1.85rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em', margin: 0 }}>
+                Smart PDF & Notes Annotator
+              </h1>
+              <span
+                style={{
+                  backgroundColor: 'rgba(6, 182, 212, 0.15)',
+                  color: '#67e8f9',
+                  border: '1px solid rgba(6, 182, 212, 0.4)',
+                  padding: '3px 10px',
+                  borderRadius: '9999px',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '5px'
+                }}
+              >
+                <Sparkles size={12} color="#22d3ee" /> In-Place AI Active Recall
               </span>
             </div>
-            <p className="text-sm text-slate-400">
+            <p style={{ fontSize: '0.9rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
               Select any sentence or formula for instant ELI5 breakdowns, flashcards, bilingual audio notes & marginal highlights.
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', position: 'relative', zIndex: 1 }}>
           <button
             onClick={() => setShowNewDocModal(true)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl font-medium text-sm transition-all hover:border-slate-600 shadow-md"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '11px 18px',
+              borderRadius: '14px',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              backgroundColor: 'rgba(15, 23, 42, 0.8)',
+              color: '#e2e8f0',
+              fontWeight: 700,
+              fontSize: '0.82rem',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)'
+            }}
           >
-            <Plus className="w-4 h-4 text-cyan-400" />
+            <Plus size={16} color="#22d3ee" />
             Paste New Notes
           </button>
           <button
             onClick={handleExportMarkdown}
             disabled={!activeDoc}
-            className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white rounded-xl font-semibold text-sm transition-all shadow-lg shadow-indigo-500/25"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '11px 20px',
+              borderRadius: '14px',
+              border: 'none',
+              background: 'linear-gradient(135deg, #06b6d4 0%, #6366f1 100%)',
+              color: '#ffffff',
+              fontWeight: 800,
+              fontSize: '0.82rem',
+              cursor: 'pointer',
+              boxShadow: '0 6px 20px rgba(6, 182, 212, 0.35)',
+              transition: 'all 0.2s',
+              opacity: !activeDoc ? 0.5 : 1
+            }}
           >
-            <Download className="w-4 h-4" />
+            <Download size={16} />
             Export Annotations (.md)
           </button>
         </div>
       </div>
 
-      {/* Main Grid: Document Selector Sidebar + Reader Canvas + Marginal Notes Drawer */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      {/* Main Grid: Document Library Sidebar + Reader Canvas + Marginal Notes Drawer */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '24px' }}>
         
         {/* Left Sidebar: Document Selector (3 cols) */}
-        <div className="lg:col-span-3 space-y-4">
-          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl">
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 px-2 flex items-center gap-2">
-              <BookOpen className="w-4 h-4 text-indigo-400" />
+        <div style={{ gridColumn: 'span 3', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div
+            style={{
+              backgroundColor: 'rgba(15, 23, 42, 0.85)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: '20px',
+              padding: '18px',
+              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.35)',
+              backdropFilter: 'blur(16px)'
+            }}
+          >
+            <h3
+              style={{
+                fontSize: '0.72rem',
+                fontWeight: 800,
+                color: '#94a3b8',
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+                margin: '0 0 14px 0',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+            >
+              <BookOpen size={15} color="#818cf8" />
               Document Library ({documents.length})
             </h3>
-            <div className="space-y-2">
-              {documents.map(doc => {
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {documents.map((doc) => {
                 const isActive = doc.id === activeDoc?.id;
                 return (
                   <button
@@ -314,29 +475,58 @@ export const SmartDocumentAnnotatorView: React.FC = () => {
                       setActiveDocId(doc.id);
                       setFloatingMenuPos(null);
                     }}
-                    className={`w-full text-left p-3 rounded-xl transition-all flex flex-col gap-1 border ${
-                      isActive
-                        ? 'bg-gradient-to-r from-indigo-950/60 to-slate-900 border-indigo-500/50 shadow-md shadow-indigo-950/50'
-                        : 'bg-slate-950/40 border-slate-800/60 hover:bg-slate-800/40 text-slate-400'
-                    }`}
+                    style={{
+                      width: '100%',
+                      textAlign: 'left',
+                      padding: '14px',
+                      borderRadius: '14px',
+                      transition: 'all 0.2s',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '6px',
+                      cursor: 'pointer',
+                      border: isActive ? '1px solid rgba(6, 182, 212, 0.5)' : '1px solid rgba(255, 255, 255, 0.06)',
+                      background: isActive
+                        ? 'linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(15, 23, 42, 0.95) 100%)'
+                        : 'rgba(2, 6, 23, 0.5)',
+                      boxShadow: isActive ? '0 6px 18px rgba(6, 182, 212, 0.18)' : 'none'
+                    }}
                   >
-                    <div className="flex items-center justify-between">
-                      <span className={`text-xs font-semibold px-2 py-0.5 rounded-md ${
-                        isActive ? 'bg-indigo-500/20 text-indigo-300' : 'bg-slate-800 text-slate-400'
-                      }`}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span
+                        style={{
+                          fontSize: '0.7rem',
+                          fontWeight: 700,
+                          padding: '2px 8px',
+                          borderRadius: '6px',
+                          backgroundColor: isActive ? 'rgba(6, 182, 212, 0.25)' : 'rgba(255, 255, 255, 0.06)',
+                          color: isActive ? '#67e8f9' : '#94a3b8'
+                        }}
+                      >
                         {doc.subject}
                       </span>
-                      <span className="text-[11px] text-slate-500 font-mono">
-                        {doc.readTimeMinutes} min read
+                      <span style={{ fontSize: '0.7rem', color: '#64748b', fontFamily: 'monospace', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                        <Clock size={11} /> {doc.readTimeMinutes}m read
                       </span>
                     </div>
-                    <div className={`font-semibold text-sm line-clamp-1 ${isActive ? 'text-white' : 'text-slate-300'}`}>
+                    <div
+                      style={{
+                        fontWeight: 700,
+                        fontSize: '0.85rem',
+                        color: isActive ? '#ffffff' : '#cbd5e1',
+                        lineHeight: 1.4,
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden'
+                      }}
+                    >
                       {doc.title}
                     </div>
-                    <div className="text-[11px] text-slate-500 flex items-center gap-2">
-                      <span>{doc.annotations.length} highlights</span>
-                      <span>•</span>
-                      <span className="truncate">{doc.category}</span>
+                    <div style={{ fontSize: '0.7rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span style={{ color: '#22d3ee', fontWeight: 600 }}>{doc.annotations.length} highlights</span>
+                      <span>&bull;</span>
+                      <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}>{doc.category}</span>
                     </div>
                   </button>
                 );
@@ -345,40 +535,66 @@ export const SmartDocumentAnnotatorView: React.FC = () => {
           </div>
 
           {/* Quick Guide Card */}
-          <div className="bg-gradient-to-br from-indigo-950/40 via-slate-900/60 to-purple-950/40 border border-indigo-500/20 rounded-2xl p-4 text-xs text-slate-300 space-y-2">
-            <div className="font-semibold text-indigo-300 flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-amber-400" />
+          <div
+            style={{
+              background: 'linear-gradient(135deg, rgba(30, 27, 75, 0.5) 0%, rgba(15, 23, 42, 0.7) 100%)',
+              border: '1px solid rgba(99, 102, 241, 0.25)',
+              borderRadius: '20px',
+              padding: '16px',
+              fontSize: '0.8rem',
+              color: '#cbd5e1',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px'
+            }}
+          >
+            <div style={{ fontWeight: 800, color: '#a5b4fc', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Sparkles size={15} color="#fbbf24" />
               Pro Student Tip
             </div>
-            <p className="text-slate-400 leading-relaxed">
+            <p style={{ color: '#94a3b8', lineHeight: 1.5, margin: 0, fontSize: '0.78rem' }}>
               Highlight any equation or paragraph with your mouse. The in-place AI toolbar will pop up directly over your text for instant zero-friction deep learning!
             </p>
           </div>
         </div>
 
         {/* Center: Interactive Document Canvas (6 cols) */}
-        <div className="lg:col-span-6 space-y-4">
+        <div style={{ gridColumn: 'span 6', display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {activeDoc ? (
             <div
               ref={readerContainerRef}
-              className="relative bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl text-slate-200 min-h-[650px]"
+              style={{
+                position: 'relative',
+                backgroundColor: 'rgba(15, 23, 42, 0.85)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                borderRadius: '24px',
+                padding: '32px',
+                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
+                color: '#e2e8f0',
+                minHeight: '660px',
+                backdropFilter: 'blur(16px)'
+              }}
             >
               {/* Document Header */}
-              <div className="border-b border-slate-800 pb-5 mb-6">
-                <div className="flex items-center gap-2 text-xs font-semibold text-cyan-400 uppercase tracking-wide mb-1">
+              <div style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '20px', marginBottom: '24px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.75rem', fontWeight: 800, color: '#22d3ee', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
                   <span>{activeDoc.category}</span>
-                  <span>•</span>
+                  <span>&bull;</span>
                   <span>{activeDoc.subject}</span>
                 </div>
-                <h2 className="text-2xl font-bold text-white tracking-tight leading-snug">
+                <h2 style={{ fontSize: '1.65rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em', lineHeight: 1.3, margin: '0 0 10px 0' }}>
                   {activeDoc.title}
                 </h2>
-                <div className="flex items-center gap-4 text-xs text-slate-400 mt-2">
-                  <span>Author: {activeDoc.author}</span>
-                  <span>•</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', fontSize: '0.75rem', color: '#94a3b8', flexWrap: 'wrap' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <User size={13} color="#64748b" /> {activeDoc.author}
+                  </span>
+                  <span>&bull;</span>
                   <span>{activeDoc.paragraphs.length} Paragraphs</span>
-                  <span>•</span>
-                  <span>{activeDoc.readTimeMinutes} min estimated reading</span>
+                  <span>&bull;</span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <Clock size={13} color="#64748b" /> {activeDoc.readTimeMinutes} min estimated reading
+                  </span>
                 </div>
               </div>
 
@@ -386,132 +602,271 @@ export const SmartDocumentAnnotatorView: React.FC = () => {
               {floatingMenuPos && (
                 <div
                   style={{
+                    position: 'absolute',
                     top: `${floatingMenuPos.y}px`,
-                    left: `${floatingMenuPos.x}px`
+                    left: `${floatingMenuPos.x}px`,
+                    zIndex: 40,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '6px 8px',
+                    backgroundColor: 'rgba(2, 6, 23, 0.96)',
+                    backdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(6, 182, 212, 0.5)',
+                    borderRadius: '16px',
+                    boxShadow: '0 12px 36px rgba(0, 0, 0, 0.8), 0 0 20px rgba(6, 182, 212, 0.25)'
                   }}
-                  className="absolute z-30 flex items-center gap-1.5 p-1.5 bg-slate-950/95 backdrop-blur-xl border border-indigo-500/40 rounded-2xl shadow-2xl shadow-indigo-950/80 animate-in fade-in zoom-in-95 duration-150"
                 >
                   <button
                     onClick={() => handleAiAction('EXPLAIN')}
-                    className="flex items-center gap-1 px-2.5 py-1.5 bg-indigo-600/80 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold transition-all shadow-sm"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      padding: '6px 10px',
+                      backgroundColor: 'rgba(99, 102, 241, 0.35)',
+                      border: '1px solid rgba(99, 102, 241, 0.6)',
+                      color: '#ffffff',
+                      borderRadius: '10px',
+                      fontSize: '0.72rem',
+                      fontWeight: 700,
+                      cursor: 'pointer'
+                    }}
                     title="Explain Simply (ELI5)"
                   >
-                    <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                    <Sparkles size={13} color="#fbbf24" />
                     Explain
                   </button>
 
                   <button
                     onClick={() => handleAiAction('SUMMARIZE')}
-                    className="flex items-center gap-1 px-2 py-1.5 bg-slate-800 hover:bg-slate-700 text-cyan-300 rounded-xl text-xs font-medium transition-all"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      padding: '6px 9px',
+                      backgroundColor: 'rgba(15, 23, 42, 0.8)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      color: '#67e8f9',
+                      borderRadius: '10px',
+                      fontSize: '0.72rem',
+                      fontWeight: 600,
+                      cursor: 'pointer'
+                    }}
                     title="Synthesize Key Takeaways"
                   >
-                    <Layers className="w-3.5 h-3.5" />
+                    <Layers size={13} />
                     Summarize
                   </button>
 
                   <button
                     onClick={() => handleAiAction('FLASHCARD')}
-                    className="flex items-center gap-1 px-2 py-1.5 bg-slate-800 hover:bg-slate-700 text-purple-300 rounded-xl text-xs font-medium transition-all"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      padding: '6px 9px',
+                      backgroundColor: 'rgba(15, 23, 42, 0.8)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      color: '#c084fc',
+                      borderRadius: '10px',
+                      fontSize: '0.72rem',
+                      fontWeight: 600,
+                      cursor: 'pointer'
+                    }}
                     title="Convert to Active Recall Flashcard"
                   >
-                    <BrainCircuit className="w-3.5 h-3.5" />
+                    <BrainCircuit size={13} />
                     Flashcard
                   </button>
 
                   <button
                     onClick={() => handleAiAction('QUIZ')}
-                    className="flex items-center gap-1 px-2 py-1.5 bg-slate-800 hover:bg-slate-700 text-emerald-300 rounded-xl text-xs font-medium transition-all"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      padding: '6px 9px',
+                      backgroundColor: 'rgba(15, 23, 42, 0.8)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      color: '#34d399',
+                      borderRadius: '10px',
+                      fontSize: '0.72rem',
+                      fontWeight: 600,
+                      cursor: 'pointer'
+                    }}
                     title="Generate MCQ Practice Question"
                   >
-                    <HelpCircle className="w-3.5 h-3.5" />
+                    <HelpCircle size={13} />
                     Quiz
                   </button>
 
                   <button
                     onClick={() => handleAiAction('TRANSLATE_HINDI')}
-                    className="flex items-center gap-1 px-2 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 rounded-xl text-xs font-medium transition-all"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      padding: '6px 9px',
+                      backgroundColor: 'rgba(15, 23, 42, 0.8)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      color: '#fcd34d',
+                      borderRadius: '10px',
+                      fontSize: '0.72rem',
+                      fontWeight: 600,
+                      cursor: 'pointer'
+                    }}
                     title="Bilingual Hindi / Hinglish translation"
                   >
-                    <Languages className="w-3.5 h-3.5" />
+                    <Languages size={13} />
                     Hindi
                   </button>
 
                   <button
                     onClick={() => handleAiAction('SIMPLIFY_MATH')}
-                    className="flex items-center gap-1 px-2 py-1.5 bg-slate-800 hover:bg-slate-700 text-rose-300 rounded-xl text-xs font-medium transition-all"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      padding: '6px 9px',
+                      backgroundColor: 'rgba(15, 23, 42, 0.8)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      color: '#fb7185',
+                      borderRadius: '10px',
+                      fontSize: '0.72rem',
+                      fontWeight: 600,
+                      cursor: 'pointer'
+                    }}
                     title="Step-by-Step Mathematical Derivation"
                   >
-                    <Calculator className="w-3.5 h-3.5" />
+                    <Calculator size={13} />
                     Math
                   </button>
 
-                  <div className="w-[1px] h-5 bg-slate-700 mx-0.5" />
+                  <div style={{ width: '1px', height: '20px', backgroundColor: 'rgba(255, 255, 255, 0.15)', margin: '0 2px' }} />
 
-                  {/* Color Pickers */}
-                  <div className="flex items-center gap-1 px-1">
-                    {(['yellow', 'emerald', 'cyan', 'rose', 'violet'] as DocumentAnnotationColor[]).map(c => (
-                      <button
-                        key={c}
-                        onClick={() => {
-                          setHighlightColor(c);
-                          handleAddHighlight('HIGHLIGHT');
-                        }}
-                        className={`w-4 h-4 rounded-full transition-transform hover:scale-125 ${
-                          c === 'yellow' ? 'bg-amber-400' :
-                          c === 'emerald' ? 'bg-emerald-400' :
-                          c === 'cyan' ? 'bg-cyan-400' :
-                          c === 'rose' ? 'bg-rose-400' : 'bg-purple-400'
-                        }`}
-                        title={`Highlight with ${c}`}
-                      />
-                    ))}
+                  {/* Color Swatches */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '0 2px' }}>
+                    {(['yellow', 'emerald', 'cyan', 'rose', 'violet'] as DocumentAnnotationColor[]).map((c) => {
+                      const col = getColorStyles(c);
+                      return (
+                        <button
+                          key={c}
+                          onClick={() => {
+                            setHighlightColor(c);
+                            handleAddHighlight('HIGHLIGHT');
+                          }}
+                          style={{
+                            width: '16px',
+                            height: '16px',
+                            borderRadius: '50%',
+                            backgroundColor: col.dot,
+                            border: '1px solid rgba(255, 255, 255, 0.3)',
+                            cursor: 'pointer',
+                            transition: 'transform 0.15s'
+                          }}
+                          title={`Highlight with ${c}`}
+                        />
+                      );
+                    })}
                   </div>
 
                   <button
                     onClick={() => setShowNoteModal(true)}
-                    className="p-1.5 bg-slate-800 hover:bg-slate-700 text-amber-400 rounded-xl text-xs transition-all"
+                    style={{
+                      padding: '6px 8px',
+                      backgroundColor: 'rgba(245, 158, 11, 0.15)',
+                      border: '1px solid rgba(245, 158, 11, 0.3)',
+                      color: '#fbbf24',
+                      borderRadius: '10px',
+                      fontSize: '0.72rem',
+                      cursor: 'pointer'
+                    }}
                     title="Add Sticky Note"
                   >
-                    <MessageSquare className="w-3.5 h-3.5" />
+                    <MessageSquare size={13} />
                   </button>
                 </div>
               )}
 
               {/* Document Paragraphs Flow */}
-              <div className="space-y-6 text-slate-300 leading-relaxed font-sans text-base">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', color: '#cbd5e1', lineHeight: 1.75, fontSize: '0.98rem' }}>
                 {activeDoc.paragraphs.map((para, idx) => {
-                  const paraAnnotations = activeDoc.annotations.filter(a => a.paragraphIndex === idx);
+                  const paraAnnotations = activeDoc.annotations.filter((a) => a.paragraphIndex === idx);
                   return (
                     <div
                       key={idx}
                       onMouseUp={() => handleMouseUp(idx)}
-                      className="group relative p-3 -mx-3 rounded-xl hover:bg-slate-800/30 transition-colors"
+                      style={{
+                        position: 'relative',
+                        padding: '12px 16px',
+                        borderRadius: '14px',
+                        backgroundColor: 'rgba(2, 6, 23, 0.35)',
+                        border: '1px solid rgba(255, 255, 255, 0.04)',
+                        transition: 'background-color 0.15s'
+                      }}
                     >
-                      <span className="absolute -left-6 top-3 text-[10px] font-mono text-slate-600 select-none group-hover:text-slate-400">
+                      <span
+                        style={{
+                          position: 'absolute',
+                          left: '-24px',
+                          top: '14px',
+                          fontSize: '0.68rem',
+                          fontFamily: 'monospace',
+                          color: '#64748b',
+                          userSelect: 'none'
+                        }}
+                      >
                         P{idx + 1}
                       </span>
-                      <p className="select-text whitespace-pre-wrap">
+                      <p style={{ userSelect: 'text', whiteSpace: 'pre-wrap', margin: 0 }}>
                         {para}
                       </p>
 
                       {/* Paragraph In-line Badges for Annotations */}
                       {paraAnnotations.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mt-3 pt-2 border-t border-slate-800/60">
-                          {paraAnnotations.map(ann => (
-                            <span
-                              key={ann.id}
-                              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium ${getColorClasses(ann.color)}`}
-                            >
-                              <Highlighter className="w-3 h-3" />
-                              <span className="truncate max-w-[160px]">"{ann.selectedText}"</span>
-                              <button
-                                onClick={() => handleDeleteAnnotation(ann.id)}
-                                className="hover:opacity-75 ml-1"
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '12px', paddingTop: '10px', borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                          {paraAnnotations.map((ann) => {
+                            const cStyle = getColorStyles(ann.color);
+                            return (
+                              <span
+                                key={ann.id}
+                                style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '6px',
+                                  padding: '4px 10px',
+                                  borderRadius: '8px',
+                                  fontSize: '0.72rem',
+                                  fontWeight: 600,
+                                  backgroundColor: cStyle.bg,
+                                  color: cStyle.text,
+                                  border: cStyle.border
+                                }}
                               >
-                                <X className="w-3 h-3" />
-                              </button>
-                            </span>
-                          ))}
+                                <Highlighter size={12} />
+                                <span style={{ maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                  "{ann.selectedText}"
+                                </span>
+                                <button
+                                  onClick={() => handleDeleteAnnotation(ann.id)}
+                                  style={{
+                                    background: 'transparent',
+                                    border: 'none',
+                                    color: cStyle.text,
+                                    cursor: 'pointer',
+                                    padding: '0',
+                                    marginLeft: '4px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    opacity: 0.7
+                                  }}
+                                >
+                                  <X size={12} />
+                                </button>
+                              </span>
+                            );
+                          })}
                         </div>
                       )}
                     </div>
@@ -520,65 +875,165 @@ export const SmartDocumentAnnotatorView: React.FC = () => {
               </div>
             </div>
           ) : (
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-12 text-center text-slate-400">
+            <div
+              style={{
+                backgroundColor: 'rgba(15, 23, 42, 0.85)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                borderRadius: '24px',
+                padding: '48px',
+                textAlign: 'center',
+                color: '#94a3b8'
+              }}
+            >
               No document selected. Choose one from the library or paste a new one!
             </div>
           )}
         </div>
 
         {/* Right Sidebar: Marginal Insights & Notes Drawer (3 cols) */}
-        <div className="lg:col-span-3 space-y-4">
-          <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 shadow-xl">
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 px-2 flex items-center justify-between">
-              <span className="flex items-center gap-2">
-                <Layers className="w-4 h-4 text-cyan-400" />
+        <div style={{ gridColumn: 'span 3', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div
+            style={{
+              backgroundColor: 'rgba(15, 23, 42, 0.85)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
+              borderRadius: '20px',
+              padding: '18px',
+              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.35)',
+              backdropFilter: 'blur(16px)'
+            }}
+          >
+            <h3
+              style={{
+                fontSize: '0.72rem',
+                fontWeight: 800,
+                color: '#94a3b8',
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+                margin: '0 0 14px 0',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}
+            >
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Layers size={15} color="#22d3ee" />
                 Marginal Insights ({activeDoc?.annotations.length || 0})
               </span>
             </h3>
 
             {activeDoc && activeDoc.annotations.length > 0 ? (
-              <div className="space-y-3 max-h-[600px] overflow-y-auto pr-1">
-                {activeDoc.annotations.map(ann => (
-                  <div
-                    key={ann.id}
-                    className="p-3 bg-slate-950/60 border border-slate-800/80 rounded-xl space-y-2 hover:border-slate-700 transition-all text-xs"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${getColorClasses(ann.color)}`}>
-                        {ann.type}
-                      </span>
-                      <button
-                        onClick={() => handleDeleteAnnotation(ann.id)}
-                        className="text-slate-500 hover:text-rose-400 transition-colors"
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '580px', overflowY: 'auto', paddingRight: '4px' }}>
+                {activeDoc.annotations.map((ann) => {
+                  const cStyle = getColorStyles(ann.color);
+                  return (
+                    <div
+                      key={ann.id}
+                      style={{
+                        padding: '12px',
+                        backgroundColor: 'rgba(2, 6, 23, 0.65)',
+                        border: '1px solid rgba(255, 255, 255, 0.06)',
+                        borderRadius: '14px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '8px',
+                        fontSize: '0.78rem'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <span
+                          style={{
+                            padding: '2px 8px',
+                            borderRadius: '6px',
+                            fontSize: '0.65rem',
+                            fontWeight: 800,
+                            textTransform: 'uppercase',
+                            backgroundColor: cStyle.bg,
+                            color: cStyle.text,
+                            border: cStyle.border
+                          }}
+                        >
+                          {ann.type}
+                        </span>
+                        <button
+                          onClick={() => handleDeleteAnnotation(ann.id)}
+                          style={{
+                            background: 'transparent',
+                            border: 'none',
+                            color: '#64748b',
+                            cursor: 'pointer',
+                            padding: '2px',
+                            display: 'flex',
+                            alignItems: 'center'
+                          }}
+                          title="Delete Annotation"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+
+                      <div
+                        style={{
+                          color: '#cbd5e1',
+                          fontWeight: 500,
+                          fontStyle: 'italic',
+                          borderLeft: `3px solid ${cStyle.dot}`,
+                          paddingLeft: '8px'
+                        }}
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-
-                    <div className="text-slate-300 font-medium italic border-l-2 border-slate-700 pl-2">
-                      "{ann.selectedText}"
-                    </div>
-
-                    {ann.noteContent && (
-                      <div className="text-amber-200/90 bg-amber-950/30 p-2 rounded-lg border border-amber-500/20">
-                        {ann.noteContent}
+                        "{ann.selectedText}"
                       </div>
-                    )}
 
-                    {ann.aiResponse && (
-                      <div className="text-cyan-200/90 bg-cyan-950/30 p-2 rounded-lg border border-cyan-500/20 whitespace-pre-wrap font-mono text-[11px]">
-                        {ann.aiResponse}
+                      {ann.noteContent && (
+                        <div
+                          style={{
+                            color: '#fef3c7',
+                            backgroundColor: 'rgba(245, 158, 11, 0.15)',
+                            padding: '8px 10px',
+                            borderRadius: '8px',
+                            border: '1px solid rgba(245, 158, 11, 0.25)',
+                            lineHeight: 1.4
+                          }}
+                        >
+                          {ann.noteContent}
+                        </div>
+                      )}
+
+                      {ann.aiResponse && (
+                        <div
+                          style={{
+                            color: '#cffafe',
+                            backgroundColor: 'rgba(6, 182, 212, 0.12)',
+                            padding: '8px 10px',
+                            borderRadius: '8px',
+                            border: '1px solid rgba(6, 182, 212, 0.25)',
+                            whiteSpace: 'pre-wrap',
+                            fontFamily: 'monospace',
+                            fontSize: '0.72rem',
+                            lineHeight: 1.45
+                          }}
+                        >
+                          {ann.aiResponse}
+                        </div>
+                      )}
+
+                      <div style={{ fontSize: '0.68rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <Info size={11} /> Paragraph {ann.paragraphIndex + 1}
                       </div>
-                    )}
-
-                    <div className="text-[10px] text-slate-500">
-                      Paragraph {ann.paragraphIndex + 1}
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
-              <div className="p-6 text-center text-slate-500 text-xs border border-dashed border-slate-800 rounded-xl">
+              <div
+                style={{
+                  padding: '24px 16px',
+                  textAlign: 'center',
+                  color: '#64748b',
+                  fontSize: '0.78rem',
+                  border: '1px dashed rgba(255, 255, 255, 0.1)',
+                  borderRadius: '14px'
+                }}
+              >
                 No marginal notes yet. Highlight any text in the reader to generate AI cards and highlights!
               </div>
             )}
@@ -589,48 +1044,140 @@ export const SmartDocumentAnnotatorView: React.FC = () => {
 
       {/* AI Action Result Modal */}
       {aiResultModal && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-indigo-500/40 rounded-2xl max-w-2xl w-full p-6 space-y-5 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-indigo-600/30 border border-indigo-500/50 flex items-center justify-center text-indigo-400">
-                  <Sparkles className="w-5 h-5" />
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 50,
+            backgroundColor: 'rgba(0, 0, 0, 0.75)',
+            backdropFilter: 'blur(10px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '16px'
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: '#0f172a',
+              border: '1px solid rgba(6, 182, 212, 0.4)',
+              borderRadius: '24px',
+              maxWidth: '650px',
+              width: '100%',
+              padding: '28px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '18px',
+              boxShadow: '0 24px 60px rgba(0, 0, 0, 0.8)'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '14px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div
+                  style={{
+                    width: '38px',
+                    height: '38px',
+                    borderRadius: '12px',
+                    backgroundColor: 'rgba(99, 102, 241, 0.25)',
+                    border: '1px solid rgba(99, 102, 241, 0.4)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#818cf8'
+                  }}
+                >
+                  <Sparkles size={20} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white">AI Annotation & Learning Assistant</h3>
-                  <p className="text-xs text-slate-400">Action: {aiResultModal.action}</p>
+                  <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#ffffff', margin: 0 }}>
+                    AI Annotation & Learning Assistant
+                  </h3>
+                  <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: '2px 0 0 0' }}>
+                    Action: {aiResultModal.action}
+                  </p>
                 </div>
               </div>
               <button
                 onClick={() => setAiResultModal(null)}
-                className="text-slate-400 hover:text-white"
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: '#94a3b8',
+                  cursor: 'pointer',
+                  padding: '4px'
+                }}
               >
-                <X className="w-5 h-5" />
+                <X size={20} />
               </button>
             </div>
 
-            <div className="bg-slate-950/70 p-3.5 rounded-xl border border-slate-800 text-xs text-slate-300 italic border-l-4 border-l-indigo-500">
+            <div
+              style={{
+                backgroundColor: 'rgba(2, 6, 23, 0.7)',
+                padding: '12px 14px',
+                borderRadius: '12px',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                borderLeft: '4px solid #6366f1',
+                fontSize: '0.8rem',
+                color: '#cbd5e1',
+                fontStyle: 'italic'
+              }}
+            >
               Selected text: "{aiResultModal.snippet}"
             </div>
 
-            <div className="bg-slate-950/90 p-4 rounded-xl border border-indigo-500/20 text-slate-200 text-sm whitespace-pre-wrap leading-relaxed max-h-[350px] overflow-y-auto font-sans">
+            <div
+              style={{
+                backgroundColor: 'rgba(2, 6, 23, 0.85)',
+                padding: '16px',
+                borderRadius: '14px',
+                border: '1px solid rgba(6, 182, 212, 0.2)',
+                color: '#e2e8f0',
+                fontSize: '0.88rem',
+                whiteSpace: 'pre-wrap',
+                lineHeight: 1.6,
+                maxHeight: '320px',
+                overflowY: 'auto'
+              }}
+            >
               {aiResultModal.text}
             </div>
 
-            <div className="flex items-center justify-between pt-2 border-t border-slate-800">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '10px', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
               <button
                 onClick={() => {
                   handleAddHighlight('AI_INSIGHT', undefined, aiResultModal.text);
                   setAiResultModal(null);
                 }}
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white rounded-xl text-xs font-semibold transition-all shadow-md"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '10px 18px',
+                  background: 'linear-gradient(135deg, #06b6d4 0%, #6366f1 100%)',
+                  color: '#ffffff',
+                  borderRadius: '12px',
+                  fontSize: '0.82rem',
+                  fontWeight: 700,
+                  border: 'none',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 14px rgba(6, 182, 212, 0.3)'
+                }}
               >
-                <CheckCircle2 className="w-4 h-4" />
+                <CheckCircle2 size={16} />
                 Pin to Marginal Notes
               </button>
               <button
                 onClick={() => setAiResultModal(null)}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-medium"
+                style={{
+                  padding: '10px 16px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  color: '#cbd5e1',
+                  borderRadius: '12px',
+                  fontSize: '0.82rem',
+                  cursor: 'pointer'
+                }}
               >
                 Close
               </button>
@@ -641,33 +1188,87 @@ export const SmartDocumentAnnotatorView: React.FC = () => {
 
       {/* Sticky Note Creation Modal */}
       {showNoteModal && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <MessageSquare className="w-5 h-5 text-amber-400" />
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 50,
+            backgroundColor: 'rgba(0, 0, 0, 0.75)',
+            backdropFilter: 'blur(10px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '16px'
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: '#0f172a',
+              border: '1px solid rgba(245, 158, 11, 0.35)',
+              borderRadius: '20px',
+              maxWidth: '460px',
+              width: '100%',
+              padding: '24px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '14px',
+              boxShadow: '0 20px 50px rgba(0, 0, 0, 0.8)'
+            }}
+          >
+            <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#ffffff', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
+              <MessageSquare size={18} color="#fbbf24" />
               Add Marginal Sticky Note
             </h3>
-            <p className="text-xs text-slate-400 italic">
+            <p style={{ fontSize: '0.78rem', color: '#94a3b8', fontStyle: 'italic', margin: 0 }}>
               "{selectedText}"
             </p>
             <textarea
               value={stickyNoteInput}
-              onChange={e => setStickyNoteInput(e.target.value)}
+              onChange={(e) => setStickyNoteInput(e.target.value)}
               placeholder="Write your study note, doubt, or mnemonic here..."
               rows={4}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+              style={{
+                width: '100%',
+                boxSizing: 'border-box',
+                backgroundColor: 'rgba(2, 6, 23, 0.8)',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                borderRadius: '12px',
+                padding: '12px',
+                fontSize: '0.85rem',
+                color: '#ffffff',
+                outline: 'none',
+                resize: 'vertical'
+              }}
             />
-            <div className="flex items-center justify-end gap-2 pt-2">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '8px', paddingTop: '6px' }}>
               <button
                 onClick={() => setShowNoteModal(false)}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs"
+                style={{
+                  padding: '8px 14px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  color: '#94a3b8',
+                  borderRadius: '10px',
+                  fontSize: '0.78rem',
+                  cursor: 'pointer'
+                }}
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleAddHighlight('NOTE', stickyNoteInput)}
                 disabled={!stickyNoteInput.trim()}
-                className="px-4 py-2 bg-gradient-to-r from-amber-600 to-indigo-600 text-white rounded-xl text-xs font-semibold disabled:opacity-50"
+                style={{
+                  padding: '8px 16px',
+                  background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                  color: '#ffffff',
+                  borderRadius: '10px',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  border: 'none',
+                  cursor: 'pointer',
+                  opacity: !stickyNoteInput.trim() ? 0.5 : 1
+                }}
               >
                 Save Note
               </button>
@@ -678,78 +1279,179 @@ export const SmartDocumentAnnotatorView: React.FC = () => {
 
       {/* New Document Modal */}
       {showNewDocModal && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <FileText className="w-5 h-5 text-cyan-400" />
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 50,
+            backgroundColor: 'rgba(0, 0, 0, 0.75)',
+            backdropFilter: 'blur(10px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '16px'
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: '#0f172a',
+              border: '1px solid rgba(6, 182, 212, 0.35)',
+              borderRadius: '24px',
+              maxWidth: '580px',
+              width: '100%',
+              padding: '28px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '18px',
+              boxShadow: '0 24px 60px rgba(0, 0, 0, 0.8)'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '12px' }}>
+              <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#ffffff', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
+                <FileText size={20} color="#22d3ee" />
                 Paste Lecture Notes / PDF Text
               </h3>
-              <button onClick={() => setShowNewDocModal(false)} className="text-slate-400 hover:text-white">
-                <X className="w-5 h-5" />
+              <button
+                onClick={() => setShowNewDocModal(false)}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  color: '#94a3b8',
+                  cursor: 'pointer',
+                  padding: '4px'
+                }}
+              >
+                <X size={20} />
               </button>
             </div>
 
-            <form onSubmit={handleCreateDocument} className="space-y-3">
+            <form onSubmit={handleCreateDocument} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div>
-                <label className="text-xs font-semibold text-slate-400">Document Title</label>
+                <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', display: 'block', marginBottom: '4px' }}>
+                  Document Title
+                </label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Thermodynamics - Second Law & Carnot Cycle"
                   value={newDocForm.title}
-                  onChange={e => setNewDocForm({ ...newDocForm, title: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-sm text-slate-200 mt-1 focus:outline-none focus:border-cyan-500"
+                  onChange={(e) => setNewDocForm({ ...newDocForm, title: e.target.value })}
+                  style={{
+                    width: '100%',
+                    boxSizing: 'border-box',
+                    backgroundColor: 'rgba(2, 6, 23, 0.8)',
+                    border: '1px solid rgba(255, 255, 255, 0.12)',
+                    borderRadius: '12px',
+                    padding: '10px 14px',
+                    fontSize: '0.85rem',
+                    color: '#ffffff',
+                    outline: 'none'
+                  }}
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 <div>
-                  <label className="text-xs font-semibold text-slate-400">Subject</label>
+                  <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', display: 'block', marginBottom: '4px' }}>
+                    Subject
+                  </label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Physics / Polity"
                     value={newDocForm.subject}
-                    onChange={e => setNewDocForm({ ...newDocForm, subject: e.target.value })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-sm text-slate-200 mt-1 focus:outline-none focus:border-cyan-500"
+                    onChange={(e) => setNewDocForm({ ...newDocForm, subject: e.target.value })}
+                    style={{
+                      width: '100%',
+                      boxSizing: 'border-box',
+                      backgroundColor: 'rgba(2, 6, 23, 0.8)',
+                      border: '1px solid rgba(255, 255, 255, 0.12)',
+                      borderRadius: '12px',
+                      padding: '10px 14px',
+                      fontSize: '0.85rem',
+                      color: '#ffffff',
+                      outline: 'none'
+                    }}
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-semibold text-slate-400">Category / Exam</label>
+                  <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', display: 'block', marginBottom: '4px' }}>
+                    Category / Exam
+                  </label>
                   <input
                     type="text"
                     placeholder="e.g. JEE Advanced"
                     value={newDocForm.category}
-                    onChange={e => setNewDocForm({ ...newDocForm, category: e.target.value })}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-sm text-slate-200 mt-1 focus:outline-none focus:border-cyan-500"
+                    onChange={(e) => setNewDocForm({ ...newDocForm, category: e.target.value })}
+                    style={{
+                      width: '100%',
+                      boxSizing: 'border-box',
+                      backgroundColor: 'rgba(2, 6, 23, 0.8)',
+                      border: '1px solid rgba(255, 255, 255, 0.12)',
+                      borderRadius: '12px',
+                      padding: '10px 14px',
+                      fontSize: '0.85rem',
+                      color: '#ffffff',
+                      outline: 'none'
+                    }}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-slate-400">Text Content (Separate paragraphs by blank lines)</label>
+                <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', display: 'block', marginBottom: '4px' }}>
+                  Text Content (Separate paragraphs by blank lines)
+                </label>
                 <textarea
                   required
                   rows={6}
                   placeholder="Paste textbook chapter, PDF lecture extract, or research abstract here..."
                   value={newDocForm.text}
-                  onChange={e => setNewDocForm({ ...newDocForm, text: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 mt-1 focus:outline-none focus:border-cyan-500"
+                  onChange={(e) => setNewDocForm({ ...newDocForm, text: e.target.value })}
+                  style={{
+                    width: '100%',
+                    boxSizing: 'border-box',
+                    backgroundColor: 'rgba(2, 6, 23, 0.8)',
+                    border: '1px solid rgba(255, 255, 255, 0.12)',
+                    borderRadius: '12px',
+                    padding: '12px 14px',
+                    fontSize: '0.85rem',
+                    color: '#ffffff',
+                    outline: 'none',
+                    resize: 'vertical'
+                  }}
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2">
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', paddingTop: '6px' }}>
                 <button
                   type="button"
                   onClick={() => setShowNewDocModal(false)}
-                  className="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-xs"
+                  style={{
+                    padding: '9px 16px',
+                    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    color: '#94a3b8',
+                    borderRadius: '10px',
+                    fontSize: '0.8rem',
+                    cursor: 'pointer'
+                  }}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-gradient-to-r from-cyan-600 to-indigo-600 text-white rounded-xl text-xs font-semibold shadow-md"
+                  style={{
+                    padding: '9px 20px',
+                    background: 'linear-gradient(135deg, #06b6d4 0%, #6366f1 100%)',
+                    color: '#ffffff',
+                    borderRadius: '10px',
+                    fontSize: '0.8rem',
+                    fontWeight: 700,
+                    border: 'none',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 14px rgba(6, 182, 212, 0.3)'
+                  }}
                 >
                   Create & Open
                 </button>
@@ -761,12 +1463,39 @@ export const SmartDocumentAnnotatorView: React.FC = () => {
 
       {/* AI Processing overlay */}
       {isAiLoading && (
-        <div className="fixed bottom-6 right-6 z-50 bg-slate-900/95 border border-indigo-500/50 rounded-2xl p-4 shadow-2xl flex items-center gap-3 animate-bounce">
-          <div className="w-5 h-5 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin"></div>
-          <span className="text-xs font-semibold text-indigo-300">AI Thinking & Synthesizing Annotation...</span>
+        <div
+          style={{
+            position: 'fixed',
+            bottom: '24px',
+            right: '24px',
+            zIndex: 50,
+            backgroundColor: 'rgba(15, 23, 42, 0.95)',
+            border: '1px solid rgba(6, 182, 212, 0.5)',
+            borderRadius: '16px',
+            padding: '14px 20px',
+            boxShadow: '0 12px 30px rgba(0, 0, 0, 0.6)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
+          }}
+        >
+          <div
+            style={{
+              width: '18px',
+              height: '18px',
+              border: '2px solid #22d3ee',
+              borderTopColor: 'transparent',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite'
+            }}
+          />
+          <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#67e8f9' }}>
+            AI Thinking & Synthesizing Annotation...
+          </span>
         </div>
       )}
     </div>
   );
 };
+
 export default SmartDocumentAnnotatorView;
