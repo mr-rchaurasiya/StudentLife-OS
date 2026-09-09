@@ -1974,6 +1974,7 @@ export interface AiPodcast {
   id: string;
   title: string;
   topic: string;
+  language?: string;
   sourceType: 'NOTES' | 'SYLLABUS' | 'TEXTBOOK_CHAPTER';
   totalDurationSeconds: number;
   host1: PodcastHost;
@@ -1985,6 +1986,7 @@ export interface AiPodcast {
 
 export interface GeneratePodcastDto {
   topic: string;
+  language?: string;
   sourceText?: string;
   style?: 'DEEP_DIVE' | 'RAPID_REVISION' | 'EXAM_CRACKER';
   durationPresetMinutes?: number;

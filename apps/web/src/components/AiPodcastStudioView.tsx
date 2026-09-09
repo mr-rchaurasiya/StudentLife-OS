@@ -12,16 +12,32 @@ import {
   BookOpen,
   ListOrdered,
   X,
-  RefreshCw
+  RefreshCw,
+  Globe
 } from 'lucide-react';
 import {
   AiPodcast,
   GeneratePodcastDto
 } from '@studentlife/shared';
 
+const LANGUAGE_OPTIONS = [
+  { code: 'ALL', label: 'All Languages', flag: '🌐' },
+  { code: 'en-US', label: 'English', flag: '🇺🇸' },
+  { code: 'hinglish', label: 'Hinglish (Bilingual)', flag: '🇮🇳' },
+  { code: 'hi-IN', label: 'हिन्दी (Hindi)', flag: '🇮🇳' },
+  { code: 'es-ES', label: 'Español (Spanish)', flag: '🇪🇸' },
+  { code: 'fr-FR', label: 'Français (French)', flag: '🇫🇷' },
+  { code: 'de-DE', label: 'Deutsch (German)', flag: '🇩🇪' },
+  { code: 'ta-IN', label: 'தமிழ் (Tamil)', flag: '🇮🇳' },
+  { code: 'te-IN', label: 'తెలుగు (Telugu)', flag: '🇮🇳' },
+  { code: 'bn-IN', label: 'বাংলা (Bengali)', flag: '🇮🇳' },
+  { code: 'mr-IN', label: 'मराठी (Marathi)', flag: '🇮🇳' }
+];
+
 export const AiPodcastStudioView: React.FC = () => {
   const [podcasts, setPodcasts] = useState<AiPodcast[]>([]);
   const [activePodcastId, setActivePodcastId] = useState<string>('podcast-quantum-physics');
+  const [selectedLanguageFilter, setSelectedLanguageFilter] = useState<string>('ALL');
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [activeTurnIndex, setActiveTurnIndex] = useState<number>(0);
@@ -29,6 +45,7 @@ export const AiPodcastStudioView: React.FC = () => {
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
   const [topicInput, setTopicInput] = useState<string>('Indian Constitution & Fundamental Rights');
+  const [languageInput, setLanguageInput] = useState<string>('hinglish');
   const [notesInput, setNotesInput] = useState<string>('');
   const [isSynthesizing, setIsSynthesizing] = useState<boolean>(false);
 
@@ -61,7 +78,26 @@ export const AiPodcastStudioView: React.FC = () => {
     }
   };
 
-  const activePodcast = podcasts.find(p => p.id === activePodcastId) || podcasts[0];
+  const filteredPodcasts = selectedLanguageFilter === 'ALL'
+    ? podcasts
+    : podcasts.filter(p => p.language === selectedLanguageFilter || (selectedLanguageFilter === 'en-US' && !p.language));
+
+  const activePodcast = podcasts.find(p => p.id === activePodcastId) || filteredPodcasts[0] || podcasts[0];
+
+  const getLanguageTag = (langCode?: string) => {
+    switch (langCode) {
+      case 'hinglish': return '🇮🇳 Hinglish';
+      case 'hi-IN': return '🇮🇳 हिन्दी';
+      case 'es-ES': return '🇪🇸 Español';
+      case 'fr-FR': return '🇫🇷 Français';
+      case 'de-DE': return '🇩🇪 Deutsch';
+      case 'ta-IN': return '🇮🇳 தமிழ்';
+      case 'te-IN': return '🇮🇳 తెలుగు';
+      case 'bn-IN': return '🇮🇳 বাংলা';
+      case 'mr-IN': return '🇮🇳 मराठी';
+      default: return '🇺🇸 English';
+    }
+  };
 
   const playTurn = (index: number) => {
     if (!activePodcast || !('speechSynthesis' in window) || isMuted) {
@@ -79,6 +115,10 @@ export const AiPodcastStudioView: React.FC = () => {
     const utterance = new SpeechSynthesisUtterance(turn.text);
     utterance.rate = playbackSpeed;
     utterance.pitch = turn.speaker === 'host1' ? 0.9 : 1.15; // Host 1 lower pitch, Host 2 higher pitch
+
+    // Map podcast language to speech synthesis language code
+    const podLang = activePodcast.language || 'en-US';
+    utterance.lang = podLang === 'hinglish' ? 'hi-IN' : podLang;
 
     utterance.onend = () => {
       if (index + 1 < activePodcast.dialogueTurns.length) {
@@ -124,6 +164,7 @@ export const AiPodcastStudioView: React.FC = () => {
       setIsSynthesizing(true);
       const dto: GeneratePodcastDto = {
         topic: topicInput,
+        language: languageInput,
         sourceText: notesInput || undefined,
         style: 'DEEP_DIVE'
       };
@@ -154,7 +195,7 @@ export const AiPodcastStudioView: React.FC = () => {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '50vh' }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px' }}>
           <RefreshCw size={36} color="#c084fc" className="animate-spin" />
-          <p style={{ color: '#94a3b8', fontSize: '0.9rem', fontWeight: 600 }}>Tuning 2-Host AI Podcast &amp; Audio Dialogue Studio...</p>
+          <p style={{ color: '#94a3b8', fontSize: '0.9rem', fontWeight: 600 }}>Tuning Multi-Language 2-Host AI Podcast Studio...</p>
         </div>
       </div>
     );
@@ -211,11 +252,11 @@ export const AiPodcastStudioView: React.FC = () => {
                     gap: '5px'
                   }}
                 >
-                  <Sparkles size={12} color="#c084fc" /> NotebookLM 2-Host Dialogue
+                  <Sparkles size={12} color="#c084fc" /> Multi-Language 2-Host Dialogue
                 </span>
               </div>
               <p style={{ fontSize: '0.9rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
-                Convert any lecture notes or syllabus topic into an interactive two-host audio discussion you can listen to while commuting or walking.
+                Convert any lecture notes or syllabus topic into an interactive two-host audio discussion in your preferred native language.
               </p>
             </div>
           </div>
@@ -244,6 +285,37 @@ export const AiPodcastStudioView: React.FC = () => {
             </button>
           </div>
         </div>
+
+        {/* Language Filter Chips Bar */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '20px', paddingTop: '16px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', overflowX: 'auto', paddingBottom: '4px' }}>
+          <span style={{ fontSize: '0.78rem', color: '#94a3b8', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '5px', flexShrink: 0 }}>
+            <Globe size={14} color="#38bdf8" /> Filter Language:
+          </span>
+          {LANGUAGE_OPTIONS.slice(0, 6).map((lang) => {
+            const isActive = selectedLanguageFilter === lang.code;
+            return (
+              <button
+                key={lang.code}
+                onClick={() => setSelectedLanguageFilter(lang.code)}
+                className="glow-hover"
+                style={{
+                  padding: '5px 12px',
+                  borderRadius: '10px',
+                  border: isActive ? '1px solid #c084fc' : '1px solid rgba(255, 255, 255, 0.08)',
+                  backgroundColor: isActive ? 'rgba(168, 85, 247, 0.25)' : 'rgba(2, 6, 23, 0.7)',
+                  color: isActive ? '#f8fafc' : '#94a3b8',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0
+                }}
+              >
+                {lang.flag} {lang.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'minmax(280px, 320px) 1fr minmax(280px, 320px)', gap: '20px', alignItems: 'start' }}>
@@ -261,59 +333,71 @@ export const AiPodcastStudioView: React.FC = () => {
             gap: '14px'
           }}
         >
-          <h3 style={{ fontSize: '0.85rem', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'flex', alignItems: 'center', gap: '8px', margin: 0, borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '10px' }}>
-            <BookOpen size={16} color="#c084fc" />
-            Podcast Library ({podcasts.length})
-          </h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '10px' }}>
+            <h3 style={{ fontSize: '0.85rem', fontWeight: 800, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
+              <BookOpen size={16} color="#c084fc" />
+              Podcast Library ({filteredPodcasts.length})
+            </h3>
+          </div>
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {podcasts.map(pod => {
-              const isActive = pod.id === activePodcast?.id;
-              return (
-                <button
-                  key={pod.id}
-                  onClick={() => {
-                    setActivePodcastId(pod.id);
-                    handleResetPlayback();
-                  }}
-                  className="glow-hover"
-                  style={{
-                    width: '100%',
-                    textAlign: 'left',
-                    padding: '14px',
-                    borderRadius: '14px',
-                    border: isActive ? '1px solid rgba(168, 85, 247, 0.6)' : '1px solid rgba(255, 255, 255, 0.08)',
-                    backgroundColor: isActive ? 'rgba(168, 85, 247, 0.18)' : 'rgba(2, 6, 23, 0.6)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '6px',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    boxShadow: isActive ? '0 4px 14px rgba(168, 85, 247, 0.25)' : 'none'
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span 
-                      style={{
-                        backgroundColor: isActive ? 'rgba(168, 85, 247, 0.25)' : 'rgba(255, 255, 255, 0.08)',
-                        color: isActive ? '#e9d5ff' : '#cbd5e1',
-                        padding: '2px 8px',
-                        borderRadius: '6px',
-                        fontSize: '0.68rem',
-                        fontWeight: 800
-                      }}
-                    >
-                      {pod.topic.split('&')[0]}
-                    </span>
-                    <span style={{ fontSize: '0.72rem', color: '#94a3b8', fontFamily: 'monospace' }}>
-                      {pod.dialogueTurns.length} Turns
-                    </span>
-                  </div>
-                  <div style={{ fontWeight: 700, fontSize: '0.85rem', color: isActive ? '#ffffff' : '#e2e8f0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {pod.title}
-                  </div>
-                </button>
-              );
-            })}
+            {filteredPodcasts.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '24px 12px', color: '#64748b', fontSize: '0.8rem' }}>
+                No podcasts in this language. Click &ldquo;Generate New Podcast&rdquo; to create one!
+              </div>
+            ) : (
+              filteredPodcasts.map(pod => {
+                const isActive = pod.id === activePodcast?.id;
+                return (
+                  <button
+                    key={pod.id}
+                    onClick={() => {
+                      setActivePodcastId(pod.id);
+                      handleResetPlayback();
+                    }}
+                    className="glow-hover"
+                    style={{
+                      width: '100%',
+                      textAlign: 'left',
+                      padding: '14px',
+                      borderRadius: '14px',
+                      border: isActive ? '1px solid rgba(168, 85, 247, 0.6)' : '1px solid rgba(255, 255, 255, 0.08)',
+                      backgroundColor: isActive ? 'rgba(168, 85, 247, 0.18)' : 'rgba(2, 6, 23, 0.6)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '6px',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      boxShadow: isActive ? '0 4px 14px rgba(168, 85, 247, 0.25)' : 'none'
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span 
+                        style={{
+                          backgroundColor: isActive ? 'rgba(168, 85, 247, 0.25)' : 'rgba(255, 255, 255, 0.08)',
+                          color: isActive ? '#e9d5ff' : '#cbd5e1',
+                          padding: '2px 8px',
+                          borderRadius: '6px',
+                          fontSize: '0.68rem',
+                          fontWeight: 800
+                        }}
+                      >
+                        {getTagOrTopic(pod)}
+                      </span>
+                      <span style={{ fontSize: '0.7rem', color: '#38bdf8', fontFamily: 'monospace', fontWeight: 700 }}>
+                        {getLanguageTag(pod.language)}
+                      </span>
+                    </div>
+                    <div style={{ fontWeight: 700, fontSize: '0.85rem', color: isActive ? '#ffffff' : '#e2e8f0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {pod.title}
+                    </div>
+                    <div style={{ fontSize: '0.7rem', color: '#64748b' }}>
+                      {pod.dialogueTurns.length} Turns &bull; ~{Math.round(pod.totalDurationSeconds / 60)} Mins
+                    </div>
+                  </button>
+                );
+              })
+            )}
           </div>
         </div>
 
@@ -337,9 +421,14 @@ export const AiPodcastStudioView: React.FC = () => {
               {/* Podcast Title and Hosts Bar */}
               <div style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '18px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#c084fc', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                    {activePodcast.topic}
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#c084fc', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                      {activePodcast.topic}
+                    </span>
+                    <span style={{ backgroundColor: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', padding: '2px 8px', borderRadius: '6px', fontSize: '0.7rem', fontWeight: 700 }}>
+                      {getLanguageTag(activePodcast.language)}
+                    </span>
+                  </div>
                   <span style={{ fontSize: '0.78rem', color: '#94a3b8', fontFamily: 'monospace', display: 'flex', alignItems: 'center', gap: '5px' }}>
                     <Clock size={13} color="#38bdf8" /> ~{Math.round(activePodcast.totalDurationSeconds / 60)} Mins
                   </span>
@@ -585,7 +674,7 @@ export const AiPodcastStudioView: React.FC = () => {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '12px' }}>
               <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#ffffff', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
                 <Mic size={20} color="#c084fc" />
-                Synthesize 2-Host AI Podcast
+                Synthesize Multi-Language AI Podcast
               </h3>
               <button
                 onClick={() => setShowCreateModal(false)}
@@ -623,13 +712,46 @@ export const AiPodcastStudioView: React.FC = () => {
 
               <div>
                 <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '6px' }}>
+                  Podcast Audio Language
+                </label>
+                <select
+                  value={languageInput}
+                  onChange={e => setLanguageInput(e.target.value)}
+                  style={{
+                    width: '100%',
+                    backgroundColor: 'rgba(2, 6, 23, 0.9)',
+                    border: '1px solid rgba(255, 255, 255, 0.15)',
+                    borderRadius: '12px',
+                    padding: '10px 14px',
+                    color: '#f8fafc',
+                    fontSize: '0.85rem',
+                    fontWeight: 600,
+                    outline: 'none',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <option value="hinglish">🇮🇳 Hinglish (Bilingual / हिन्दी + English)</option>
+                  <option value="en-US">🇺🇸 English (US/Global)</option>
+                  <option value="hi-IN">🇮🇳 शुद्ध हिन्दी (Hindi)</option>
+                  <option value="es-ES">🇪🇸 Español (Spanish)</option>
+                  <option value="fr-FR">🇫🇷 Français (French)</option>
+                  <option value="de-DE">🇩🇪 Deutsch (German)</option>
+                  <option value="ta-IN">🇮🇳 தமிழ் (Tamil)</option>
+                  <option value="te-IN">🇮🇳 తెలుగు (Telugu)</option>
+                  <option value="bn-IN">🇮🇳 বাংলা (Bengali)</option>
+                  <option value="mr-IN">🇮🇳 मराठी (Marathi)</option>
+                </select>
+              </div>
+
+              <div>
+                <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: '6px' }}>
                   Source Notes Text (Optional)
                 </label>
                 <textarea
                   rows={4}
                   value={notesInput}
                   onChange={e => setNotesInput(e.target.value)}
-                  placeholder="Paste class notes or key equations for host discussion..."
+                  placeholder="Paste class notes or key equations for host discussion in this language..."
                   style={{
                     width: '100%',
                     backgroundColor: 'rgba(2, 6, 23, 0.9)',
@@ -687,6 +809,10 @@ export const AiPodcastStudioView: React.FC = () => {
       )}
     </div>
   );
+};
+
+const getTagOrTopic = (pod: AiPodcast) => {
+  return pod.topic.split('&')[0];
 };
 
 export default AiPodcastStudioView;
