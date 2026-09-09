@@ -6,7 +6,9 @@ import {
   Award,
   CheckCircle2,
   Briefcase,
-  Play
+  Play,
+  RotateCcw,
+  User
 } from 'lucide-react';
 import {
   InterviewTrack,
@@ -61,7 +63,7 @@ export const AiMockInterviewView: React.FC<AiMockInterviewViewProps> = ({ onAddX
     } else {
       const SpeechRec = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       if (!SpeechRec) {
-        alert('Web Speech API is not supported in this browser. You can type your answer directly!');
+        alert('Web Speech API is not supported in this browser. You can type your answer directly in the box!');
         return;
       }
 
@@ -125,22 +127,110 @@ export const AiMockInterviewView: React.FC<AiMockInterviewViewProps> = ({ onAddX
     }
   };
 
+  const TRACKS = [
+    {
+      track: 'SDE_TECH' as InterviewTrack,
+      title: 'FAANG & Startup SDE Board',
+      desc: 'Graph algorithms, distributed caching, concurrency & system design architecture.',
+      badge: 'Tech Placement 💻',
+      color: '#6366f1'
+    },
+    {
+      track: 'UPSC_PERSONALITY' as InterviewTrack,
+      title: 'Civil Services (IAS/IPS) Board',
+      desc: 'Administrative ethics, constitutional morality, geopolitical debates & crisis management.',
+      badge: 'UPSC CSE 🏛️',
+      color: '#f59e0b'
+    },
+    {
+      track: 'DATA_SCIENCE_AI' as InterviewTrack,
+      title: 'AI & Machine Learning Specialist',
+      desc: 'Deep learning backpropagation, LLM fine-tuning, regression metrics & MLOps pipelines.',
+      badge: 'AI Roles 🤖',
+      color: '#06b6d4'
+    },
+    {
+      track: 'COLLEGE_VIVA' as InterviewTrack,
+      title: 'University Viva & Project Defense',
+      desc: 'Final year thesis defense, database normalization & architectural trade-offs.',
+      badge: 'College Exam 🎓',
+      color: '#a855f7'
+    }
+  ];
+
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', paddingBottom: '60px', maxWidth: '1600px', margin: '0 auto' }}>
       {/* Top Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-2xl p-6 shadow-2xl">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-amber-600 via-rose-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-rose-500/20">
-            <Briefcase className="w-6 h-6" />
+      <div
+        style={{
+          position: 'relative',
+          borderRadius: '24px',
+          overflow: 'hidden',
+          background: 'linear-gradient(135deg, rgba(180, 83, 9, 0.28) 0%, rgba(15, 23, 42, 0.95) 50%, rgba(225, 29, 72, 0.28) 100%)',
+          border: '1px solid rgba(245, 158, 11, 0.35)',
+          padding: '28px 32px',
+          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
+          backdropFilter: 'blur(16px)',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '20px'
+        }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            top: '-50px',
+            right: '-50px',
+            width: '320px',
+            height: '320px',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(245, 158, 11, 0.18) 0%, rgba(0, 0, 0, 0) 70%)',
+            pointerEvents: 'none'
+          }}
+        />
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', position: 'relative', zIndex: 1, maxWidth: '800px' }}>
+          <div
+            style={{
+              width: '54px',
+              height: '54px',
+              borderRadius: '16px',
+              background: 'linear-gradient(135deg, #f59e0b 0%, #e11d48 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 8px 24px rgba(245, 158, 11, 0.35)',
+              flexShrink: 0
+            }}
+          >
+            <Briefcase size={28} color="#ffffff" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-white tracking-tight">AI Voice Mock Interview & Viva Coach</h1>
-              <span className="px-2.5 py-0.5 text-xs font-semibold bg-gradient-to-r from-amber-500/20 to-rose-500/20 text-amber-300 border border-amber-500/30 rounded-full flex items-center gap-1">
-                <Sparkles className="w-3 h-3" /> STAR Method Evaluator
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '6px' }}>
+              <h1 style={{ fontSize: '1.85rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em', margin: 0 }}>
+                AI Voice Mock Interview & Viva Coach
+              </h1>
+              <span
+                style={{
+                  backgroundColor: 'rgba(245, 158, 11, 0.15)',
+                  color: '#fef08a',
+                  border: '1px solid rgba(245, 158, 11, 0.4)',
+                  padding: '3px 10px',
+                  borderRadius: '9999px',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '5px'
+                }}
+              >
+                <Sparkles size={12} color="#facc15" /> STAR Method Evaluator
               </span>
             </div>
-            <p className="text-sm text-slate-400">
+            <p style={{ fontSize: '0.9rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
               Simulate high-stakes SDE technical rounds and UPSC personality boards with real-time speech evaluation and STAR rating breakdown.
             </p>
           </div>
@@ -149,127 +239,216 @@ export const AiMockInterviewView: React.FC<AiMockInterviewViewProps> = ({ onAddX
         {session && (
           <button
             onClick={() => setSession(null)}
-            className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl border border-slate-700"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '10px 18px',
+              backgroundColor: 'rgba(255, 255, 255, 0.08)',
+              border: '1px solid rgba(255, 255, 255, 0.15)',
+              color: '#cbd5e1',
+              borderRadius: '12px',
+              fontSize: '0.8rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              position: 'relative',
+              zIndex: 1
+            }}
           >
-            End / Switch Track
+            <RotateCcw size={14} /> End / Switch Track
           </button>
         )}
       </div>
 
       {!session ? (
         /* Track Configurator Screen */
-        <div className="max-w-3xl mx-auto bg-slate-900/90 border border-slate-800 rounded-2xl p-8 shadow-2xl space-y-6">
-          <h3 className="text-lg font-bold text-white flex items-center gap-2 border-b border-slate-800 pb-3">
-            <Briefcase className="w-5 h-5 text-amber-400" />
-            Select Your Target Mock Interview Board
-          </h3>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {[
-              {
-                track: 'SDE_TECH' as InterviewTrack,
-                title: 'FAANG & Startup SDE Board',
-                desc: 'Graph algorithms, distributed caching, concurrency & system design architecture.',
-                badge: 'Tech Placement'
-              },
-              {
-                track: 'UPSC_PERSONALITY' as InterviewTrack,
-                title: 'Civil Services (IAS/IPS) Board',
-                desc: 'Administrative ethics, constitutional morality, geopolitical debates & crisis management.',
-                badge: 'UPSC CSE'
-              },
-              {
-                track: 'DATA_SCIENCE_AI' as InterviewTrack,
-                title: 'AI & Machine Learning Specialist',
-                desc: 'Deep learning backpropagation, LLM fine-tuning, regression metrics & MLOps pipelines.',
-                badge: 'AI Roles'
-              },
-              {
-                track: 'COLLEGE_VIVA' as InterviewTrack,
-                title: 'University Viva & Project Defense',
-                desc: 'Final year thesis defense, database normalization & architectural trade-offs.',
-                badge: 'College Exam'
-              }
-            ].map(item => (
-              <button
-                key={item.track}
-                onClick={() => setSelectedTrack(item.track)}
-                className={`p-5 rounded-2xl border text-left transition-all flex flex-col justify-between gap-3 ${
-                  selectedTrack === item.track
-                    ? 'bg-gradient-to-br from-indigo-950/70 to-slate-900 border-amber-400 shadow-xl shadow-amber-950/40 scale-[1.02]'
-                    : 'bg-slate-950 border-slate-800 hover:border-slate-700 text-slate-400'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-white text-sm">{item.title}</span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-800 text-amber-300">
-                    {item.badge}
-                  </span>
-                </div>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  {item.desc}
-                </p>
-              </button>
-            ))}
+        <div
+          style={{
+            maxWidth: '920px',
+            width: '100%',
+            margin: '0 auto',
+            backgroundColor: 'rgba(15, 23, 42, 0.85)',
+            border: '1px solid rgba(255, 255, 255, 0.08)',
+            borderRadius: '24px',
+            padding: '36px',
+            boxShadow: '0 20px 50px rgba(0, 0, 0, 0.5)',
+            backdropFilter: 'blur(16px)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '24px'
+          }}
+        >
+          <div style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '16px' }}>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ffffff', display: 'flex', alignItems: 'center', gap: '10px', margin: 0 }}>
+              <Briefcase size={20} color="#fbbf24" />
+              Select Your Target Mock Interview Board
+            </h3>
+            <p style={{ fontSize: '0.82rem', color: '#94a3b8', margin: '4px 0 0 0' }}>
+              Choose a customized board profile with targeted technical questions and evaluation rubrics.
+            </p>
           </div>
 
-          <div className="space-y-2 pt-2">
-            <label className="text-xs font-semibold text-slate-400">Candidate Name</label>
+          {/* 4 Interactive Board Cards Grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '16px' }}>
+            {TRACKS.map((item) => {
+              const isSelected = selectedTrack === item.track;
+              return (
+                <button
+                  key={item.track}
+                  onClick={() => setSelectedTrack(item.track)}
+                  style={{
+                    padding: '20px',
+                    borderRadius: '18px',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    gap: '12px',
+                    border: isSelected ? '1px solid #fbbf24' : '1px solid rgba(255, 255, 255, 0.08)',
+                    background: isSelected
+                      ? 'linear-gradient(135deg, rgba(245, 158, 11, 0.18) 0%, rgba(15, 23, 42, 0.95) 100%)'
+                      : 'rgba(2, 6, 23, 0.55)',
+                    boxShadow: isSelected ? '0 8px 24px rgba(245, 158, 11, 0.25)' : 'none',
+                    transform: isSelected ? 'translateY(-2px)' : 'none'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ fontWeight: 800, fontSize: '0.98rem', color: isSelected ? '#ffffff' : '#e2e8f0' }}>
+                      {item.title}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: '0.72rem',
+                        fontWeight: 700,
+                        padding: '3px 10px',
+                        borderRadius: '9999px',
+                        backgroundColor: isSelected ? 'rgba(245, 158, 11, 0.25)' : 'rgba(255, 255, 255, 0.06)',
+                        color: isSelected ? '#fef08a' : '#94a3b8',
+                        border: isSelected ? '1px solid rgba(245, 158, 11, 0.4)' : '1px solid rgba(255, 255, 255, 0.08)'
+                      }}
+                    >
+                      {item.badge}
+                    </span>
+                  </div>
+                  <p style={{ fontSize: '0.82rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
+                    {item.desc}
+                  </p>
+                </button>
+              );
+            })}
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', paddingTop: '8px' }}>
+            <label style={{ fontSize: '0.78rem', fontWeight: 700, color: '#cbd5e1', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <User size={14} color="#fbbf24" /> Candidate Name
+            </label>
             <input
               type="text"
               value={candidateName}
-              onChange={e => setCandidateName(e.target.value)}
-              placeholder="Your name"
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-slate-200 text-xs focus:outline-none focus:border-amber-500"
+              onChange={(e) => setCandidateName(e.target.value)}
+              placeholder="Enter candidate name (e.g. Student Aspirant)"
+              style={{
+                width: '100%',
+                boxSizing: 'border-box',
+                backgroundColor: 'rgba(2, 6, 23, 0.8)',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                borderRadius: '14px',
+                padding: '12px 16px',
+                color: '#ffffff',
+                fontSize: '0.9rem',
+                outline: 'none'
+              }}
             />
           </div>
 
           <button
             onClick={handleStartInterview}
             disabled={isStarting}
-            className="w-full py-3.5 bg-gradient-to-r from-amber-600 via-rose-600 to-indigo-600 hover:from-amber-500 hover:to-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-rose-500/25 transition-all flex items-center justify-center gap-2"
+            style={{
+              width: '100%',
+              padding: '14px',
+              borderRadius: '16px',
+              background: 'linear-gradient(135deg, #f59e0b 0%, #e11d48 50%, #6366f1 100%)',
+              color: '#ffffff',
+              fontWeight: 800,
+              fontSize: '0.95rem',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              boxShadow: '0 8px 24px rgba(225, 29, 72, 0.35)',
+              transition: 'all 0.2s',
+              opacity: isStarting ? 0.7 : 1
+            }}
           >
-            <Play className="w-4 h-4" />
-            {isStarting ? 'Initiating Board...' : 'Begin Live Mock Interview'}
+            <Play size={18} />
+            {isStarting ? 'Initiating Mock Board...' : 'Begin Live Mock Interview'}
           </button>
         </div>
       ) : (
         /* Active Interview Simulator Screen */
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '24px' }}>
           
           {/* Center: Question & Speech Capture Canvas (8 cols) */}
-          <div className="lg:col-span-8 space-y-6">
+          <div style={{ gridColumn: 'span 8', display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {!session.isCompleted ? (
-              <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl space-y-6">
-                
+              <div
+                style={{
+                  backgroundColor: 'rgba(15, 23, 42, 0.85)',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  borderRadius: '24px',
+                  padding: '32px',
+                  boxShadow: '0 20px 40px rgba(0, 0, 0, 0.4)',
+                  backdropFilter: 'blur(16px)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '24px'
+                }}
+              >
                 {/* Question Header */}
-                <div className="border-b border-slate-800 pb-4 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono font-bold text-amber-400 uppercase tracking-widest">
-                      Question {session.currentQuestionIndex + 1} of {session.questions.length} • {session.track}
+                <div style={{ borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '18px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: '0.75rem', fontFamily: 'monospace', fontWeight: 800, color: '#fbbf24', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                      Question {session.currentQuestionIndex + 1} of {session.questions.length} &bull; {session.track}
                     </span>
-                    <span className="text-xs text-slate-500 font-mono">
+                    <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontFamily: 'monospace' }}>
                       Category: {session.questions[session.currentQuestionIndex]?.category}
                     </span>
                   </div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug">
+                  <h2 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#ffffff', lineHeight: 1.4, margin: 0 }}>
                     "{session.questions[session.currentQuestionIndex]?.questionText}"
                   </h2>
                 </div>
 
                 {/* Speech Recording / Text Response Area */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-400 font-semibold">Your Oral Response:</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: '0.8rem', color: '#cbd5e1', fontWeight: 700 }}>
+                      Your Oral Response (STAR Format):
+                    </span>
                     <button
                       onClick={handleToggleListening}
-                      className={`px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all ${
-                        isListening
-                          ? 'bg-rose-600 text-white animate-pulse shadow-lg shadow-rose-500/40'
-                          : 'bg-slate-800 hover:bg-slate-700 text-slate-200'
-                      }`}
+                      style={{
+                        padding: '8px 16px',
+                        borderRadius: '12px',
+                        fontWeight: 800,
+                        fontSize: '0.78rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        border: isListening ? 'none' : '1px solid rgba(255, 255, 255, 0.12)',
+                        backgroundColor: isListening ? '#e11d48' : 'rgba(255, 255, 255, 0.08)',
+                        color: '#ffffff',
+                        boxShadow: isListening ? '0 0 16px rgba(225, 29, 72, 0.6)' : 'none'
+                      }}
                     >
-                      {isListening ? <Mic className="w-3.5 h-3.5" /> : <MicOff className="w-3.5 h-3.5" />}
+                      {isListening ? <Mic size={15} /> : <MicOff size={15} />}
                       {isListening ? 'Listening (Speak Now)...' : 'Enable Microphone'}
                     </button>
                   </div>
@@ -277,106 +456,230 @@ export const AiMockInterviewView: React.FC<AiMockInterviewViewProps> = ({ onAddX
                   <textarea
                     rows={6}
                     value={spokenAnswer}
-                    onChange={e => setSpokenAnswer(e.target.value)}
-                    placeholder="Speak your answer with the mic or type your STAR response directly here..."
-                    className="w-full bg-slate-950 border border-slate-800 rounded-2xl p-4 text-slate-200 text-sm focus:outline-none focus:border-amber-500 leading-relaxed font-sans"
+                    onChange={(e) => setSpokenAnswer(e.target.value)}
+                    placeholder="Speak your answer into the microphone or type your response directly here (Situation, Task, Action, Result)..."
+                    style={{
+                      width: '100%',
+                      boxSizing: 'border-box',
+                      backgroundColor: 'rgba(2, 6, 23, 0.85)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      borderRadius: '16px',
+                      padding: '16px',
+                      color: '#ffffff',
+                      fontSize: '0.9rem',
+                      lineHeight: 1.6,
+                      outline: 'none',
+                      resize: 'vertical'
+                    }}
                   />
                 </div>
 
-                <div className="flex items-center justify-between pt-2">
-                  <span className="text-xs text-slate-500 italic">
-                    Tip: Structure your response with Situation, Task, Action, and quantifiable Result (STAR).
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px', paddingTop: '6px' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', fontStyle: 'italic' }}>
+                    💡 Tip: Frame answer with Situation, Task, Action, and quantifiable Result (STAR).
                   </span>
                   <button
                     onClick={handleSubmitAnswer}
                     disabled={isSubmitting || !spokenAnswer.trim()}
-                    className="px-6 py-2.5 bg-gradient-to-r from-amber-600 to-rose-600 hover:from-amber-500 hover:to-rose-500 disabled:opacity-40 text-white font-bold rounded-xl text-sm shadow-md transition-all flex items-center gap-2"
+                    style={{
+                      padding: '12px 24px',
+                      borderRadius: '14px',
+                      background: 'linear-gradient(135deg, #f59e0b 0%, #e11d48 100%)',
+                      color: '#ffffff',
+                      fontWeight: 800,
+                      fontSize: '0.85rem',
+                      border: 'none',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      boxShadow: '0 6px 20px rgba(245, 158, 11, 0.35)',
+                      transition: 'all 0.2s',
+                      opacity: isSubmitting || !spokenAnswer.trim() ? 0.45 : 1
+                    }}
                   >
-                    <CheckCircle2 className="w-4 h-4" />
+                    <CheckCircle2 size={16} />
                     {isSubmitting ? 'Evaluating STAR...' : 'Submit Response'}
                   </button>
                 </div>
               </div>
             ) : (
               /* Completed Scorecard Hero */
-              <div className="bg-slate-900/90 border border-indigo-500/40 rounded-2xl p-8 shadow-2xl text-center space-y-6">
-                <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-tr from-amber-500 to-rose-500 flex items-center justify-center text-white text-3xl shadow-xl shadow-rose-500/30">
+              <div
+                style={{
+                  backgroundColor: 'rgba(15, 23, 42, 0.85)',
+                  border: '1px solid rgba(245, 158, 11, 0.4)',
+                  borderRadius: '24px',
+                  padding: '40px',
+                  boxShadow: '0 20px 50px rgba(0, 0, 0, 0.6)',
+                  textAlign: 'center',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '24px',
+                  backdropFilter: 'blur(16px)'
+                }}
+              >
+                <div
+                  style={{
+                    width: '72px',
+                    height: '72px',
+                    margin: '0 auto',
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #f59e0b 0%, #e11d48 100%)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '2rem',
+                    boxShadow: '0 10px 30px rgba(245, 158, 11, 0.4)'
+                  }}
+                >
                   🏆
                 </div>
-                <div className="space-y-1">
-                  <h2 className="text-2xl font-black text-white">Interview Board Completed!</h2>
-                  <p className="text-sm text-slate-400">Candidate: {session.candidateName} • Track: {session.track}</p>
+                <div>
+                  <h2 style={{ fontSize: '1.75rem', fontWeight: 900, color: '#ffffff', margin: 0 }}>
+                    Interview Board Completed!
+                  </h2>
+                  <p style={{ fontSize: '0.85rem', color: '#94a3b8', margin: '6px 0 0 0' }}>
+                    Candidate: <strong style={{ color: '#ffffff' }}>{session.candidateName}</strong> &bull; Track: <strong style={{ color: '#fef08a' }}>{session.track}</strong>
+                  </p>
                 </div>
 
-                <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 max-w-sm mx-auto">
-                  <div className="text-xs text-slate-400 uppercase tracking-widest">Overall Performance Score</div>
-                  <div className="text-4xl font-black text-amber-400 font-mono mt-1">
-                    {session.totalScore} / 100
+                <div
+                  style={{
+                    backgroundColor: 'rgba(2, 6, 23, 0.7)',
+                    padding: '24px',
+                    borderRadius: '18px',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    maxWidth: '380px',
+                    margin: '0 auto',
+                    width: '100%',
+                    boxSizing: 'border-box'
+                  }}
+                >
+                  <div style={{ fontSize: '0.72rem', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 700 }}>
+                    Overall Performance Score
                   </div>
-                  <div className="text-xs text-emerald-400 font-semibold mt-2">
+                  <div style={{ fontSize: '2.5rem', fontWeight: 900, color: '#fbbf24', fontFamily: 'monospace', margin: '6px 0' }}>
+                    {session.totalScore} <span style={{ fontSize: '1.25rem', color: '#94a3b8' }}>/ 100</span>
+                  </div>
+                  <div style={{ fontSize: '0.78rem', color: '#34d399', fontWeight: 700 }}>
                     ✅ Passed Benchmark with High Hireability Rating
                   </div>
                 </div>
 
-                <button
-                  onClick={() => setSession(null)}
-                  className="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-cyan-600 text-white text-xs font-bold rounded-xl shadow-md"
-                >
-                  Start Another Round
-                </button>
+                <div>
+                  <button
+                    onClick={() => setSession(null)}
+                    style={{
+                      padding: '12px 28px',
+                      borderRadius: '14px',
+                      background: 'linear-gradient(135deg, #6366f1 0%, #06b6d4 100%)',
+                      color: '#ffffff',
+                      fontWeight: 800,
+                      fontSize: '0.85rem',
+                      border: 'none',
+                      cursor: 'pointer',
+                      boxShadow: '0 6px 20px rgba(99, 102, 241, 0.35)'
+                    }}
+                  >
+                    Start Another Round
+                  </button>
+                </div>
               </div>
             )}
           </div>
 
           {/* Right: Real-time STAR Evaluations Log (4 cols) */}
-          <div className="lg:col-span-4 space-y-4">
-            <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2 border-b border-slate-800 pb-3">
-                <Award className="w-4 h-4 text-amber-400" />
+          <div style={{ gridColumn: 'span 4', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div
+              style={{
+                backgroundColor: 'rgba(15, 23, 42, 0.85)',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
+                borderRadius: '20px',
+                padding: '20px',
+                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.35)',
+                backdropFilter: 'blur(16px)'
+              }}
+            >
+              <h3
+                style={{
+                  fontSize: '0.75rem',
+                  fontWeight: 800,
+                  color: '#94a3b8',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.06em',
+                  margin: '0 0 16px 0',
+                  borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+                  paddingBottom: '12px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+              >
+                <Award size={16} color="#fbbf24" />
                 STAR Scorecard Log ({session.evaluations.length})
               </h3>
 
               {session.evaluations.length > 0 ? (
-                <div className="space-y-4 max-h-[500px] overflow-y-auto pr-1">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', maxHeight: '520px', overflowY: 'auto', paddingRight: '4px' }}>
                   {session.evaluations.map((ev, idx) => (
-                    <div key={idx} className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3 text-xs">
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold text-white">Q{idx + 1} Score:</span>
-                        <span className="font-mono font-black text-amber-400 text-sm">{ev.overallScore}/100</span>
+                    <div
+                      key={idx}
+                      style={{
+                        backgroundColor: 'rgba(2, 6, 23, 0.65)',
+                        padding: '14px',
+                        borderRadius: '14px',
+                        border: '1px solid rgba(255, 255, 255, 0.06)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '10px'
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <span style={{ fontWeight: 800, color: '#ffffff', fontSize: '0.8rem' }}>
+                          Question {idx + 1} Score:
+                        </span>
+                        <span style={{ fontFamily: 'monospace', fontWeight: 900, color: '#fbbf24', fontSize: '0.9rem' }}>
+                          {ev.overallScore} / 100
+                        </span>
                       </div>
 
-                      {/* STAR Grid */}
-                      <div className="grid grid-cols-4 gap-1 text-[10px] text-center font-mono">
-                        <div className="bg-slate-900 p-1.5 rounded border border-slate-800">
-                          <div className="text-slate-400">S</div>
-                          <div className="font-bold text-cyan-300">{ev.starMethodScore.situation}</div>
+                      {/* STAR 4-Quadrant Grid */}
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px', textAlign: 'center', fontFamily: 'monospace', fontSize: '0.68rem' }}>
+                        <div style={{ backgroundColor: 'rgba(15, 23, 42, 0.8)', padding: '6px 2px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                          <div style={{ color: '#94a3b8' }}>S</div>
+                          <div style={{ fontWeight: 800, color: '#67e8f9', marginTop: '2px' }}>{ev.starMethodScore.situation}</div>
                         </div>
-                        <div className="bg-slate-900 p-1.5 rounded border border-slate-800">
-                          <div className="text-slate-400">T</div>
-                          <div className="font-bold text-cyan-300">{ev.starMethodScore.task}</div>
+                        <div style={{ backgroundColor: 'rgba(15, 23, 42, 0.8)', padding: '6px 2px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                          <div style={{ color: '#94a3b8' }}>T</div>
+                          <div style={{ fontWeight: 800, color: '#67e8f9', marginTop: '2px' }}>{ev.starMethodScore.task}</div>
                         </div>
-                        <div className="bg-slate-900 p-1.5 rounded border border-slate-800">
-                          <div className="text-slate-400">A</div>
-                          <div className="font-bold text-cyan-300">{ev.starMethodScore.action}</div>
+                        <div style={{ backgroundColor: 'rgba(15, 23, 42, 0.8)', padding: '6px 2px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                          <div style={{ color: '#94a3b8' }}>A</div>
+                          <div style={{ fontWeight: 800, color: '#67e8f9', marginTop: '2px' }}>{ev.starMethodScore.action}</div>
                         </div>
-                        <div className="bg-slate-900 p-1.5 rounded border border-slate-800">
-                          <div className="text-slate-400">R</div>
-                          <div className="font-bold text-cyan-300">{ev.starMethodScore.result}</div>
+                        <div style={{ backgroundColor: 'rgba(15, 23, 42, 0.8)', padding: '6px 2px', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                          <div style={{ color: '#94a3b8' }}>R</div>
+                          <div style={{ fontWeight: 800, color: '#67e8f9', marginTop: '2px' }}>{ev.starMethodScore.result}</div>
                         </div>
                       </div>
 
-                      <div className="text-[11px] text-emerald-300 bg-emerald-950/30 p-2 rounded-lg border border-emerald-500/20">
-                        <strong>Strengths:</strong> {ev.strengths[0]}
-                      </div>
+                      {ev.strengths.length > 0 && (
+                        <div style={{ fontSize: '0.75rem', color: '#d1fae5', backgroundColor: 'rgba(16, 185, 129, 0.12)', padding: '8px 10px', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.25)', lineHeight: 1.4 }}>
+                          <strong style={{ color: '#34d399' }}>Strengths:</strong> {ev.strengths[0]}
+                        </div>
+                      )}
 
-                      <div className="text-[11px] text-amber-200 bg-amber-950/30 p-2 rounded-lg border border-amber-500/20">
-                        <strong>Improve:</strong> {ev.improvements[0]}
-                      </div>
+                      {ev.improvements.length > 0 && (
+                        <div style={{ fontSize: '0.75rem', color: '#fef3c7', backgroundColor: 'rgba(245, 158, 11, 0.12)', padding: '8px 10px', borderRadius: '8px', border: '1px solid rgba(245, 158, 11, 0.25)', lineHeight: 1.4 }}>
+                          <strong style={{ color: '#fbbf24' }}>Improve:</strong> {ev.improvements[0]}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-10 text-slate-500 text-xs">
+                <div style={{ textAlign: 'center', padding: '36px 16px', color: '#64748b', fontSize: '0.78rem' }}>
                   Submit an answer to see your real-time STAR breakdown here!
                 </div>
               )}
@@ -388,4 +691,5 @@ export const AiMockInterviewView: React.FC<AiMockInterviewViewProps> = ({ onAddX
     </div>
   );
 };
+
 export default AiMockInterviewView;
