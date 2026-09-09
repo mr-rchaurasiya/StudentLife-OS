@@ -446,154 +446,81 @@ export class AiPodcastService {
     return this.podcasts.get(id);
   }
 
+  private splitIntoReadingChunks(text: string): string[] {
+    const clean = text.trim();
+    if (!clean) return [];
+
+    // Split on double linebreaks or bullet points
+    const rawParagraphs = clean.split(/\r?\n\s*\r?\n|\r?\n(?=[0-9]+\.|\*|-|•|Chapter|Section|भाग|अध्याय|प्रश्न|उत्तर)/);
+    const chunks: string[] = [];
+
+    for (const para of rawParagraphs) {
+      const trimmed = para.trim();
+      if (!trimmed) continue;
+
+      if (trimmed.length <= 320) {
+        chunks.push(trimmed);
+      } else {
+        // Split by sentence terminators: '.', '।', '?', '!', '\n'
+        const sentences = trimmed.split(/(?<=[.?!।\n])\s+/).map(s => s.trim()).filter(s => s.length > 0);
+        let buffer = '';
+        for (const sent of sentences) {
+          if (!buffer) {
+            buffer = sent;
+          } else if (buffer.length + sent.length < 260) {
+            buffer += ' ' + sent;
+          } else {
+            chunks.push(buffer);
+            buffer = sent;
+          }
+        }
+        if (buffer) {
+          chunks.push(buffer);
+        }
+      }
+    }
+
+    return chunks.length > 0 ? chunks : [clean];
+  }
+
   public generatePodcast(dto: GeneratePodcastDto): AiPodcast {
     const topic = dto.topic || 'General Core Study Topic';
     const lang = dto.language || 'en-US';
     const mode = dto.mode || 'DEEP_DIVE';
+    const hasSourceText = !!(dto.sourceText && dto.sourceText.trim().length > 5);
+    const sourceText = dto.sourceText ? dto.sourceText.trim() : '';
     const id = `podcast-${Date.now()}`;
 
     let turns: PodcastDialogueTurn[] = [];
     let takeaways: string[] = [];
     let title = '';
 
-    if (mode === 'QA_INTERVIEW') {
-      if (lang === 'hi-IN') {
-        title = `❓ प्रश्नोत्तर (Q&A) अभ्यास सत्र: ${topic}`;
-        turns = [
-          {
-            id: 'turn-1',
-            speaker: 'host1',
-            text: `प्रश्न 1: ${topic} का सबसे बुनियादी सिद्धांत क्या है और यह परीक्षाओं में क्यों पूछा जाता है?`,
-            durationEstimateSeconds: 7,
-            keyConcepts: ['प्रश्न 1', 'मूल अवधारणा']
-          },
-          {
-            id: 'turn-2',
-            speaker: 'host2',
-            text: `उत्तर: ${topic} का मुख्य आधार इसके क्रियात्मक नियमों पर निर्भर करता है। परीक्षा में सदैव इसके सूत्र और प्राथमिक मान्यताओं (Assumptions) को स्पष्ट रूप से लिखें।`,
-            durationEstimateSeconds: 10,
-            keyConcepts: ['आदर्श उत्तर', 'परीक्षा सूत्र']
-          },
-          {
-            id: 'turn-3',
-            speaker: 'host1',
-            text: `प्रश्न 2: इस विषय से संबंधित संख्यात्मक प्रश्नों (Numericals) को हल करते समय सबसे सामान्य त्रुटि क्या होती है?`,
-            durationEstimateSeconds: 7,
-            keyConcepts: ['प्रश्न 2', 'संख्यात्मक त्रुटियां']
-          },
-          {
-            id: 'turn-4',
-            speaker: 'host2',
-            text: `उत्तर: विद्यार्थी प्रायः मात्रकों (SI Units) का रूपांतरण भूल जाते हैं। अतः गणना प्रारंभ करने से पहले सभी मानों को मानक मात्रकों में बदलें।`,
-            durationEstimateSeconds: 9,
-            keyConcepts: ['आदर्श उत्तर', 'मात्रक सावधानी']
-          }
-        ];
-        takeaways = [
-          `प्रश्न 1: ${topic} के सैद्धांतिक आधार और मान्यताओं को कंठस्थ रखें।`,
-          'प्रश्न 2: संख्यात्मक प्रश्नों में SI मात्रकों और सीमांत शर्तों का विशेष ध्यान रखें।'
-        ];
-      } else if (lang === 'hinglish') {
-        title = `❓ Exam & Viva Q&A Drill: ${topic}`;
-        turns = [
-          {
-            id: 'turn-1',
-            speaker: 'host1',
-            text: `Question 1: ${topic} se related sabse high-weightage viva question kya ban sakta hai?`,
-            durationEstimateSeconds: 7,
-            keyConcepts: ['Question 1', 'High Weightage Core']
-          },
-          {
-            id: 'turn-2',
-            speaker: 'host2',
-            text: `Answer 1: Examiner aksar ${topic} ke working principles aur primary governing equations puchte hain. Answer dete waqt first-principles se derive karke explain karein.`,
-            durationEstimateSeconds: 10,
-            keyConcepts: ['Model Answer', 'Governing Equations']
-          },
-          {
-            id: 'turn-3',
-            speaker: 'host1',
-            text: `Question 2: Exam me full marks score karne ke liye diagram ya equations me kya highlight karna chahiye?`,
-            durationEstimateSeconds: 7,
-            keyConcepts: ['Question 2', 'Answer Presentation']
-          },
-          {
-            id: 'turn-4',
-            speaker: 'host2',
-            text: `Answer 2: Always labeled diagrams banayein, key formulas ko box me band karein aur boundary conditions ko clearly mention karein!`,
-            durationEstimateSeconds: 9,
-            keyConcepts: ['Model Answer', 'Diagram Presentation']
-          }
-        ];
-        takeaways = [
-          `Q&A 1: ${topic} ke primary governing equations ko derivation ke sath tayyar karein.`,
-          'Q&A 2: Labeled diagrams aur SI units se step-marking me full score secure karein.'
-        ];
-      } else {
-        title = `❓ Viva & Conceptual Q&A Drill: ${topic}`;
-        turns = [
-          {
-            id: 'turn-1',
-            speaker: 'host1',
-            text: `Question 1: What is the single most critical governing principle behind ${topic}?`,
-            durationEstimateSeconds: 7,
-            keyConcepts: ['Question 1', 'Governing Principle']
-          },
-          {
-            id: 'turn-2',
-            speaker: 'host2',
-            text: `Answer: The core principle of ${topic} relies on conservation and boundary invariance. In written exams, always state the standard mathematical formulation first before providing boundary conditions.`,
-            durationEstimateSeconds: 10,
-            keyConcepts: ['Model Answer', 'Mathematical Formulation']
-          },
-          {
-            id: 'turn-3',
-            speaker: 'host1',
-            text: `Question 2: What common pitfall should students avoid when solving numerical questions on this topic?`,
-            durationEstimateSeconds: 7,
-            keyConcepts: ['Question 2', 'Common Pitfalls']
-          },
-          {
-            id: 'turn-4',
-            speaker: 'host2',
-            text: `Answer: Neglecting standard unit normalization and sign conventions. Always verify dimensions of your final expression before substituting numerical constants.`,
-            durationEstimateSeconds: 9,
-            keyConcepts: ['Model Answer', 'Unit Normalization']
-          }
-        ];
-        takeaways = [
-          `Q1: Master the fundamental governing formulation of ${topic}.`,
-          'Q2: Ensure rigorous dimensional consistency and sign convention adherence.'
-        ];
-      }
-    } else if (mode === 'CONTINUOUS_READER') {
-      if (dto.sourceText && dto.sourceText.trim().length > 10) {
-        const paragraphs = dto.sourceText
-          .split(/\n\s*\n|\n(?=[0-9]+\.|\*|-|Chapter|Section|भाग|अध्याय)/)
-          .map(p => p.trim())
-          .filter(p => p.length > 0);
+    const isHindi = lang === 'hi-IN';
+    const isHinglish = lang === 'hinglish';
 
-        title = `📖 Continuous Notes Reader: ${topic}`;
-        turns = paragraphs.map((p, idx) => ({
+    if (mode === 'CONTINUOUS_READER') {
+      // CONTINUOUS READER MODE: Reads user's article word-for-word exactly as provided
+      if (hasSourceText) {
+        const chunks = this.splitIntoReadingChunks(sourceText);
+        title = `📖 Continuous Article Reader: ${topic}`;
+        turns = chunks.map((chunk, idx) => ({
           id: `turn-${idx + 1}`,
           speaker: 'host1',
-          text: p,
-          durationEstimateSeconds: Math.max(6, Math.round(p.split(' ').length * 0.4)),
-          keyConcepts: [`Section ${idx + 1}`, topic]
+          text: chunk,
+          durationEstimateSeconds: Math.max(6, Math.round(chunk.split(/\s+/).length * 0.45)),
+          keyConcepts: [`Part ${idx + 1}`, topic]
         }));
 
-        takeaways = [
-          `Complete continuous reading of provided notes for ${topic}.`,
-          `${turns.length} structured sections synthesized for uninterrupted audiobook listening.`
-        ];
+        takeaways = chunks.slice(0, 3).map((c, i) => `Section ${i + 1}: ${c.slice(0, 90)}...`);
       } else {
-        if (lang === 'hi-IN') {
-          title = `📖 अविरल व्याख्यान पाठ (Continuous Audio Lecture): ${topic}`;
+        // Fallback if no sourceText provided
+        if (isHindi) {
+          title = `📖 अविरल व्याख्यान पाठ: ${topic}`;
           turns = [
             {
               id: 'turn-1',
               speaker: 'host1',
-              text: `अध्याय एक: ${topic} की व्यापक प्रस्तावना। इस विषय के अंतर्गत हम उन सभी आधारभूत नियमों और समीकरणों का अध्ययन करेंगे जो पाठ्यक्रम और प्रतियोगी परीक्षाओं की दृष्टि से अत्यंत महत्वपूर्ण हैं।`,
+              text: `अध्याय एक: ${topic} की व्यापक प्रस्तावना। इस विषय के अंतर्गत हम उन सभी आधारभूत नियमों और समीकरणों का अध्ययन करेंगे जो परीक्षा की दृष्टि से अत्यंत महत्वपूर्ण हैं।`,
               durationEstimateSeconds: 11,
               keyConcepts: ['अध्याय 1', 'प्रस्तावना']
             },
@@ -616,13 +543,13 @@ export class AiPodcastService {
             `${topic} का सम्पूर्ण अविरल एवं धाराप्रवाह वाचन पाठ।`,
             'बिना किसी रुकावट के लगातार सुनने हेतु अनुकूलित।'
           ];
-        } else if (lang === 'hinglish') {
+        } else if (isHinglish) {
           title = `📖 Continuous Notes Audio Reader: ${topic}`;
           turns = [
             {
               id: 'turn-1',
               speaker: 'host1',
-              text: `Section 1: Overview of ${topic}. Is chapter ke essential conceptual points aur exam definitions ko hum step-by-step continuous narration me cover kar rahe hain.`,
+              text: `Section 1: Overview of ${topic}. Is chapter ke essential conceptual points aur exam definitions ko hum continuous narration me cover kar rahe hain.`,
               durationEstimateSeconds: 10,
               keyConcepts: ['Section 1', 'Introduction']
             },
@@ -676,43 +603,306 @@ export class AiPodcastService {
           ];
         }
       }
-    } else {
-      title = `AI Masterclass Podcast: ${topic}`;
-      turns = [
-        {
-          id: 'turn-1',
-          speaker: 'host1',
-          text: `Welcome students to today's audio breakdown on: ${topic}. Let's break down the essential foundations you need to master this for your exams.`,
-          durationEstimateSeconds: 8,
-          keyConcepts: ['Topic Overview', 'Core Foundations']
-        },
-        {
-          id: 'turn-2',
-          speaker: 'host2',
-          text: `Absolutely, Alex! Questions from ${topic} test your conceptual depth rather than rote memorization. The key is understanding how the primary variables interact.`,
-          durationEstimateSeconds: 9,
-          keyConcepts: ['Exam Weightage', 'Conceptual Depth']
-        },
-        {
-          id: 'turn-3',
-          speaker: 'host1',
-          text: `Precisely. When analyzing ${topic}, start by isolating boundary conditions and identifying constant parameters before executing any derivative or proof.`,
-          durationEstimateSeconds: 8,
-          keyConcepts: ['Boundary Conditions', 'Problem Solving Workflow']
-        },
-        {
-          id: 'turn-4',
-          speaker: 'host2',
-          text: `And for revision speed: create a 1-page formula sheet mapping the direct relationships. That will save you crucial minutes during final test series!`,
-          durationEstimateSeconds: 7,
-          keyConcepts: ['Revision Shortcut', 'Formula Sheet Strategy']
+    } else if (mode === 'QA_INTERVIEW') {
+      // QA INTERVIEW MODE: Generates Questions & Answers from the user's article text
+      if (hasSourceText) {
+        const chunks = this.splitIntoReadingChunks(sourceText);
+        title = isHindi ? `❓ प्रश्नोत्तर (Q&A) अभ्यास सत्र: ${topic}` : `❓ Exam & Viva Q&A Drill: ${topic}`;
+        
+        chunks.forEach((chunk, idx) => {
+          const qNum = idx + 1;
+          const qText = isHindi 
+            ? `प्रश्न ${qNum}: ${topic} के संदर्भ में, निम्नलिखित बिंदु का मुख्य सार क्या है?`
+            : isHinglish
+              ? `Question ${qNum}: ${topic} ke is concept ko examiner kaise test kar sakte hain?`
+              : `Question ${qNum}: Regarding ${topic}, how should we analyze this key point?`;
+          
+          const aText = isHindi
+            ? `उत्तर ${qNum}: ${chunk}`
+            : isHinglish
+              ? `Answer ${qNum}: ${chunk}`
+              : `Answer ${qNum}: ${chunk}`;
+
+          turns.push({
+            id: `turn-q-${qNum}`,
+            speaker: 'host1',
+            text: qText,
+            durationEstimateSeconds: 7,
+            keyConcepts: [`Question ${qNum}`, topic]
+          });
+
+          turns.push({
+            id: `turn-a-${qNum}`,
+            speaker: 'host2',
+            text: aText,
+            durationEstimateSeconds: Math.max(8, Math.round(chunk.split(/\s+/).length * 0.45)),
+            keyConcepts: [`Answer ${qNum}`, `Core Concept`]
+          });
+        });
+
+        takeaways = chunks.slice(0, 3).map((c, i) => `Q&A Keypoint ${i + 1}: ${c.slice(0, 90)}...`);
+      } else {
+        // Fallback templates if no source text
+        if (isHindi) {
+          title = `❓ प्रश्नोत्तर (Q&A) अभ्यास सत्र: ${topic}`;
+          turns = [
+            {
+              id: 'turn-1',
+              speaker: 'host1',
+              text: `प्रश्न 1: ${topic} का सबसे बुनियादी सिद्धांत क्या है और यह परीक्षाओं में क्यों पूछा जाता है?`,
+              durationEstimateSeconds: 7,
+              keyConcepts: ['प्रश्न 1', 'मूल अवधारणा']
+            },
+            {
+              id: 'turn-2',
+              speaker: 'host2',
+              text: `उत्तर: ${topic} का मुख्य आधार इसके क्रियात्मक नियमों पर निर्भर करता है। परीक्षा में सदैव इसके सूत्र और प्राथमिक मान्यताओं को स्पष्ट रूप से लिखें।`,
+              durationEstimateSeconds: 10,
+              keyConcepts: ['आदर्श उत्तर', 'परीक्षा सूत्र']
+            },
+            {
+              id: 'turn-3',
+              speaker: 'host1',
+              text: `प्रश्न 2: इस विषय से संबंधित प्रश्नों को हल करते समय सबसे सामान्य त्रुटि क्या होती है?`,
+              durationEstimateSeconds: 7,
+              keyConcepts: ['प्रश्न 2', 'संख्यात्मक त्रुटियां']
+            },
+            {
+              id: 'turn-4',
+              speaker: 'host2',
+              text: `उत्तर: विद्यार्थी प्रायः मात्रकों (SI Units) का रूपांतरण भूल जाते हैं। अतः गणना प्रारंभ करने से पहले सभी मानों को मानक मात्रकों में बदलें।`,
+              durationEstimateSeconds: 9,
+              keyConcepts: ['आदर्श उत्तर', 'मात्रक सावधानी']
+            }
+          ];
+          takeaways = [
+            `प्रश्न 1: ${topic} के सैद्धांतिक आधार और मान्यताओं को कंठस्थ रखें।`,
+            'प्रश्न 2: संख्यात्मक प्रश्नों में SI मात्रकों और सीमांत शर्तों का विशेष ध्यान रखें।'
+          ];
+        } else if (isHinglish) {
+          title = `❓ Exam & Viva Q&A Drill: ${topic}`;
+          turns = [
+            {
+              id: 'turn-1',
+              speaker: 'host1',
+              text: `Question 1: ${topic} se related sabse high-weightage viva question kya ban sakta hai?`,
+              durationEstimateSeconds: 7,
+              keyConcepts: ['Question 1', 'High Weightage Core']
+            },
+            {
+              id: 'turn-2',
+              speaker: 'host2',
+              text: `Answer 1: Examiner aksar ${topic} ke working principles aur primary governing equations puchte hain. Answer dete waqt first-principles se derive karke explain karein.`,
+              durationEstimateSeconds: 10,
+              keyConcepts: ['Model Answer', 'Governing Equations']
+            },
+            {
+              id: 'turn-3',
+              speaker: 'host1',
+              text: `Question 2: Exam me full marks score karne ke liye diagram ya equations me kya highlight karna chahiye?`,
+              durationEstimateSeconds: 7,
+              keyConcepts: ['Question 2', 'Answer Presentation']
+            },
+            {
+              id: 'turn-4',
+              speaker: 'host2',
+              text: `Answer 2: Always labeled diagrams banayein, key formulas ko box me band karein aur boundary conditions ko clearly mention karein!`,
+              durationEstimateSeconds: 9,
+              keyConcepts: ['Model Answer', 'Diagram Presentation']
+            }
+          ];
+          takeaways = [
+            `Q&A 1: ${topic} ke primary governing equations ko derivation ke sath tayyar karein.`,
+            'Q&A 2: Labeled diagrams aur SI units se step-marking me full score secure karein.'
+          ];
+        } else {
+          title = `❓ Viva & Conceptual Q&A Drill: ${topic}`;
+          turns = [
+            {
+              id: 'turn-1',
+              speaker: 'host1',
+              text: `Question 1: What is the single most critical governing principle behind ${topic}?`,
+              durationEstimateSeconds: 7,
+              keyConcepts: ['Question 1', 'Governing Principle']
+            },
+            {
+              id: 'turn-2',
+              speaker: 'host2',
+              text: `Answer: The core principle of ${topic} relies on conservation and boundary invariance. In written exams, always state the standard mathematical formulation first.`,
+              durationEstimateSeconds: 10,
+              keyConcepts: ['Model Answer', 'Mathematical Formulation']
+            }
+          ];
+          takeaways = [
+            `Q1: Master the fundamental governing formulation of ${topic}.`,
+            'Q2: Ensure rigorous dimensional consistency and sign convention adherence.'
+          ];
         }
-      ];
-      takeaways = [
-        `Master the first-principles foundation of ${topic}.`,
-        'Focus on boundary limits and parameter scaling.',
-        'Pair formula derivation with active spaced repetition recall.'
-      ];
+      }
+    } else {
+      // DEEP DIVE 2-HOST DIALOGUE MODE
+      if (hasSourceText) {
+        const chunks = this.splitIntoReadingChunks(sourceText);
+        title = isHindi ? `AI मास्टरक्लास चर्चा: ${topic}` : isHinglish ? `AI Deep Dive Podcast: ${topic} (Hinglish)` : `AI Masterclass Podcast: ${topic}`;
+        
+        // Host 1 introduction
+        turns.push({
+          id: 'turn-intro',
+          speaker: 'host1',
+          text: isHindi 
+            ? `नमस्कार विद्यार्थियों! आज के इस विशेष सत्र में हम आपके प्रस्तुत नोट्स के आधार पर ${topic} का गहन विश्लेषण करेंगे।`
+            : isHinglish
+              ? `Welcome students! Aaj hum ${topic} ke aapke provided notes ko break down karke ek-ek concept ko discuss karenge.`
+              : `Welcome everyone! Today we are doing a deep dive into ${topic} based on your uploaded lecture material.`,
+          durationEstimateSeconds: 8,
+          keyConcepts: ['Introduction', topic]
+        });
+
+        // Alternate discussion turns using the user's actual article text
+        chunks.forEach((chunk, idx) => {
+          const isHost1 = idx % 2 === 0;
+          const speaker = isHost1 ? 'host1' : 'host2';
+          
+          let prefix = '';
+          if (isHindi) {
+            prefix = isHost1 ? `यहाँ मुख्य बिंदु पर ध्यान दें: ` : `बिल्कुल! और आगे नोट्स में स्पष्ट किया गया है कि: `;
+          } else if (isHinglish) {
+            prefix = isHost1 ? `Is point ko dhyan se dekhein: ` : `Haan bilkul! Aur aage isme mention kiya gaya hai: `;
+          } else {
+            prefix = isHost1 ? `Let's examine this key formulation: ` : `Exactly, and continuing further: `;
+          }
+
+          turns.push({
+            id: `turn-body-${idx + 1}`,
+            speaker,
+            text: `${prefix}${chunk}`,
+            durationEstimateSeconds: Math.max(8, Math.round(chunk.split(/\s+/).length * 0.45)),
+            keyConcepts: [`Concept ${idx + 1}`, topic]
+          });
+        });
+
+        // Concluding turn
+        turns.push({
+          id: 'turn-conclusion',
+          speaker: chunks.length % 2 === 0 ? 'host1' : 'host2',
+          text: isHindi
+            ? `इस प्रकार हमने ${topic} के सभी महत्वपूर्ण खंडों का अध्ययन पूर्ण किया। इन मुख्य सूत्रों का निरंतर अभ्यास करें!`
+            : isHinglish
+              ? `Is tarah humne ${topic} ke sabhi critical sections ko cover kar liya. In points ko daily revise karte rahein!`
+              : `That covers all primary concepts of ${topic}. Keep revising these core takeaways for your upcoming exams!`,
+          durationEstimateSeconds: 8,
+          keyConcepts: ['Summary', 'Exam Advice']
+        });
+
+        takeaways = chunks.slice(0, 3).map((c, i) => `Core Takeaway ${i + 1}: ${c.slice(0, 95)}...`);
+      } else {
+        // Fallback default templates when no text is pasted
+        if (isHinglish) {
+          title = `AI Masterclass Podcast: ${topic} (Hinglish)`;
+          turns = [
+            {
+              id: 'turn-1',
+              speaker: 'host1',
+              text: `Welcome students! Aaj hum ${topic} ke sabse important exam concepts ko break down karenge.`,
+              durationEstimateSeconds: 7,
+              keyConcepts: ['Topic Overview', 'Concept Foundations']
+            },
+            {
+              id: 'turn-2',
+              speaker: 'host2',
+              text: `Haan Alex! Previous year papers dekhein to ${topic} se direct questions aate hain. Iske primary formulas aur exceptions ko yaad rakhna bahut zaroori hai.`,
+              durationEstimateSeconds: 8,
+              keyConcepts: ['Exam Weightage', 'Formula Application']
+            },
+            {
+              id: 'turn-3',
+              speaker: 'host1',
+              text: `Ek golden tip: numerical solve karte waqt always units aur boundary conditions check karein.`,
+              durationEstimateSeconds: 7,
+              keyConcepts: ['Numerical Strategy', 'Boundary Limits']
+            },
+            {
+              id: 'turn-4',
+              speaker: 'host2',
+              text: `Aur daily revision ke liye 1-page quick formula sheet banayein taaki exam day par zero confusion ho!`,
+              durationEstimateSeconds: 7,
+              keyConcepts: ['Revision Technique', 'Spaced Recall']
+            }
+          ];
+          takeaways = [
+            `${topic} ke core first-principles aur standard exceptions ko master karein.`,
+            'Numerical questions me boundary conditions aur SI units verify karein.',
+            'Spaced repetition aur 1-page formula summary se retention 3x badhayein.'
+          ];
+        } else if (isHindi) {
+          title = `AI ऑडियो पॉडकास्ट: ${topic} (हिन्दी)`;
+          turns = [
+            {
+              id: 'turn-1',
+              speaker: 'host1',
+              text: `नमस्कार विद्यार्थियों! आज के इस विशेष सत्र में हम ${topic} के प्रमुख सिद्धांतों का गहन विश्लेषण करेंगे।`,
+              durationEstimateSeconds: 8,
+              keyConcepts: ['विषय परिचय', 'मूल सिद्धांत']
+            },
+            {
+              id: 'turn-2',
+              speaker: 'host2',
+              text: `जी बिल्कुल! प्रतियोगी परीक्षाओं की दृष्टि से ${topic} के मुख्य सूत्र और व्यावहारिक अनुप्रयोग अत्यंत महत्वपूर्ण हैं।`,
+              durationEstimateSeconds: 8,
+              keyConcepts: ['परीक्षा रणनीति', 'सूत्र अनुप्रयोग']
+            },
+            {
+              id: 'turn-3',
+              speaker: 'host1',
+              text: `प्रश्नों को हल करते समय सीमांत शर्तों (Boundary Conditions) का ध्यान रखें और चरणबद्ध गणना करें।`,
+              durationEstimateSeconds: 8,
+              keyConcepts: ['चरणबद्ध समाधान', 'सटीकता']
+            }
+          ];
+          takeaways = [
+            `${topic} के सैद्धांतिक आधार और सूत्रों को समझें।`,
+            'अभ्यास प्रश्नों में इकाइयों और सीमाओं का ध्यान रखें।',
+            'नियमित अंतराल पर मुख्य बिंदुओं का पुनरावलोकन करें।'
+          ];
+        } else {
+          title = `AI Masterclass Podcast: ${topic}`;
+          turns = [
+            {
+              id: 'turn-1',
+              speaker: 'host1',
+              text: `Welcome students to today's audio breakdown on: ${topic}. Let's break down the essential foundations you need to master this for your exams.`,
+              durationEstimateSeconds: 8,
+              keyConcepts: ['Topic Overview', 'Core Foundations']
+            },
+            {
+              id: 'turn-2',
+              speaker: 'host2',
+              text: `Absolutely, Alex! Questions from ${topic} test your conceptual depth rather than rote memorization. The key is understanding how the primary variables interact.`,
+              durationEstimateSeconds: 9,
+              keyConcepts: ['Exam Weightage', 'Conceptual Depth']
+            },
+            {
+              id: 'turn-3',
+              speaker: 'host1',
+              text: `Precisely. When analyzing ${topic}, start by isolating boundary conditions and identifying constant parameters before executing any derivative or proof.`,
+              durationEstimateSeconds: 8,
+              keyConcepts: ['Boundary Conditions', 'Problem Solving Workflow']
+            },
+            {
+              id: 'turn-4',
+              speaker: 'host2',
+              text: `And for revision speed: create a 1-page formula sheet mapping the direct relationships. That will save you crucial minutes during final test series!`,
+              durationEstimateSeconds: 7,
+              keyConcepts: ['Revision Shortcut', 'Formula Sheet Strategy']
+            }
+          ];
+          takeaways = [
+            `Master the first-principles foundation of ${topic}.`,
+            'Focus on boundary limits and parameter scaling.',
+            'Pair formula derivation with active spaced repetition recall.'
+          ];
+        }
+      }
     }
 
     const newPodcast: AiPodcast = {
@@ -721,7 +911,7 @@ export class AiPodcastService {
       topic,
       language: lang,
       mode,
-      sourceType: dto.sourceText ? 'NOTES' : 'SYLLABUS',
+      sourceType: hasSourceText ? 'NOTES' : 'SYLLABUS',
       totalDurationSeconds: turns.reduce((acc, t) => acc + (t.durationEstimateSeconds || 8), 0),
       host1: this.host1,
       host2: this.host2,
