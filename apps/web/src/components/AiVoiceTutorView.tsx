@@ -16,7 +16,8 @@ import {
   Brain,
   MessageSquare,
   Globe,
-  Radio
+  Radio,
+  Send
 } from 'lucide-react';
 
 interface AiVoiceTutorViewProps {
@@ -129,7 +130,6 @@ export const AiVoiceTutorView: React.FC<AiVoiceTutorViewProps> = ({
       }
     } else {
       if (!recognitionRef.current) {
-        // Fallback for browsers without webkitSpeechRecognition
         const mockPrompt = prompt('Speech recognition not supported in this browser. Enter your spoken question:');
         if (mockPrompt) {
           handleSubmitSpokenQuery(mockPrompt);
@@ -233,27 +233,67 @@ export const AiVoiceTutorView: React.FC<AiVoiceTutorViewProps> = ({
   };
 
   return (
-    <div className="space-y-6 animate-fadeIn pb-16">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', maxWidth: '1280px', margin: '0 auto', width: '100%', paddingBottom: '40px' }}>
       {/* Top Banner */}
-      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-r from-slate-900 via-purple-950 to-slate-900 border border-slate-800 p-8 shadow-2xl">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-3 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/10 text-purple-400 border border-purple-500/30">
-              <Radio className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
-              Phase 31 • AI Voice Tutor & Hands-Free Oral Drills
+      <div 
+        className="glass-panel"
+        style={{
+          padding: '28px 32px',
+          background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.18) 0%, rgba(99, 102, 241, 0.18) 50%, rgba(15, 23, 42, 0.95) 100%)',
+          position: 'relative',
+          overflow: 'hidden',
+          border: '1px solid rgba(168, 85, 247, 0.35)',
+          borderRadius: '24px',
+          boxShadow: '0 0 35px rgba(168, 85, 247, 0.15)'
+        }}
+      >
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
+            <div 
+              style={{
+                width: '54px',
+                height: '54px',
+                borderRadius: '16px',
+                background: 'linear-gradient(135deg, #a855f7 0%, #6366f1 50%, #ec4899 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 8px 24px rgba(168, 85, 247, 0.35)',
+                flexShrink: 0
+              }}
+            >
+              <Radio size={28} color="#ffffff" />
             </div>
-            <h1 className="text-3xl md:text-4xl font-black text-white tracking-tight">
-              Speak & Learn in Real-Time 🎙️
-            </h1>
-            <p className="text-sm md:text-base text-slate-300 leading-relaxed">
-              Have hands-free conversations with your AI Mentor. Speak doubts naturally in Hindi or English,
-              listen to spoken explanations, and practice verbal flashcard drills.
-            </p>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '6px' }}>
+                <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em', margin: 0 }}>
+                  Speak &amp; Learn in Real-Time 🎙️
+                </h1>
+                <span 
+                  style={{
+                    backgroundColor: 'rgba(168, 85, 247, 0.2)',
+                    color: '#e9d5ff',
+                    border: '1px solid rgba(168, 85, 247, 0.4)',
+                    padding: '3px 10px',
+                    borderRadius: '9999px',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px'
+                  }}
+                >
+                  <Sparkles size={12} color="#c084fc" /> Phase 31 &bull; AI Voice Tutor Engine
+                </span>
+              </div>
+              <p style={{ fontSize: '0.9rem', color: '#94a3b8', margin: 0, lineHeight: 1.5 }}>
+                Have hands-free conversations with your AI Mentor. Speak doubts naturally in Hindi or English, listen to spoken explanations, and practice verbal flashcard drills.
+              </p>
+            </div>
           </div>
 
-          {/* Controls Bar */}
-          <div className="flex flex-wrap items-center gap-3">
+          {/* Voice Output Toggle */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <button
               onClick={() => {
                 if (isSpeaking) {
@@ -262,46 +302,76 @@ export const AiVoiceTutorView: React.FC<AiVoiceTutorViewProps> = ({
                 }
                 setTtsEnabled(!ttsEnabled);
               }}
-              className={`px-3.5 py-2.5 rounded-2xl border text-xs font-semibold flex items-center gap-2 transition ${
-                ttsEnabled
-                  ? 'bg-purple-500/10 text-purple-300 border-purple-500/30'
-                  : 'bg-slate-800 text-slate-400 border-slate-700'
-              }`}
+              className="glow-hover"
+              style={{
+                padding: '10px 18px',
+                borderRadius: '12px',
+                border: ttsEnabled ? '1px solid rgba(168, 85, 247, 0.4)' : '1px solid rgba(255, 255, 255, 0.1)',
+                backgroundColor: ttsEnabled ? 'rgba(168, 85, 247, 0.15)' : 'rgba(15, 23, 42, 0.8)',
+                color: ttsEnabled ? '#d8b4fe' : '#94a3b8',
+                fontSize: '0.85rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
             >
-              {ttsEnabled ? <Volume2 className="w-4 h-4 text-purple-400" /> : <VolumeX className="w-4 h-4" />}
+              {ttsEnabled ? <Volume2 size={16} color="#c084fc" /> : <VolumeX size={16} />}
               {ttsEnabled ? 'Voice Output ON' : 'Muted'}
             </button>
           </div>
         </div>
 
         {/* Persona & Language Bar */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-slate-800/80">
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-400 font-medium">Tutor Persona:</span>
-            <div className="flex gap-2">
-              {(['Socratic Tutor', 'Rapid Exam Driller', 'Calm Explainer'] as const).map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setPersona(p)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
-                    persona === p
-                      ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30'
-                      : 'bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800'
-                  }`}
-                >
-                  {p}
-                </button>
-              ))}
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '16px', marginTop: '20px', paddingTop: '16px', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+            <span style={{ fontSize: '0.78rem', color: '#94a3b8', fontWeight: 600 }}>Tutor Persona:</span>
+            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+              {(['Socratic Tutor', 'Rapid Exam Driller', 'Calm Explainer'] as const).map((p) => {
+                const isActive = persona === p;
+                return (
+                  <button
+                    key={p}
+                    onClick={() => setPersona(p)}
+                    className="glow-hover"
+                    style={{
+                      padding: '6px 14px',
+                      borderRadius: '10px',
+                      border: isActive ? '1px solid #a855f7' : '1px solid rgba(255, 255, 255, 0.08)',
+                      backgroundColor: isActive ? 'linear-gradient(135deg, #a855f7, #6366f1)' : 'rgba(2, 6, 23, 0.7)',
+                      background: isActive ? 'linear-gradient(135deg, #a855f7, #6366f1)' : 'rgba(2, 6, 23, 0.7)',
+                      color: isActive ? '#ffffff' : '#cbd5e1',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      boxShadow: isActive ? '0 4px 12px rgba(168, 85, 247, 0.3)' : 'none'
+                    }}
+                  >
+                    {p}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          <div className="flex items-center gap-2 justify-start md:justify-end">
-            <Globe className="w-4 h-4 text-cyan-400" />
-            <span className="text-xs text-slate-400 font-medium">Language Mode:</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Globe size={16} color="#38bdf8" />
+            <span style={{ fontSize: '0.78rem', color: '#94a3b8', fontWeight: 600 }}>Language:</span>
             <select
               value={languageMode}
               onChange={(e) => setLanguageMode(e.target.value as VoiceLanguageMode)}
-              className="bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-purple-500"
+              style={{
+                backgroundColor: 'rgba(2, 6, 23, 0.85)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                borderRadius: '10px',
+                padding: '6px 12px',
+                fontSize: '0.78rem',
+                color: '#f8fafc',
+                fontWeight: 600,
+                outline: 'none',
+                cursor: 'pointer'
+              }}
             >
               <option value="bilingual">🇮🇳 Hinglish (Bilingual)</option>
               <option value="en-US">🇺🇸 English (US)</option>
@@ -312,45 +382,85 @@ export const AiVoiceTutorView: React.FC<AiVoiceTutorViewProps> = ({
       </div>
 
       {/* Main Grid: Visualizer Stage & Live Conversation Transcript */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(320px, 380px) 1fr', gap: '24px', alignItems: 'start' }}>
+        
         {/* Left Column: Glowing Voice Orb & Oral Flashcard Deck */}
-        <div className="lg:col-span-1 space-y-6">
-          {/* Animated 3D Visualizer Orb */}
-          <div className="bg-gradient-to-br from-slate-900 via-purple-950/40 to-slate-900 border border-purple-500/30 rounded-3xl p-8 shadow-2xl flex flex-col items-center justify-center text-center relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-48 h-48 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
-
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          
+          {/* Animated 3D Visualizer Orb Card */}
+          <div 
+            className="glass-panel"
+            style={{
+              padding: '28px 24px',
+              borderRadius: '24px',
+              border: '1px solid rgba(168, 85, 247, 0.3)',
+              backgroundColor: 'rgba(15, 23, 42, 0.9)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              textAlign: 'center',
+              position: 'relative',
+              overflow: 'hidden',
+              boxShadow: '0 12px 35px rgba(0, 0, 0, 0.4)'
+            }}
+          >
             {/* Glowing Orb Animation */}
-            <div className="relative my-6 flex items-center justify-center">
+            <div style={{ position: 'relative', margin: '20px 0 24px 0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <div
-                className={`w-32 h-32 rounded-full flex items-center justify-center transition-all duration-500 ${
-                  isListening
-                    ? 'bg-gradient-to-tr from-rose-500 via-purple-600 to-pink-500 animate-pulse shadow-2xl shadow-rose-500/50 scale-110'
+                style={{
+                  width: '120px',
+                  height: '120px',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.4s ease',
+                  background: isListening
+                    ? 'linear-gradient(135deg, #f43f5e, #ec4899, #a855f7)'
                     : isSpeaking
-                    ? 'bg-gradient-to-tr from-cyan-400 via-purple-600 to-indigo-500 animate-bounce shadow-2xl shadow-cyan-500/50 scale-105'
-                    : 'bg-gradient-to-tr from-purple-600 to-indigo-700 shadow-xl shadow-purple-600/30'
-                }`}
+                    ? 'linear-gradient(135deg, #38bdf8, #6366f1, #a855f7)'
+                    : 'linear-gradient(135deg, #a855f7, #6366f1)',
+                  boxShadow: isListening
+                    ? '0 0 45px rgba(244, 63, 94, 0.55)'
+                    : isSpeaking
+                    ? '0 0 45px rgba(56, 189, 248, 0.55)'
+                    : '0 0 25px rgba(168, 85, 247, 0.35)',
+                  transform: isListening ? 'scale(1.08)' : isSpeaking ? 'scale(1.05)' : 'scale(1)'
+                }}
               >
-                <div className="w-24 h-24 rounded-full bg-slate-950/80 backdrop-blur-md flex items-center justify-center text-white">
+                <div 
+                  style={{
+                    width: '92px',
+                    height: '92px',
+                    borderRadius: '50%',
+                    backgroundColor: 'rgba(2, 6, 23, 0.9)',
+                    backdropFilter: 'blur(10px)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#ffffff'
+                  }}
+                >
                   {isListening ? (
-                    <Mic className="w-10 h-10 text-rose-400 animate-pulse" />
+                    <Mic size={38} color="#f43f5e" className="animate-pulse" />
                   ) : isSpeaking ? (
-                    <Volume2 className="w-10 h-10 text-cyan-400 animate-pulse" />
+                    <Volume2 size={38} color="#38bdf8" className="animate-pulse" />
                   ) : (
-                    <Brain className="w-10 h-10 text-purple-400" />
+                    <Brain size={38} color="#c084fc" />
                   )}
                 </div>
               </div>
             </div>
 
             {/* Status Label */}
-            <div className="text-sm font-bold text-white mb-1">
+            <div style={{ fontSize: '1rem', fontWeight: 800, color: '#ffffff', marginBottom: '4px' }}>
               {isListening
                 ? '🎙️ Listening to you...'
                 : isSpeaking
                 ? '🔊 Speaking explanation...'
                 : 'Ready to Converse'}
             </div>
-            <p className="text-xs text-slate-400 mb-6 max-w-xs">
+            <p style={{ fontSize: '0.78rem', color: '#94a3b8', margin: '0 0 20px 0', maxWidth: '280px', lineHeight: 1.4 }}>
               {isListening
                 ? 'Speak clearly into your microphone now'
                 : 'Tap microphone button or select an oral drill below'}
@@ -359,98 +469,183 @@ export const AiVoiceTutorView: React.FC<AiVoiceTutorViewProps> = ({
             {/* Primary Action Button */}
             <button
               onClick={toggleListening}
-              className={`w-full py-3.5 rounded-2xl font-bold text-sm shadow-xl flex items-center justify-center gap-2 transition transform active:scale-95 ${
-                isListening
-                  ? 'bg-rose-600 hover:bg-rose-500 text-white shadow-rose-600/30'
-                  : 'bg-purple-600 hover:bg-purple-500 text-white shadow-purple-600/30'
-              }`}
+              className="glow-hover"
+              style={{
+                width: '100%',
+                padding: '14px 20px',
+                borderRadius: '16px',
+                border: 'none',
+                background: isListening
+                  ? 'linear-gradient(135deg, #e11d48 0%, #be123c 100%)'
+                  : 'linear-gradient(135deg, #a855f7 0%, #6366f1 100%)',
+                color: '#ffffff',
+                fontSize: '0.9rem',
+                fontWeight: 800,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                boxShadow: isListening ? '0 8px 24px rgba(225, 29, 72, 0.4)' : '0 8px 24px rgba(168, 85, 247, 0.35)',
+                transition: 'all 0.2s ease'
+              }}
             >
-              {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+              {isListening ? <MicOff size={18} /> : <Mic size={18} />}
               {isListening ? 'Done Speaking (Submit)' : 'Start Speaking'}
             </button>
           </div>
 
           {/* Quick Oral Flashcards Selector */}
-          <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-5 shadow-xl space-y-3">
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <Zap className="w-4 h-4 text-amber-400" />
+          <div 
+            className="glass-panel"
+            style={{
+              padding: '20px',
+              borderRadius: '20px',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              backgroundColor: 'rgba(15, 23, 42, 0.85)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '14px'
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '10px' }}>
+              <h3 style={{ fontSize: '0.85rem', fontWeight: 800, color: '#f8fafc', display: 'flex', alignItems: 'center', gap: '8px', margin: 0, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                <Zap size={16} color="#fbbf24" />
                 Hands-Free Active Recall Drills
               </h3>
-              <span className="text-[11px] text-amber-400 font-bold">+35 XP / Drill</span>
+              <span style={{ fontSize: '0.72rem', color: '#fbbf24', fontWeight: 800 }}>+35 XP / Drill</span>
             </div>
 
-            <div className="space-y-2">
-              {drillsList.map((drill) => (
-                <div
-                  key={drill.id}
-                  onClick={() => handleStartDrill(drill)}
-                  className={`p-3 rounded-2xl border transition cursor-pointer ${
-                    activeDrill?.id === drill.id
-                      ? 'bg-purple-950/40 border-purple-500/50 shadow-md'
-                      : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
-                  }`}
-                >
-                  <div className="flex items-center justify-between text-xs mb-1">
-                    <span className="font-semibold text-purple-300">{drill.subject}</span>
-                    <span className="text-[10px] text-slate-400">{drill.topic}</span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {drillsList.map((drill) => {
+                const isActive = activeDrill?.id === drill.id;
+                return (
+                  <div
+                    key={drill.id}
+                    onClick={() => handleStartDrill(drill)}
+                    className="glow-hover"
+                    style={{
+                      padding: '12px 14px',
+                      borderRadius: '14px',
+                      border: isActive ? '1px solid rgba(168, 85, 247, 0.6)' : '1px solid rgba(255, 255, 255, 0.08)',
+                      backgroundColor: isActive ? 'rgba(168, 85, 247, 0.18)' : 'rgba(2, 6, 23, 0.6)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '6px',
+                      cursor: 'pointer',
+                      transition: 'all 0.15s ease',
+                      boxShadow: isActive ? '0 4px 14px rgba(168, 85, 247, 0.2)' : 'none'
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.72rem' }}>
+                      <span style={{ fontWeight: 800, color: '#c084fc' }}>{drill.subject}</span>
+                      <span style={{ color: '#94a3b8' }}>{drill.topic}</span>
+                    </div>
+                    <p style={{ fontSize: '0.8rem', color: '#e2e8f0', fontWeight: 600, margin: 0, lineHeight: 1.4 }}>
+                      {drill.question}
+                    </p>
                   </div>
-                  <p className="text-xs text-slate-200 font-medium line-clamp-2">{drill.question}</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </div>
 
         {/* Right Column: Live Spoken Transcript Stream */}
-        <div className="lg:col-span-2 bg-slate-900/90 border border-slate-800 rounded-3xl p-6 shadow-xl flex flex-col h-[640px]">
-          <div className="pb-4 border-b border-slate-800 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <MessageSquare className="w-4 h-4 text-purple-400" />
-              <h3 className="text-base font-bold text-white">Live Voice Transcript & Reasoning</h3>
+        <div 
+          className="glass-panel"
+          style={{
+            padding: '24px',
+            borderRadius: '24px',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            backgroundColor: 'rgba(15, 23, 42, 0.92)',
+            display: 'flex',
+            flexDirection: 'column',
+            height: '660px',
+            boxShadow: '0 12px 40px rgba(0, 0, 0, 0.3)'
+          }}
+        >
+          {/* Header */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '14px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <MessageSquare size={18} color="#c084fc" />
+              <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#ffffff', margin: 0 }}>
+                Live Voice Transcript &amp; Reasoning
+              </h3>
             </div>
             <button
               onClick={() => setMessages(INITIAL_MESSAGES)}
-              className="text-xs text-slate-400 hover:text-white flex items-center gap-1 transition"
+              style={{
+                background: 'none',
+                border: 'none',
+                color: '#94a3b8',
+                fontSize: '0.75rem',
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
             >
-              <RotateCcw className="w-3.5 h-3.5" /> Clear
+              <RotateCcw size={13} /> Clear
             </button>
           </div>
 
           {/* Transcript Feed */}
-          <div ref={chatScrollRef} className="flex-1 overflow-y-auto py-4 space-y-4 pr-2 text-xs">
+          <div ref={chatScrollRef} style={{ flex: 1, overflowY: 'auto', padding: '16px 4px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex gap-3.5 ${
-                  msg.role === 'user' ? 'justify-end' : 'justify-start'
-                }`}
+                style={{
+                  display: 'flex',
+                  gap: '12px',
+                  justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start'
+                }}
               >
                 {msg.role === 'assistant' && (
-                  <div className="w-8 h-8 rounded-xl bg-purple-600/30 border border-purple-500/40 flex items-center justify-center shrink-0 text-purple-300">
-                    <Brain className="w-4 h-4" />
+                  <div 
+                    style={{
+                      width: '34px',
+                      height: '34px',
+                      borderRadius: '10px',
+                      backgroundColor: 'rgba(168, 85, 247, 0.2)',
+                      border: '1px solid rgba(168, 85, 247, 0.4)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#c084fc',
+                      flexShrink: 0
+                    }}
+                  >
+                    <Brain size={18} />
                   </div>
                 )}
 
                 <div
-                  className={`max-w-xl p-4 rounded-2xl shadow-md ${
-                    msg.role === 'user'
-                      ? 'bg-purple-600 text-white rounded-br-none'
-                      : 'bg-slate-950/80 border border-slate-800 text-slate-200 rounded-bl-none'
-                  }`}
+                  style={{
+                    maxWidth: '80%',
+                    padding: '16px',
+                    borderRadius: '16px',
+                    backgroundColor: msg.role === 'user' ? '#7c3aed' : 'rgba(2, 6, 23, 0.85)',
+                    border: msg.role === 'user' ? 'none' : '1px solid rgba(255, 255, 255, 0.08)',
+                    color: msg.role === 'user' ? '#ffffff' : '#f1f5f9',
+                    borderBottomRightRadius: msg.role === 'user' ? '4px' : '16px',
+                    borderBottomLeftRadius: msg.role === 'assistant' ? '4px' : '16px',
+                    boxShadow: '0 4px 14px rgba(0, 0, 0, 0.2)'
+                  }}
                 >
-                  <div className="flex items-center justify-between gap-3 mb-1.5 text-[10px] text-slate-400">
-                    <span className="font-bold text-purple-300 uppercase tracking-wider">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', marginBottom: '6px', fontSize: '0.7rem', color: msg.role === 'user' ? '#e9d5ff' : '#94a3b8' }}>
+                    <span style={{ fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.04em', color: msg.role === 'user' ? '#ffffff' : '#c084fc' }}>
                       {msg.role === 'user' ? 'You (Spoken)' : `AI Tutor (${persona})`}
                     </span>
                     <span>{msg.timestamp}</span>
                   </div>
 
-                  <p className="leading-relaxed text-sm">{msg.text}</p>
+                  <p style={{ margin: 0, fontSize: '0.88rem', lineHeight: 1.55 }}>{msg.text}</p>
 
                   {/* LaTeX Derivation Box if present */}
                   {msg.latexSnippet && (
-                    <div className="mt-3 p-3 rounded-xl bg-slate-900 border border-purple-500/30 font-mono text-xs text-purple-300">
+                    <div style={{ marginTop: '10px', padding: '10px 12px', borderRadius: '10px', backgroundColor: 'rgba(15, 23, 42, 0.9)', border: '1px solid rgba(168, 85, 247, 0.3)', fontFamily: 'monospace', fontSize: '0.78rem', color: '#d8b4fe' }}>
                       <strong>LaTeX Expression: </strong>
                       <code>{msg.latexSnippet}</code>
                     </div>
@@ -458,8 +653,8 @@ export const AiVoiceTutorView: React.FC<AiVoiceTutorViewProps> = ({
 
                   {/* Follow-up / Action prompt */}
                   {msg.followUpSuggestion && (
-                    <div className="mt-2.5 pt-2 border-t border-slate-800/80 text-[11px] text-purple-300 flex items-center gap-1.5 font-medium">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    <div style={{ marginTop: '10px', paddingTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.1)', fontSize: '0.75rem', color: '#fbbf24', display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}>
+                      <Sparkles size={13} />
                       {msg.followUpSuggestion}
                     </div>
                   )}
@@ -468,9 +663,21 @@ export const AiVoiceTutorView: React.FC<AiVoiceTutorViewProps> = ({
                   {msg.role === 'assistant' && (
                     <button
                       onClick={() => speakText(msg.text)}
-                      className="mt-3 text-[11px] text-slate-400 hover:text-white flex items-center gap-1.5 font-medium transition"
+                      style={{
+                        marginTop: '10px',
+                        background: 'none',
+                        border: 'none',
+                        color: '#38bdf8',
+                        fontSize: '0.75rem',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '5px',
+                        padding: 0
+                      }}
                     >
-                      <Volume2 className="w-3.5 h-3.5 text-cyan-400" /> Re-listen to Voice
+                      <Volume2 size={13} /> Re-listen to Voice
                     </button>
                   )}
                 </div>
@@ -479,17 +686,17 @@ export const AiVoiceTutorView: React.FC<AiVoiceTutorViewProps> = ({
 
             {/* Live Buffer while user is speaking */}
             {isListening && transcriptBuffer && (
-              <div className="flex justify-end animate-pulse">
-                <div className="max-w-md p-4 rounded-2xl bg-purple-950/50 border border-purple-500/40 text-purple-200">
-                  <span className="text-[10px] uppercase font-bold text-purple-400 block mb-1">Transcribing Live...</span>
-                  <p className="text-sm italic">"{transcriptBuffer}"</p>
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <div style={{ maxWidth: '75%', padding: '14px', borderRadius: '14px', backgroundColor: 'rgba(168, 85, 247, 0.2)', border: '1px solid rgba(168, 85, 247, 0.4)', color: '#e9d5ff' }}>
+                  <span style={{ fontSize: '0.68rem', textTransform: 'uppercase', fontWeight: 800, color: '#c084fc', display: 'block', marginBottom: '4px' }}>Transcribing Live...</span>
+                  <p style={{ margin: 0, fontSize: '0.85rem', fontStyle: 'italic' }}>&ldquo;{transcriptBuffer}&rdquo;</p>
                 </div>
               </div>
             )}
 
             {isEvaluating && (
-              <div className="p-3 rounded-xl bg-indigo-950/40 border border-indigo-500/30 text-xs text-indigo-300 flex items-center gap-2">
-                <Brain className="w-4 h-4 animate-spin text-purple-400" />
+              <div style={{ padding: '12px 16px', borderRadius: '12px', backgroundColor: 'rgba(99, 102, 241, 0.2)', border: '1px solid rgba(99, 102, 241, 0.4)', color: '#c7d2fe', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Brain size={16} className="animate-spin" color="#a855f7" />
                 <span>Evaluating your verbal explanation and key concepts...</span>
               </div>
             )}
@@ -503,20 +710,42 @@ export const AiVoiceTutorView: React.FC<AiVoiceTutorViewProps> = ({
                 handleSubmitSpokenQuery(transcriptBuffer.trim());
               }
             }}
-            className="pt-3 border-t border-slate-800 flex gap-2"
+            style={{ paddingTop: '14px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', display: 'flex', gap: '10px' }}
           >
             <input
               type="text"
               value={transcriptBuffer}
               onChange={(e) => setTranscriptBuffer(e.target.value)}
               placeholder="Or type your question / oral answer here..."
-              className="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500"
+              style={{
+                flex: 1,
+                backgroundColor: 'rgba(2, 6, 23, 0.9)',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                borderRadius: '12px',
+                padding: '10px 16px',
+                color: '#f8fafc',
+                fontSize: '0.85rem',
+                outline: 'none'
+              }}
             />
             <button
               type="submit"
-              className="px-4 py-2.5 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-xl transition"
+              className="glow-hover"
+              style={{
+                padding: '10px 20px',
+                borderRadius: '12px',
+                border: 'none',
+                background: 'linear-gradient(135deg, #a855f7 0%, #6366f1 100%)',
+                color: '#ffffff',
+                fontSize: '0.85rem',
+                fontWeight: 800,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
             >
-              Send
+              <Send size={15} /> Send
             </button>
           </form>
         </div>
