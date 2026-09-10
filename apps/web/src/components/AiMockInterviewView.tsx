@@ -30,6 +30,8 @@ export const AiMockInterviewView: React.FC<AiMockInterviewViewProps> = ({ onAddX
   const [spokenAnswer, setSpokenAnswer] = useState<string>('');
   const [isListening, setIsListening] = useState<boolean>(false);
   const [speechRecognition, setSpeechRecognition] = useState<any>(null);
+  const [micLanguage, setMicLanguage] = useState<'en-IN' | 'hi-IN' | 'en-US'>('en-IN');
+  const [micStatusMsg, setMicStatusMsg] = useState<string>('');
 
   const handleStartInterview = async () => {
     try {
@@ -48,6 +50,7 @@ export const AiMockInterviewView: React.FC<AiMockInterviewViewProps> = ({ onAddX
       if (data.success && data.data) {
         setSession(data.data);
         setSpokenAnswer('');
+        setMicStatusMsg('');
       }
     } catch (err) {
       console.error('Failed to start interview', err);
@@ -58,35 +61,72 @@ export const AiMockInterviewView: React.FC<AiMockInterviewViewProps> = ({ onAddX
 
   const handleToggleListening = () => {
     if (isListening) {
-      speechRecognition?.stop();
+      try {
+        speechRecognition?.stop();
+      } catch {}
       setIsListening(false);
+      setMicStatusMsg('Microphone paused.');
     } else {
       const SpeechRec = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       if (!SpeechRec) {
-        alert('Web Speech API is not supported in this browser. You can type your answer directly in the box!');
+        alert('Web Speech Recognition is not supported in this browser. Please use Chrome/Edge or type your answer directly!');
         return;
       }
 
-      const recognition = new SpeechRec();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.lang = 'en-US';
+      try {
+        const recognition = new SpeechRec();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = micLanguage;
 
-      recognition.onresult = (event: any) => {
-        let transcript = '';
-        for (let i = 0; i < event.results.length; i++) {
-          transcript += event.results[i][0].transcript;
-        }
-        setSpokenAnswer(transcript);
-      };
+        recognition.onstart = () => {
+          setIsListening(true);
+          setMicStatusMsg('🎤 Listening live... speak clearly into your mic.');
+        };
 
-      recognition.onerror = () => setIsListening(false);
-      recognition.onend = () => setIsListening(false);
+        recognition.onresult = (event: any) => {
+          let fullTranscript = '';
+          for (let i = 0; i < event.results.length; i++) {
+            fullTranscript += event.results[i][0].transcript + ' ';
+          }
+          if (fullTranscript.trim()) {
+            setSpokenAnswer(fullTranscript.trim());
+          }
+        };
 
-      recognition.start();
-      setSpeechRecognition(recognition);
-      setIsListening(true);
+        recognition.onerror = (e: any) => {
+          console.warn('Speech recognition warning/error:', e.error);
+          if (e.error === 'not-allowed') {
+            setMicStatusMsg('⚠️ Microphone permission was blocked. Please enable mic access in your browser address bar, or type below.');
+          } else if (e.error === 'no-speech') {
+            setMicStatusMsg('⚠️ No speech detected yet. Keep speaking or type below.');
+          } else {
+            setMicStatusMsg(`Speech note: ${e.error || 'Check mic connection'}`);
+          }
+          setIsListening(false);
+        };
+
+        recognition.onend = () => {
+          setIsListening(false);
+        };
+
+        recognition.start();
+        setSpeechRecognition(recognition);
+      } catch (err: any) {
+        console.error('Recognition start error:', err);
+        setMicStatusMsg('Could not access microphone. Please type your response directly.');
+        setIsListening(false);
+      }
     }
+  };
+
+  const handleFillSampleAnswer = () => {
+    const currentQ = session?.questions[session.currentQuestionIndex];
+    const sample = currentQ?.expectedPoints?.length
+      ? `In my previous project, regarding ${currentQ.questionText.slice(0, 45)}... I took the initiative to design a scalable solution incorporating ${currentQ.expectedPoints.slice(0, 2).join(' and ')}. As a result, we improved reliability and achieved high operational performance.`
+      : `Situation: During our production deployment, we needed to optimize latency. Task: I was responsible for refactoring the bottleneck service. Action: I implemented caching, asynchronous workers, and thorough integration tests. Result: We reduced response time from 420ms to 85ms and scaled to 50,000 active users.`;
+    setSpokenAnswer(sample);
+    setMicStatusMsg('✨ Sample response inserted! Click "Submit Response" to evaluate.');
   };
 
   const handleSubmitAnswer = async () => {
@@ -426,32 +466,90 @@ export const AiMockInterviewView: React.FC<AiMockInterviewViewProps> = ({ onAddX
 
                 {/* Speech Recording / Text Response Area */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ fontSize: '0.8rem', color: '#cbd5e1', fontWeight: 700 }}>
-                      Your Oral Response (STAR Format):
-                    </span>
-                    <button
-                      onClick={handleToggleListening}
-                      style={{
-                        padding: '8px 16px',
-                        borderRadius: '12px',
-                        fontWeight: 800,
-                        fontSize: '0.78rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s',
-                        border: isListening ? 'none' : '1px solid rgba(255, 255, 255, 0.12)',
-                        backgroundColor: isListening ? '#e11d48' : 'rgba(255, 255, 255, 0.08)',
-                        color: '#ffffff',
-                        boxShadow: isListening ? '0 0 16px rgba(225, 29, 72, 0.6)' : 'none'
-                      }}
-                    >
-                      {isListening ? <Mic size={15} /> : <MicOff size={15} />}
-                      {isListening ? 'Listening (Speak Now)...' : 'Enable Microphone'}
-                    </button>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ fontSize: '0.8rem', color: '#cbd5e1', fontWeight: 700 }}>
+                        Your Oral Response (STAR Format):
+                      </span>
+                      {/* Language Accent Selector */}
+                      <select
+                        value={micLanguage}
+                        onChange={(e) => setMicLanguage(e.target.value as any)}
+                        style={{
+                          backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                          border: '1px solid rgba(255, 255, 255, 0.15)',
+                          borderRadius: '8px',
+                          color: '#94a3b8',
+                          fontSize: '0.72rem',
+                          padding: '3px 6px',
+                          outline: 'none',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        <option value="en-IN">🇮🇳 English (India)</option>
+                        <option value="hi-IN">🇮🇳 Hindi</option>
+                        <option value="en-US">🇺🇸 English (US)</option>
+                      </select>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <button
+                        type="button"
+                        onClick={handleFillSampleAnswer}
+                        style={{
+                          padding: '8px 12px',
+                          borderRadius: '12px',
+                          fontWeight: 700,
+                          fontSize: '0.75rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '5px',
+                          cursor: 'pointer',
+                          border: '1px solid rgba(245, 158, 11, 0.3)',
+                          backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                          color: '#fef08a'
+                        }}
+                      >
+                        <Sparkles size={14} color="#facc15" /> Fill Sample Answer
+                      </button>
+
+                      <button
+                        onClick={handleToggleListening}
+                        style={{
+                          padding: '8px 16px',
+                          borderRadius: '12px',
+                          fontWeight: 800,
+                          fontSize: '0.78rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          border: isListening ? 'none' : '1px solid rgba(255, 255, 255, 0.12)',
+                          backgroundColor: isListening ? '#e11d48' : 'rgba(255, 255, 255, 0.08)',
+                          color: '#ffffff',
+                          boxShadow: isListening ? '0 0 16px rgba(225, 29, 72, 0.6)' : 'none'
+                        }}
+                      >
+                        {isListening ? <Mic size={15} /> : <MicOff size={15} />}
+                        {isListening ? 'Listening (Speak Now)...' : 'Enable Microphone'}
+                      </button>
+                    </div>
                   </div>
+
+                  {micStatusMsg && (
+                    <div style={{
+                      padding: '8px 12px',
+                      borderRadius: '10px',
+                      backgroundColor: isListening ? 'rgba(225, 29, 72, 0.12)' : 'rgba(245, 158, 11, 0.12)',
+                      border: isListening ? '1px solid rgba(225, 29, 72, 0.3)' : '1px solid rgba(245, 158, 11, 0.3)',
+                      color: isListening ? '#fda4af' : '#fef08a',
+                      fontSize: '0.78rem',
+                      fontWeight: 600
+                    }}>
+                      {micStatusMsg}
+                    </div>
+                  )}
 
                   <textarea
                     rows={6}
