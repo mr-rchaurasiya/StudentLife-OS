@@ -2,72 +2,34 @@ import { Request, Response } from 'express';
 import { voiceTutorService } from '../services/voice-tutor.service';
 
 export class VoiceTutorController {
-  public respondToVoice = async (req: Request, res: Response) => {
+  public async getSession(req: Request, res: Response): Promise<void> {
     try {
-      const { transcript, persona, languageMode, currentSubject } = req.body;
-      if (!transcript) {
-        return res.status(400).json({
-          success: false,
-          message: 'Transcript is required'
-        });
+      const sessionId = (req.query.sessionId as string) || 'sess-voice-demo';
+      const session = voiceTutorService.getSession(sessionId);
+      res.json({ success: true, data: session });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  }
+
+  public async askVoice(req: Request, res: Response): Promise<void> {
+    try {
+      const { sessionId, studentSpokenText, language, subjectDomain } = req.body;
+      if (!studentSpokenText) {
+        res.status(400).json({ success: false, message: 'studentSpokenText is required' });
+        return;
       }
-
-      const response = await voiceTutorService.respondToVoice({
-        transcript,
-        persona,
-        languageMode,
-        currentSubject
+      const session = voiceTutorService.askVoiceTutor({
+        sessionId: sessionId || 'sess-voice-demo',
+        studentSpokenText,
+        language: language || 'HINGLISH',
+        subjectDomain: subjectDomain || 'Physics & Mathematics'
       });
-
-      return res.status(200).json({
-        success: true,
-        data: response
-      });
+      res.json({ success: true, data: session });
     } catch (error: any) {
-      return res.status(500).json({
-        success: false,
-        message: 'Voice reasoning failed',
-        error: error.message
-      });
+      res.status(500).json({ success: false, message: error.message });
     }
-  };
-
-  public getDrills = (req: Request, res: Response) => {
-    try {
-      const drills = voiceTutorService.getOralDrills();
-      return res.status(200).json({
-        success: true,
-        data: drills
-      });
-    } catch (error: any) {
-      return res.status(500).json({
-        success: false,
-        message: 'Failed to fetch oral drills',
-        error: error.message
-      });
-    }
-  };
-
-  public evaluateOralAnswer = (req: Request, res: Response) => {
-    try {
-      const { drillId, spokenAnswer } = req.body;
-      const evaluation = voiceTutorService.evaluateOralAnswer({
-        drillId: drillId || 'drill-1',
-        spokenAnswer: spokenAnswer || ''
-      });
-
-      return res.status(200).json({
-        success: true,
-        data: evaluation
-      });
-    } catch (error: any) {
-      return res.status(500).json({
-        success: false,
-        message: 'Oral answer evaluation failed',
-        error: error.message
-      });
-    }
-  };
+  }
 }
 
 export const voiceTutorController = new VoiceTutorController();

@@ -97,6 +97,9 @@ import roboticsKinematicsRouter from './routes/robotics-kinematics.routes';
 import epigeneticClockRouter from './routes/epigenetic-clock.routes';
 import hftOrderBookRouter from './routes/hft-orderbook.routes';
 import centuryGrandmasterRouter from './routes/century-grandmaster.routes';
+import videoMockInterviewRouter from './routes/video-mock-interview.routes';
+import mindmapStudioRouter from './routes/mindmap-studio.routes';
+import livePortfolioRouter from './routes/live-portfolio.routes';
 import { errorHandler } from './middlewares/errorHandler';
 
 const app: Express = express();
@@ -209,6 +212,10 @@ app.use('/api/robotics-kinematics', roboticsKinematicsRouter);
 app.use('/api/epigenetic-clock', epigeneticClockRouter);
 app.use('/api/hft-orderbook', hftOrderBookRouter);
 app.use('/api/century-grandmaster', centuryGrandmasterRouter);
+app.use('/api/voice-tutor', voiceTutorRouter);
+app.use('/api/video-mock-interview', videoMockInterviewRouter);
+app.use('/api/mindmap-studio', mindmapStudioRouter);
+app.use('/api/live-portfolio', livePortfolioRouter);
 
 // Global Error Handler
 app.use(errorHandler);

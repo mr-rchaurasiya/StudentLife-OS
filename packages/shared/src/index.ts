@@ -4156,5 +4156,176 @@ export interface ClaimCenturyMedallionDto {
   signaturePhrase?: string;
 }
 
+// ==========================================
+// 101. AI Voice & Multimodal Tutor (Live Speech & Derivations)
+// ==========================================
+export type VoiceTutorLanguage = 'EN' | 'HI' | 'HINGLISH';
 
+export interface LiveVoiceTutorMessage {
+  id: string;
+  sender: 'STUDENT' | 'AI_TUTOR';
+  text: string;
+  audioDurationSeconds?: number;
+  timestamp: string;
+  latexFormulas?: string[];
+  suggestedFollowups?: string[];
+  keyConceptSummary?: string;
+}
 
+export interface LiveVoiceTutorSession {
+  sessionId: string;
+  subjectDomain: string;
+  topicTitle: string;
+  language: VoiceTutorLanguage;
+  messages: LiveVoiceTutorMessage[];
+  currentBoardStep: number;
+  boardWhiteboardNotes: string[];
+  isListening: boolean;
+  isSpeaking: boolean;
+}
+
+export interface LiveVoiceTutorQueryDto {
+  sessionId: string;
+  studentSpokenText: string;
+  language: VoiceTutorLanguage;
+  subjectDomain: string;
+}
+
+// ==========================================
+// 102. AI Video & Speech Mock Interview Simulator
+// ==========================================
+export type VideoMockInterviewTrack = 'SOFTWARE_ENGINEERING_DSA' | 'DATA_SCIENCE_AI' | 'UPSC_PERSONALITY_TEST' | 'CONSULTING_CASE' | 'CORE_PLACEMENT_HR';
+
+export interface VideoInterviewQuestion {
+  id: string;
+  questionNumber: number;
+  questionText: string;
+  expectedKeyCompetencies: string[];
+  difficulty: 'EASY' | 'MEDIUM' | 'HARD';
+}
+
+export interface VideoInterviewFeedbackReport {
+  overallScoreOutOf100: number;
+  confidenceScore: number;
+  clarityWpm: number;
+  fillerWordCount: number;
+  eyeContactEstimatePercent: number;
+  technicalAccuracyScore: number;
+  strengths: string[];
+  criticalAreasForImprovement: string[];
+  suggestedStarResponses: Array<{
+    question: string;
+    idealFramework: string;
+  }>;
+}
+
+export interface VideoMockInterviewSession {
+  sessionId: string;
+  candidateName: string;
+  track: VideoMockInterviewTrack;
+  currentQuestionIndex: number;
+  totalQuestions: number;
+  questions: VideoInterviewQuestion[];
+  isRecording: boolean;
+  status: 'IN_PROGRESS' | 'COMPLETED';
+  feedbackReport?: VideoInterviewFeedbackReport;
+}
+
+export interface StartVideoMockInterviewDto {
+  candidateName: string;
+  track: VideoMockInterviewTrack;
+  targetRole?: string;
+}
+
+export interface EvaluateVideoInterviewDto {
+  sessionId: string;
+  questionId: string;
+  candidateAnswerTranscript: string;
+  audioWpm: number;
+  fillerWordsObserved: number;
+}
+
+// ==========================================
+// 103. Interactive Visual Mindmap & Active Recall Studio
+// ==========================================
+export type MindmapNodeCategory = 'CORE_ROOT' | 'BRANCH' | 'FORMULA_NODE' | 'KEY_DEFINITION' | 'EXAMPLE_LEAF';
+
+export interface MindmapNode {
+  id: string;
+  label: string;
+  category: MindmapNodeCategory;
+  description: string;
+  formulaLatex?: string;
+  isMaskedForRecall: boolean;
+  userRecallRevealed: boolean;
+  importance: 'HIGH' | 'MEDIUM' | 'CRITICAL';
+  x: number;
+  y: number;
+}
+
+export interface MindmapEdge {
+  id: string;
+  sourceNodeId: string;
+  targetNodeId: string;
+  relationshipLabel?: string;
+}
+
+export interface MindmapData {
+  id: string;
+  topicTitle: string;
+  domain: string;
+  nodes: MindmapNode[];
+  edges: MindmapEdge[];
+  activeRecallScore: number;
+  totalMaskableNodes: number;
+}
+
+export interface GenerateMindmapDto {
+  topicTitle: string;
+  domain: string;
+  sourceTextOrNotes?: string;
+}
+
+// ==========================================
+// 104. Live Student Public Portfolio & Cold Outreach Hub
+// ==========================================
+export interface PublicPortfolioProject {
+  title: string;
+  techStack: string[];
+  liveDemoUrl?: string;
+  githubUrl?: string;
+  starsCount?: number;
+  impactMetrics: string;
+}
+
+export interface StudentPublicPortfolio {
+  username: string;
+  fullName: string;
+  headline: string;
+  college: string;
+  bio: string;
+  avatarUrl: string;
+  githubUsername: string;
+  linkedinUrl?: string;
+  portfolioTheme: 'CYBER_DARK' | 'MINIMAL_ACADEMIC' | 'NEON_QUARTZ';
+  totalStudentLifeXp: number;
+  topSkills: string[];
+  projects: PublicPortfolioProject[];
+  verifiedBadges: string[];
+  viewCount: number;
+}
+
+export interface ColdOutreachRequestDto {
+  recipientType: 'RECRUITER' | 'PROFESSOR_PI' | 'FOUNDER';
+  recipientName: string;
+  companyOrUniversity: string;
+  targetRoleOrLab: string;
+  studentKeyAchievement: string;
+}
+
+export interface ColdOutreachResult {
+  emailSubject: string;
+  emailBodyMarkdown: string;
+  linkedinConnectionNote: string;
+  followUpTemplate: string;
+}

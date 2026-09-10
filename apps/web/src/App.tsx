@@ -91,7 +91,10 @@ import { RoboticsKinematicsView } from './components/RoboticsKinematicsView';
 import { EpigeneticClockView } from './components/EpigeneticClockView';
 import { HftOrderBookView } from './components/HftOrderBookView';
 import { CenturyGrandmasterView } from './components/CenturyGrandmasterView';
-import { NavigationHeader } from './components/NavigationHeader';
+import { AiMockInterviewerView } from './components/AiMockInterviewerView';
+import { VisualMindmapStudioView } from './components/VisualMindmapStudioView';
+import { LivePortfolioHubView } from './components/LivePortfolioHubView';
+import { NavigationHeader, ViewType } from './components/NavigationHeader';
 import { CommandPaletteModal } from './components/CommandPaletteModal';
 import { LiveTelemetryTicker } from './components/LiveTelemetryTicker';
 import { LanguageSelectorModal } from './components/LanguageSelectorModal';
@@ -448,7 +451,7 @@ const DEFAULT_SYLLABUS_OVERVIEW: SyllabusOverviewStats = {
 function DashboardContent() {
   const { user, tokens, isAuthenticated, logout } = useAuth();
   const { currentLanguage, setLanguage, t } = useLanguage();
-  const [activeView, setActiveView] = useState<'DASHBOARD' | 'PLANNER' | 'SYLLABUS' | 'NOTES' | 'AI_STUDY' | 'REVISION' | 'EXAM_PREP' | 'QUESTION_BANK' | 'MOCK_TEST' | 'ANALYTICS' | 'CAREER' | 'RESUME' | 'INTERNSHIPS' | 'SCHOLARSHIPS' | 'DEADLINES' | 'AI_MENTOR' | 'COMMUNITY' | 'LEADERBOARD' | 'OCR_SCANNER' | 'STUDY_ROOMS' | 'VOICE_TUTOR' | 'CONCEPT_GRAPH' | 'QUIZ_BATTLE' | 'DOCUMENT_ANNOTATOR' | 'CUSTOM_PAPER' | 'FOCUS_GARDEN' | 'AI_PODCAST' | 'CODE_SANDBOX' | 'RANK_PREDICTOR' | 'VIRTUAL_CAMPUS' | 'SLIDE_GENERATOR' | 'MOCK_INTERVIEW' | 'NOTES_MARKETPLACE' | 'CIRCADIAN_FOCUS' | 'EXAM_TREND' | 'AI_WHITEBOARD' | 'STUDENT_FINANCES' | 'HOLO_SIMULATIONS' | 'SKILL_PASSPORT' | 'ARXIV_SCHOLAR' | 'SOCRATIC_DEBATE' | 'CAMPUS_EXCHANGE' | 'VIDEO_NAVIGATOR' | 'ERGONOMIC_WELLNESS' | 'RESEARCH_LAB' | 'NEURAL_FLOW' | 'HOSTEL_NUTRITION' | 'LATEX_STUDIO' | 'HACKATHON_RADAR' | 'PATENT_DRAFTER' | 'FACULTY_ADVISORY' | 'TUTOR_BOUNTY' | 'CAMPUS_PRINTING' | 'ALUMNI_RADAR' | 'STUDY_SWARM' | 'CAMPUS_INCUBATOR' | 'CAMPUS_TRANSIT' | 'MENTAL_RESILIENCE' | 'QUANTUM_LAB' | 'FELLOWSHIP_DRAFTER' | 'HACKATHON_WAR_ROOM' | 'SPEED_READER' | 'ACADEMIC_INTEGRITY' | 'CAMPUS_DIGITAL_TWIN' | 'POLYGLOT_TRANSLATOR' | 'LAB_NOTEBOOK' | 'ANKI_FSRS' | 'MICRO_INTERNSHIP' | 'KNOWLEDGE_OLYMPIAD' | 'KERNEL_PROFILER' | 'ASTRODYNAMICS' | 'CHEMICAL_RETRO' | 'SCHOLAR_TRACKER' | 'STUDY_GUILD_DAO' | 'NEUROMORPHIC_SNN' | 'QUANTUM_QKD' | 'PAPER_REFEREE' | 'CRISPR_EDITOR' | 'VENTURE_SAFE' | 'FUSION_TOKAMAK' | 'BCI_SPELLER' | 'LEGAL_ANALYZER' | 'EXOPLANET_PHOTOMETRY' | 'CARBON_MARKET' | 'GRAVITATIONAL_WAVES' | 'ROBOTICS_KINEMATICS' | 'EPIGENETIC_CLOCK' | 'HFT_ORDERBOOK' | 'CENTURY_GRANDMASTER' | 'ROADMAP'>('DASHBOARD');
+  const [activeView, setActiveView] = useState<ViewType>('DASHBOARD');
   const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
   const [initialAiStudyContent, setInitialAiStudyContent] = useState<string>('');
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -1499,7 +1502,7 @@ function DashboardContent() {
           />
         )}
 
-        {activeView === 'VOICE_TUTOR' && (
+        {(activeView === 'VOICE_TUTOR' || activeView === 'LIVE_VOICE_TUTOR') && (
           <AiVoiceTutorView
             onAddXp={(xp, reason) => {
               setProfile((p) => ({
@@ -1509,7 +1512,6 @@ function DashboardContent() {
               }));
               console.log(`XP Earned: +${xp} (${reason})`);
             }}
-            onNavigateView={(v) => setActiveView(v as any)}
           />
         )}
 
@@ -2231,6 +2233,58 @@ function DashboardContent() {
                 xpPoints: p.xpPoints + xp,
                 xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
               }));
+            }}
+          />
+        )}
+
+        {activeView === 'LIVE_VOICE_TUTOR' && (
+          <AiVoiceTutorView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'VIDEO_MOCK_INTERVIEW' && (
+          <AiMockInterviewerView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'VISUAL_MINDMAP' && (
+          <VisualMindmapStudioView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
+            }}
+          />
+        )}
+
+        {activeView === 'LIVE_PORTFOLIO' && (
+          <LivePortfolioHubView
+            onAddXp={(xp, reason) => {
+              setProfile((p) => ({
+                ...p,
+                xpPoints: p.xpPoints + xp,
+                xpToNextLevel: Math.max(0, p.xpToNextLevel - xp),
+              }));
+              console.log(`XP Earned: +${xp} (${reason})`);
             }}
           />
         )}

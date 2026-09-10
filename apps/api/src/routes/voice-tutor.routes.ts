@@ -3,8 +3,8 @@ import { voiceTutorController } from '../controllers/voice-tutor.controller';
 
 const router = Router();
 
-router.post('/respond', voiceTutorController.respondToVoice);
-router.get('/drills', voiceTutorController.getDrills);
-router.post('/evaluate', voiceTutorController.evaluateOralAnswer);
+router.get('/session', (req, res) => voiceTutorController.getSession(req, res));
+router.post('/ask', (req, res) => voiceTutorController.askVoice(req, res));
 
-export const voiceTutorRouter = router;
+export { router as voiceTutorRouter };
+export default router;

@@ -156,6 +156,10 @@ export type ViewType =
   | 'EPIGENETIC_CLOCK'
   | 'HFT_ORDERBOOK'
   | 'CENTURY_GRANDMASTER'
+  | 'LIVE_VOICE_TUTOR'
+  | 'VIDEO_MOCK_INTERVIEW'
+  | 'VISUAL_MINDMAP'
+  | 'LIVE_PORTFOLIO'
   | 'ROADMAP';
 
 export interface NavItem {
@@ -208,6 +212,8 @@ export const NAVIGATION_GROUPS: NavCategory[] = [
       { id: 'AI_STUDY', label: 'AI Study Assistant', icon: Sparkles, iconColor: '#f472b6', activeGradient: 'linear-gradient(135deg, #ec4899, #8b5cf6)' },
       { id: 'AI_MENTOR', label: 'AI Mentor 360°', icon: Sparkles, iconColor: '#c084fc', activeGradient: 'linear-gradient(135deg, #a855f7, #7c3aed)' },
       { id: 'VOICE_TUTOR', label: 'Voice Tutor 🎙️', icon: Mic, iconColor: '#f472b6', activeGradient: 'linear-gradient(135deg, #ec4899, #8b5cf6)' },
+      { id: 'LIVE_VOICE_TUTOR', label: 'Voice Mentor 🎙️', icon: Mic, iconColor: '#f43f5e', activeGradient: 'linear-gradient(135deg, #f43f5e, #8b5cf6)' },
+      { id: 'VISUAL_MINDMAP', label: 'Mindmap Canvas 🗺️', icon: Network, iconColor: '#06b6d4', activeGradient: 'linear-gradient(135deg, #06b6d4, #6366f1)' },
       { id: 'AI_PODCAST', label: 'AI Podcast 🎙️', icon: Mic, iconColor: '#ec4899', activeGradient: 'linear-gradient(135deg, #ec4899, #be185d)' },
       { id: 'SOCRATIC_DEBATE', label: 'Socratic Debate ⚖️', icon: Scale, iconColor: '#c084fc', activeGradient: 'linear-gradient(135deg, #a855f7, #6366f1)' },
       { id: 'CONCEPT_GRAPH', label: 'Mind Map Graph 🕸️', icon: Network, iconColor: '#38bdf8', activeGradient: 'linear-gradient(135deg, #0284c7, #6366f1)' },
@@ -228,6 +234,8 @@ export const NAVIGATION_GROUPS: NavCategory[] = [
     accentColor: '#fbbf24',
     items: [
       { id: 'CAREER', label: 'Career Intel', icon: Briefcase, iconColor: '#fbbf24', activeGradient: 'linear-gradient(135deg, #f59e0b, #d97706)' },
+      { id: 'LIVE_PORTFOLIO', label: 'Public Portfolio 🌐', icon: Globe, iconColor: '#818cf8', activeGradient: 'linear-gradient(135deg, #6366f1, #4f46e5)' },
+      { id: 'VIDEO_MOCK_INTERVIEW', label: 'Video Interview 🎯', icon: Video, iconColor: '#f43f5e', activeGradient: 'linear-gradient(135deg, #f43f5e, #e11d48)' },
       { id: 'RESUME', label: 'Resume & ATS', icon: FileCheck2, iconColor: '#34d399', activeGradient: 'linear-gradient(135deg, #10b981, #6366f1)' },
       { id: 'INTERNSHIPS', label: 'Internships', icon: Compass, iconColor: '#22d3ee', activeGradient: 'linear-gradient(135deg, #06b6d4, #3b82f6)' },
       { id: 'SCHOLARSHIPS', label: 'Scholarships', icon: Award, iconColor: '#34d399', activeGradient: 'linear-gradient(135deg, #10b981, #f59e0b)' },
