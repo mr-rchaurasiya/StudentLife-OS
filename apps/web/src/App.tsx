@@ -1094,8 +1094,8 @@ function DashboardContent() {
     setIsCommandPaletteOpen(false);
   };
 
-  const filteredPhases = activeTab === 'ALL' 
-    ? PHASES 
+  const filteredPhases = activeTab === 'ALL'
+    ? PHASES
     : PHASES.filter(p => p.pillar === activeTab || (activeTab === 'CAREER' && p.pillar === 'OPPORTUNITIES'));
 
   const completedCount = PHASES.filter(p => p.status === 'COMPLETED').length;
@@ -1139,150 +1139,150 @@ function DashboardContent() {
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-            {/* Spotlight Command Palette (Ctrl+K) Trigger */}
-            <button
-              onClick={() => setIsCommandPaletteOpen(true)}
-              className="glass-pill glow-hover"
-              style={{
-                padding: '6px 14px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                fontSize: '0.8rem',
-                fontWeight: 700,
-                color: '#c084fc',
-                border: '1px solid rgba(168, 85, 247, 0.3)',
-                background: 'rgba(168, 85, 247, 0.1)',
-                cursor: 'pointer'
-              }}
-              title="Open Command Palette (Ctrl + K / Cmd + K)"
-            >
-              <Search size={13} color="#c084fc" />
-              <span>{t('search')}</span>
-              <kbd style={{ fontSize: '0.65rem', padding: '1px 5px', borderRadius: '4px', background: 'rgba(168, 85, 247, 0.25)', color: '#e9d5ff', fontFamily: 'var(--font-mono)' }}>
-                Ctrl K
-              </kbd>
-            </button>
-
-            {/* Telemetry */}
-            <button
-              onClick={() => setIsApiHealthModalOpen(true)}
-              className="glass-pill glow-hover cursor-pointer"
-              style={{
-                padding: '6px 14px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                fontSize: '0.8rem',
-                border: apiHealth?.status === 'ONLINE' ? '1px solid rgba(16, 185, 129, 0.35)' : '1px solid rgba(245, 158, 11, 0.35)',
-                backgroundColor: apiHealth?.status === 'ONLINE' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)',
-                cursor: 'pointer'
-              }}
-              title="Click to view Live API Diagnostics & Health Monitor"
-            >
-              <div style={{
-                width: '8px',
-                height: '8px',
-                borderRadius: '50%',
-                backgroundColor: apiHealth?.status === 'ONLINE' ? 'var(--accent-emerald)' : 'var(--accent-amber)',
-                boxShadow: apiHealth?.status === 'ONLINE' ? '0 0 8px #10b981' : '0 0 8px #f59e0b'
-              }} className="pulse-circle" />
-              <span style={{ color: 'var(--text-secondary)' }}>API:</span>
-              <strong style={{ color: apiHealth?.status === 'ONLINE' ? '#34d399' : '#fbbf24' }}>
-                {apiHealth?.status === 'ONLINE' ? t('api_online') : t('api_standby')}
-              </strong>
-            </button>
-
-            {/* Vernacular Language Switcher */}
-            <button
-              onClick={() => setIsLanguageModalOpen(true)}
-              className="glass-pill glow-hover"
-              style={{
-                padding: '6px 14px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontSize: '0.8rem',
-                fontWeight: 700,
-                color: '#67e8f9',
-                border: '1px solid rgba(6, 182, 212, 0.3)',
-                background: 'rgba(6, 182, 212, 0.1)',
-                cursor: 'pointer'
-              }}
-              title="Change Regional Language"
-            >
-              <Globe size={13} color="#22d3ee" /> {currentLanguage.toUpperCase()} 🌐
-            </button>
-
-            {/* Daily Digest Trigger */}
-            <button
-              onClick={() => setIsDigestModalOpen(true)}
-              className="glass-pill glow-hover"
-              style={{
-                padding: '6px 14px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontSize: '0.8rem',
-                fontWeight: 700,
-                color: '#fef08a',
-                border: '1px solid rgba(234, 179, 8, 0.3)',
-                background: 'rgba(234, 179, 8, 0.1)',
-                cursor: 'pointer'
-              }}
-              title="View Today's Morning Study Digest"
-            >
-              <Sun size={14} color="#facc15" /> {t('daily_digest')}
-            </button>
-
-            {/* User Account / Sign In */}
-            {isAuthenticated && user ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <button
-                  onClick={() => setIsProfileModalOpen(true)}
-                  className="glass-pill"
-                  style={{
-                    padding: '4px 12px 4px 6px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    cursor: 'pointer',
-                    border: '1px solid var(--border-glass)'
-                  }}
-                >
-                  <img
-                    src={user.avatarUrl || 'https://api.dicebear.com/7.x/bottts/svg?seed=student'}
-                    alt={user.fullName}
-                    style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }}
-                  />
-                  <div style={{ textAlign: 'left' }}>
-                    <div style={{ fontSize: '0.8rem', fontWeight: 700 }}>{user.fullName}</div>
-                    <div style={{ fontSize: '0.65rem', color: '#818cf8', fontWeight: 600 }}>{user.role}</div>
-                  </div>
-                </button>
-                <button
-                  onClick={logout}
-                  className="btn btn-secondary"
-                  style={{ padding: '8px 12px', fontSize: '0.75rem' }}
-                  title="Logout"
-                >
-                  <LogOut size={14} />
-                  Logout
-                </button>
-              </div>
-            ) : (
+              {/* Spotlight Command Palette (Ctrl+K) Trigger */}
               <button
-                onClick={() => setIsAuthModalOpen(true)}
-                className="btn btn-primary"
-                style={{ padding: '8px 16px', fontSize: '0.85rem' }}
+                onClick={() => setIsCommandPaletteOpen(true)}
+                className="glass-pill glow-hover"
+                style={{
+                  padding: '6px 14px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  color: '#c084fc',
+                  border: '1px solid rgba(168, 85, 247, 0.3)',
+                  background: 'rgba(168, 85, 247, 0.1)',
+                  cursor: 'pointer'
+                }}
+                title="Open Command Palette (Ctrl + K / Cmd + K)"
               >
-                <LogIn size={15} />
-                Sign In / Sign Up
+                <Search size={13} color="#c084fc" />
+                <span>{t('search')}</span>
+                <kbd style={{ fontSize: '0.65rem', padding: '1px 5px', borderRadius: '4px', background: 'rgba(168, 85, 247, 0.25)', color: '#e9d5ff', fontFamily: 'var(--font-mono)' }}>
+                  Ctrl K
+                </kbd>
               </button>
-            )}
+
+              {/* Telemetry */}
+              <button
+                onClick={() => setIsApiHealthModalOpen(true)}
+                className="glass-pill glow-hover cursor-pointer"
+                style={{
+                  padding: '6px 14px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontSize: '0.8rem',
+                  border: apiHealth?.status === 'ONLINE' ? '1px solid rgba(16, 185, 129, 0.35)' : '1px solid rgba(245, 158, 11, 0.35)',
+                  backgroundColor: apiHealth?.status === 'ONLINE' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)',
+                  cursor: 'pointer'
+                }}
+                title="Click to view Live API Diagnostics & Health Monitor"
+              >
+                <div style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  backgroundColor: apiHealth?.status === 'ONLINE' ? 'var(--accent-emerald)' : 'var(--accent-amber)',
+                  boxShadow: apiHealth?.status === 'ONLINE' ? '0 0 8px #10b981' : '0 0 8px #f59e0b'
+                }} className="pulse-circle" />
+                <span style={{ color: 'var(--text-secondary)' }}>API:</span>
+                <strong style={{ color: apiHealth?.status === 'ONLINE' ? '#34d399' : '#fbbf24' }}>
+                  {apiHealth?.status === 'ONLINE' ? t('api_online') : t('api_standby')}
+                </strong>
+              </button>
+
+              {/* Vernacular Language Switcher */}
+              <button
+                onClick={() => setIsLanguageModalOpen(true)}
+                className="glass-pill glow-hover"
+                style={{
+                  padding: '6px 14px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  color: '#67e8f9',
+                  border: '1px solid rgba(6, 182, 212, 0.3)',
+                  background: 'rgba(6, 182, 212, 0.1)',
+                  cursor: 'pointer'
+                }}
+                title="Change Regional Language"
+              >
+                <Globe size={13} color="#22d3ee" /> {currentLanguage.toUpperCase()} 🌐
+              </button>
+
+              {/* Daily Digest Trigger */}
+              <button
+                onClick={() => setIsDigestModalOpen(true)}
+                className="glass-pill glow-hover"
+                style={{
+                  padding: '6px 14px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  fontSize: '0.8rem',
+                  fontWeight: 700,
+                  color: '#fef08a',
+                  border: '1px solid rgba(234, 179, 8, 0.3)',
+                  background: 'rgba(234, 179, 8, 0.1)',
+                  cursor: 'pointer'
+                }}
+                title="View Today's Morning Study Digest"
+              >
+                <Sun size={14} color="#facc15" /> {t('daily_digest')}
+              </button>
+
+              {/* User Account / Sign In */}
+              {isAuthenticated && user ? (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <button
+                    onClick={() => setIsProfileModalOpen(true)}
+                    className="glass-pill"
+                    style={{
+                      padding: '4px 12px 4px 6px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      cursor: 'pointer',
+                      border: '1px solid var(--border-glass)'
+                    }}
+                  >
+                    <img
+                      src={user.avatarUrl || 'https://api.dicebear.com/7.x/bottts/svg?seed=student'}
+                      alt={user.fullName}
+                      style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }}
+                    />
+                    <div style={{ textAlign: 'left' }}>
+                      <div style={{ fontSize: '0.8rem', fontWeight: 700 }}>{user.fullName}</div>
+                      <div style={{ fontSize: '0.65rem', color: '#818cf8', fontWeight: 600 }}>{user.role}</div>
+                    </div>
+                  </button>
+                  <button
+                    onClick={logout}
+                    className="btn btn-secondary"
+                    style={{ padding: '8px 12px', fontSize: '0.75rem' }}
+                    title="Logout"
+                  >
+                    <LogOut size={14} />
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setIsAuthModalOpen(true)}
+                  className="btn btn-primary"
+                  style={{ padding: '8px 16px', fontSize: '0.85rem' }}
+                >
+                  <LogIn size={15} />
+                  Sign In / Sign Up
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-      
+
           {/* Categorized 6-Group Navigation Bar */}
           <NavigationHeader
             activeView={activeView}
@@ -1290,11 +1290,11 @@ function DashboardContent() {
             onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
           />
         </div>
-</header>
+      </header>
 
       {/* Main Content */}
       <main style={{ maxWidth: '1280px', margin: '0 auto', padding: '28px 24px', flex: 1, width: '100%' }}>
-        
+
         {activeView === 'DASHBOARD' && (
           <DashboardCockpit
             profile={profile}
@@ -2495,7 +2495,7 @@ function DashboardContent() {
       {/* Global Real-Time Live Telemetry Ticker in Footer */}
       <div style={{ marginTop: 'auto' }}>
         <LiveTelemetryTicker />
-        
+
         {/* Footer */}
         <footer style={{
           padding: '16px 24px',
